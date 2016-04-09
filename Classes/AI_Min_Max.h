@@ -2,9 +2,8 @@
 
 
 #include "Player.h"
-#include "Move.h"
 
 
-class AI_Min_Max : public player{
+class AI_Min_Max : public Player{
 	Move genMove(const Board &board);
 };

@@ -3,9 +3,9 @@
 #include <string>
 #include "Move.h"
 #include "Piece.h"
-#include "Board"
+#include "Board.h"
 
-
+#include <vector>
 
 using namespace std;
 

@@ -1,7 +1,7 @@
-#include "piece.h"
+#include "Piece.h"
 
 
-Piece::Type Piece::getType(){
+Piece::TypePiece Piece::getType(){
 	return type;
 }
 
@@ -11,5 +11,4 @@ Point Piece::getPosition(){
 }
 
 int Piece::getPlayer(){
-	return player;
 }

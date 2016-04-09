@@ -3,7 +3,6 @@
 
 #include "Move.h"
 
-
 class Piece{
 public:
 	enum TypePiece {NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT};
@@ -17,3 +16,5 @@ public:
 	Point getPosition();
 	int getPlayer();
 };
+
+
