@@ -7,7 +7,9 @@
 //
 
 #include "Board.h"
-/*
+#include "cocos2d.h"
+
+using namespace cocos2d;
 
 bool Board::availableMove(Move move){
     mPoint ptFrom 	    = move.from;
