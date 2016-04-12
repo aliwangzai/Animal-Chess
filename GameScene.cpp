@@ -42,6 +42,10 @@ bool GameScene::init(){
         PointXY chosenBlock = PointXY((int)clickPos.x / 80 - 1, 7 - (int)clickPos.y / 70);
         std::cout<<chosenBlock.x<<","<<chosenBlock.y<<"."<<std::endl;
 
+		if (chosenBlock.x < 0 || chosenBlock.y < 0)
+			return;
+		if (chosenBlock.x > 8 || chosenBlock.y>6)
+			return;
 		auto clickedPiece = board->getPiece(chosenBlock);
 
 		// if no piece has been choosen yet
