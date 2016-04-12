@@ -120,7 +120,8 @@ void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
 		toPiece->removeFromParent();
 	}
 	currentPlayer = !currentPlayer;
-
+	selected->recover();
+	selected = allPieces.back();
 }
 
 Board::Board()
@@ -136,6 +137,7 @@ Board::Board()
 		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
 		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
+	 currentPlayer = 0;
 }
 
 void Board::initPieces(TMXTiledMap* map) {
@@ -143,165 +145,173 @@ void Board::initPieces(TMXTiledMap* map) {
 
 	float x, y;
 	Sprite* elephantSprite = Sprite::create("elephant.png");
-	Sprite* lionSprite = Sprite::create("lion.png");
-	Sprite* tigerSprite = Sprite::create("tiger.png");
-	Sprite* leopardSprite = Sprite::create("leopard.png");
-	Sprite* dogSprite = Sprite::create("dog.png");
-	Sprite* wolfSprite = Sprite::create("wolf.png");
-	Sprite* catSprite = Sprite::create("cat.png");
-	Sprite* ratSprite = Sprite::create("rat.png");
+	Sprite* lionSprite0 = Sprite::create("lion.png");
+	Sprite* tigerSprite0 = Sprite::create("tiger.png");
+	Sprite* leopardSprite0 = Sprite::create("leopard.png");
+	Sprite* dogSprite0 = Sprite::create("dog.png");
+	Sprite* wolfSprite0 = Sprite::create("wolf.png");
+	Sprite* catSprite0 = Sprite::create("cat.png");
+	Sprite* ratSprite0 = Sprite::create("rat.png");
 
-	Sprite* elephantSprite2 = Sprite::create("elephant.png");
-	Sprite* lionSprite2 = Sprite::create("lion.png");
-	Sprite* tigerSprite2 = Sprite::create("tiger.png");
-	Sprite* leopardSprite2 = Sprite::create("leopard.png");
-	Sprite* dogSprite2 = Sprite::create("dog.png");
-	Sprite* wolfSprite2 = Sprite::create("wolf.png");
-	Sprite* catSprite2 = Sprite::create("cat.png");
-	Sprite* ratSprite2 = Sprite::create("rat.png");
+	Sprite* elephantSprite1 = Sprite::create("elephant.png");
+	Sprite* lionSprite1 = Sprite::create("lion.png");
+	Sprite* tigerSprite1 = Sprite::create("tiger.png");
+	Sprite* leopardSprite1 = Sprite::create("leopard.png");
+	Sprite* dogSprite1 = Sprite::create("dog.png");
+	Sprite* wolfSprite1 = Sprite::create("wolf.png");
+	Sprite* catSprite1 = Sprite::create("cat.png");
+	Sprite* ratSprite1 = Sprite::create("rat.png");
 
-	ValueMap elephant1Pos = objgroup->getObject("elephant1");
-	ValueMap lion1Pos = objgroup->getObject("lion1");
-	ValueMap tiger1Pos = objgroup->getObject("tiger1");
-	ValueMap leopard1Pos = objgroup->getObject("leopard1");
-	ValueMap dog1Pos = objgroup->getObject("dog1");
-	ValueMap wolf1Pos = objgroup->getObject("wolf1");
-	ValueMap cat1Pos = objgroup->getObject("cat1");
-	ValueMap rat1Pos = objgroup->getObject("rat1");
+	ValueMap elephant0Pos = objgroup->getObject("elephant1");
+	ValueMap lion0Pos = objgroup->getObject("lion1");
+	ValueMap tiger0Pos = objgroup->getObject("tiger1");
+	ValueMap leopard0Pos = objgroup->getObject("leopard1");
+	ValueMap dog0Pos = objgroup->getObject("dog1");
+	ValueMap wolf0Pos = objgroup->getObject("wolf1");
+	ValueMap cat0Pos = objgroup->getObject("cat1");
+	ValueMap rat0Pos = objgroup->getObject("rat1");
 
-	ValueMap elephant2Pos = objgroup->getObject("elephant2");
-	ValueMap lion2Pos = objgroup->getObject("lion2");
-	ValueMap tiger2Pos = objgroup->getObject("tiger2");
-	ValueMap leopard2Pos = objgroup->getObject("leopard2");
-	ValueMap dog2Pos = objgroup->getObject("dog2");
-	ValueMap wolf2Pos = objgroup->getObject("wolf2");
-	ValueMap cat2Pos = objgroup->getObject("cat2");
-	ValueMap rat2Pos = objgroup->getObject("rat2");
+	ValueMap elephant1Pos = objgroup->getObject("elephant2");
+	ValueMap lion1Pos = objgroup->getObject("lion2");
+	ValueMap tiger1Pos = objgroup->getObject("tiger2");
+	ValueMap leopard1Pos = objgroup->getObject("leopard2");
+	ValueMap dog1Pos = objgroup->getObject("dog2");
+	ValueMap wolf1Pos = objgroup->getObject("wolf2");
+	ValueMap cat1Pos = objgroup->getObject("cat2");
+	ValueMap rat1Pos = objgroup->getObject("rat2");
+
+	Pieces* elephantPiece0 = Pieces::create();
+	elephantPiece0->bindSprite(elephantSprite);
+	x = elephant0Pos.at("x").asFloat();
+	y = elephant0Pos.at("y").asFloat();
+	elephantPiece0->setPosition(Point(x, y));
+	elephantPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::ELEPHANT);
+	//std::cout<<elephant1Pos.at("x").asFloat()<<","<<elephant1Pos.at("y").asFloat();
+
+	Pieces* lionPiece0 = Pieces::create();
+	lionPiece0->bindSprite(lionSprite0);
+	x = lion0Pos.at("x").asFloat();
+	y = lion0Pos.at("y").asFloat();
+	lionPiece0->setPosition(Point(x, y));
+	lionPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::LION);
+
+	Pieces* tigerPiece0 = Pieces::create();
+	tigerPiece0->bindSprite(tigerSprite0);
+	x = tiger0Pos.at("x").asFloat();
+	y = tiger0Pos.at("y").asFloat();
+	tigerPiece0->setPosition(Point(x, y));
+	tigerPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::TIGER);
+
+	Pieces* leopardPiece0 = Pieces::create();
+	leopardPiece0->bindSprite(leopardSprite0);
+	x = leopard0Pos.at("x").asFloat();
+	y = leopard0Pos.at("y").asFloat();
+	leopardPiece0->setPosition(Point(x, y));
+	leopardPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::LEOPARD);
+
+	Pieces* dogPiece0 = Pieces::create();
+	dogPiece0->bindSprite(dogSprite0);
+	x = dog0Pos.at("x").asFloat();
+	y = dog0Pos.at("y").asFloat();
+	dogPiece0->setPosition(Point(x, y));
+	dogPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::DOG);
+
+	Pieces* wolfPiece0 = Pieces::create();
+	wolfPiece0->bindSprite(wolfSprite0);
+	x = wolf0Pos.at("x").asFloat();
+	y = wolf0Pos.at("y").asFloat();
+	wolfPiece0->setPosition(Point(x, y));
+	wolfPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::WOLF);
+
+	Pieces* catPiece0 = Pieces::create();
+	catPiece0->bindSprite(catSprite0);
+	x = cat0Pos.at("x").asFloat();
+	y = cat0Pos.at("y").asFloat();
+	catPiece0->setPosition(Point(x, y));
+	catPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::CAT);
+
+	Pieces* ratPiece0 = Pieces::create();
+	ratPiece0->bindSprite(ratSprite0);
+	x = rat0Pos.at("x").asFloat();
+	y = rat0Pos.at("y").asFloat();
+	ratPiece0->setPosition(Point(x, y));
+	ratPiece0->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::RAT);
+
 
 	Pieces* elephantPiece1 = Pieces::create();
-	elephantPiece1->bindSprite(elephantSprite);
+	elephantSprite1->setFlippedX(true);
+	elephantPiece1->bindSprite(elephantSprite1);
 	x = elephant1Pos.at("x").asFloat();
 	y = elephant1Pos.at("y").asFloat();
 	elephantPiece1->setPosition(Point(x, y));
-	elephantPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::ELEPHANT);
-	//std::cout<<elephant1Pos.at("x").asFloat()<<","<<elephant1Pos.at("y").asFloat();
+	elephantPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::ELEPHANT);
 
 	Pieces* lionPiece1 = Pieces::create();
-	lionPiece1->bindSprite(lionSprite);
+	lionSprite1->setFlippedX(true);
+	lionPiece1->bindSprite(lionSprite1);
 	x = lion1Pos.at("x").asFloat();
 	y = lion1Pos.at("y").asFloat();
 	lionPiece1->setPosition(Point(x, y));
-	lionPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::LION);
+	lionPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::LION);
 
 	Pieces* tigerPiece1 = Pieces::create();
-	tigerPiece1->bindSprite(tigerSprite);
+	tigerSprite1->setFlippedX(true);
+	tigerPiece1->bindSprite(tigerSprite1);
 	x = tiger1Pos.at("x").asFloat();
 	y = tiger1Pos.at("y").asFloat();
 	tigerPiece1->setPosition(Point(x, y));
-	tigerPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::TIGER);
+	tigerPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::TIGER);
 
 	Pieces* leopardPiece1 = Pieces::create();
-	leopardPiece1->bindSprite(leopardSprite);
+	leopardSprite1->setFlippedX(true);
+	leopardPiece1->bindSprite(leopardSprite1);
 	x = leopard1Pos.at("x").asFloat();
 	y = leopard1Pos.at("y").asFloat();
 	leopardPiece1->setPosition(Point(x, y));
-	leopardPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::LEOPARD);
+	leopardPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::LEOPARD);
+
 
 	Pieces* dogPiece1 = Pieces::create();
-	dogPiece1->bindSprite(dogSprite);
+	dogSprite1->setFlippedX(true);
+	dogPiece1->bindSprite(dogSprite1);
 	x = dog1Pos.at("x").asFloat();
 	y = dog1Pos.at("y").asFloat();
 	dogPiece1->setPosition(Point(x, y));
-	dogPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::DOG);
+	dogPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::DOG);
 
 	Pieces* wolfPiece1 = Pieces::create();
-	wolfPiece1->bindSprite(wolfSprite);
+	wolfSprite1->setFlippedX(true);
+	wolfPiece1->bindSprite(wolfSprite1);
 	x = wolf1Pos.at("x").asFloat();
 	y = wolf1Pos.at("y").asFloat();
 	wolfPiece1->setPosition(Point(x, y));
-	wolfPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::WOLF);
+	wolfPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::WOLF);
 
 	Pieces* catPiece1 = Pieces::create();
-	catPiece1->bindSprite(catSprite);
+	catSprite1->setFlippedX(true);
+	catPiece1->bindSprite(catSprite1);
 	x = cat1Pos.at("x").asFloat();
 	y = cat1Pos.at("y").asFloat();
 	catPiece1->setPosition(Point(x, y));
-	catPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::CAT);
+	catPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::CAT);
 
 	Pieces* ratPiece1 = Pieces::create();
-	ratPiece1->bindSprite(ratSprite);
+	ratSprite1->setFlippedX(true);
+	ratPiece1->bindSprite(ratSprite1);
 	x = rat1Pos.at("x").asFloat();
 	y = rat1Pos.at("y").asFloat();
 	ratPiece1->setPosition(Point(x, y));
-	ratPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 0, Pieces::RAT);
+	ratPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::RAT);
 
 
-	Pieces* elephantPiece2 = Pieces::create();
-	elephantSprite2->setFlippedX(true);
-	elephantPiece2->bindSprite(elephantSprite2);
-	x = elephant2Pos.at("x").asFloat();
-	y = elephant2Pos.at("y").asFloat();
-	elephantPiece2->setPosition(Point(x, y));
-	elephantPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::ELEPHANT);
-
-	Pieces* lionPiece2 = Pieces::create();
-	lionSprite2->setFlippedX(true);
-	lionPiece2->bindSprite(lionSprite2);
-	x = lion2Pos.at("x").asFloat();
-	y = lion2Pos.at("y").asFloat();
-	lionPiece2->setPosition(Point(x, y));
-	lionPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::LION);
-
-	Pieces* tigerPiece2 = Pieces::create();
-	tigerSprite2->setFlippedX(true);
-	tigerPiece2->bindSprite(tigerSprite2);
-	x = tiger2Pos.at("x").asFloat();
-	y = tiger2Pos.at("y").asFloat();
-	tigerPiece2->setPosition(Point(x, y));
-	tigerPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::TIGER);
-
-	Pieces* leopardPiece2 = Pieces::create();
-	leopardSprite2->setFlippedX(true);
-	leopardPiece2->bindSprite(leopardSprite2);
-	x = leopard2Pos.at("x").asFloat();
-	y = leopard2Pos.at("y").asFloat();
-	leopardPiece2->setPosition(Point(x, y));
-	leopardPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::LEOPARD);
-
-
-	Pieces* dogPiece2 = Pieces::create();
-	dogSprite2->setFlippedX(true);
-	dogPiece2->bindSprite(dogSprite2);
-	x = dog2Pos.at("x").asFloat();
-	y = dog2Pos.at("y").asFloat();
-	dogPiece2->setPosition(Point(x, y));
-	dogPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::DOG);
-
-	Pieces* wolfPiece2 = Pieces::create();
-	wolfSprite2->setFlippedX(true);
-	wolfPiece2->bindSprite(wolfSprite2);
-	x = wolf2Pos.at("x").asFloat();
-	y = wolf2Pos.at("y").asFloat();
-	wolfPiece2->setPosition(Point(x, y));
-	wolfPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::WOLF);
-
-	Pieces* catPiece2 = Pieces::create();
-	catSprite2->setFlippedX(true);
-	catPiece2->bindSprite(catSprite2);
-	x = cat2Pos.at("x").asFloat();
-	y = cat2Pos.at("y").asFloat();
-	catPiece2->setPosition(Point(x, y));
-	catPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::CAT);
-
-	Pieces* ratPiece2 = Pieces::create();
-	ratSprite2->setFlippedX(true);
-	ratPiece2->bindSprite(ratSprite2);
-	x = rat2Pos.at("x").asFloat();
-	y = rat2Pos.at("y").asFloat();
-	ratPiece2->setPosition(Point(x, y));
-	ratPiece2->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::RAT);
-
-
+	map->addChild(elephantPiece0);
+	map->addChild(lionPiece0);
+	map->addChild(tigerPiece0);
+	map->addChild(leopardPiece0);
+	map->addChild(dogPiece0);
+	map->addChild(wolfPiece0);
+	map->addChild(catPiece0);
+	map->addChild(ratPiece0);
 	map->addChild(elephantPiece1);
 	map->addChild(lionPiece1);
 	map->addChild(tigerPiece1);
@@ -310,15 +320,15 @@ void Board::initPieces(TMXTiledMap* map) {
 	map->addChild(wolfPiece1);
 	map->addChild(catPiece1);
 	map->addChild(ratPiece1);
-	map->addChild(elephantPiece2);
-	map->addChild(lionPiece2);
-	map->addChild(tigerPiece2);
-	map->addChild(leopardPiece2);
-	map->addChild(dogPiece2);
-	map->addChild(wolfPiece2);
-	map->addChild(catPiece2);
-	map->addChild(ratPiece2);
 
+	allPieces.push_back(elephantPiece0);
+	allPieces.push_back(lionPiece0);
+	allPieces.push_back(tigerPiece0);
+	allPieces.push_back(leopardPiece0);
+	allPieces.push_back(dogPiece0);
+	allPieces.push_back(wolfPiece0);
+	allPieces.push_back(catPiece0);
+	allPieces.push_back(ratPiece0);
 	allPieces.push_back(elephantPiece1);
 	allPieces.push_back(lionPiece1);
 	allPieces.push_back(tigerPiece1);
@@ -327,14 +337,6 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(wolfPiece1);
 	allPieces.push_back(catPiece1);
 	allPieces.push_back(ratPiece1);
-	allPieces.push_back(elephantPiece2);
-	allPieces.push_back(lionPiece2);
-	allPieces.push_back(tigerPiece2);
-	allPieces.push_back(leopardPiece2);
-	allPieces.push_back(dogPiece2);
-	allPieces.push_back(wolfPiece2);
-	allPieces.push_back(catPiece2);
-	allPieces.push_back(ratPiece2);
 
 	auto nul_piece = Pieces::create();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
@@ -342,15 +344,15 @@ void Board::initPieces(TMXTiledMap* map) {
 	selected = nul_piece;
 
 	boardPieces = {
-		{tigerPiece1,nul_piece,nul_piece, nul_piece, nul_piece, nul_piece, lionPiece1},
-		{ nul_piece, catPiece1,nul_piece, nul_piece, nul_piece, dogPiece1,nul_piece},
-		{elephantPiece1,nul_piece, wolfPiece1,nul_piece, leopardPiece1,nul_piece, ratPiece1},
+		{tigerPiece0,nul_piece,nul_piece, nul_piece, nul_piece, nul_piece, lionPiece0},
+		{ nul_piece, catPiece0,nul_piece, nul_piece, nul_piece, dogPiece0,nul_piece},
+		{elephantPiece0,nul_piece, wolfPiece0,nul_piece, leopardPiece0,nul_piece, ratPiece0},
 		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece},
 		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece },
 		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece },
-		{ratPiece2,nul_piece, leopardPiece2,nul_piece, wolfPiece2,nul_piece, elephantPiece2},
-		{ nul_piece, dogPiece2,nul_piece, nul_piece, nul_piece, catPiece2,nul_piece},
-		{lionPiece2,nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, tigerPiece2}
+		{ratPiece1,nul_piece, leopardPiece1,nul_piece, wolfPiece1,nul_piece, elephantPiece1},
+		{ nul_piece, dogPiece1,nul_piece, nul_piece, nul_piece, catPiece1,nul_piece},
+		{lionPiece1,nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, tigerPiece1}
 	};
 }
 
