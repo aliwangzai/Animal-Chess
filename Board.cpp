@@ -15,7 +15,6 @@ bool Board::availableMove(Move move) {
 	PointXY ptFrom = move.from;
 	PointXY ptTo = move.to;
 
-
 	auto pieceFrom = getPiece(ptFrom);
 	auto pieceTo = getPiece(ptTo);
 
@@ -65,11 +64,11 @@ bool Board::availableMove(Move move) {
 	}
 
 	// detect if moving into den
-	if (currentPlayer == 0 && terrainTo == Board::DEN0) {
-		return false;
+	if (terrainTo == Board::DEN0) {
+		return (currentPlayer != 0);
 	}
-	if (currentPlayer == 1 && terrainTo == Board::DEN1) {
-		return false;
+	if (terrainTo == Board::DEN1) {
+		return (currentPlayer != 1);
 	}
 
 	// check if the moving distance is 1
@@ -82,11 +81,12 @@ bool Board::availableMove(Move move) {
 		(terrainTo == Board::NIL && terrainFrom == Board::RIVER)) {
 		if (pieceTypeTo != Pieces::NIL) {
 			return false;
+		} else {
+			if (pieceFrom->getType() == Pieces::RAT)
+				return true;
+			else
+				return false;
 		}
-		if (pieceFrom->getType() == Pieces::RAT)
-			return true;
-		else
-			return false;
 	}
 
 	// set the priority to lowest if it is trapped
@@ -110,18 +110,15 @@ Pieces * Board::getPiece(PointXY pt)
 }
 
 
-void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
+void Board::moveChess(Pieces *fromPiece, PointXY to) {
 
 	PointXY from = fromPiece->getPositionBlock();
-	/*
-	if ((to.x>from.x && fromPiece->getSprite()->isFlippedX()) ||
-		(to.x<from.x && !fromPiece->getSprite()->isFlippedX()))
-		fromPiece->changeDirection();
-	*/
+	auto toPiece = getPiece(to);
 	fromPiece->setPositionBlock(to);
 	fromPiece->setPosition((to.x + 1) * 80 + 40, (7 - to.y) * 70 + 35);
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
+	//eat
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 	}

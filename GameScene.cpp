@@ -62,7 +62,7 @@ bool GameScene::init(){
 			PointXY from = board->selected->getPositionBlock();
 			if (board->availableMove(Move{ from,chosenBlock })) {
 				//move
-				board->moveChess(board->selected, chosenBlock, clickedPiece);
+				board->moveChess(board->selected, chosenBlock);
 			} else {
 				//reset
 				board->selected->recover();
