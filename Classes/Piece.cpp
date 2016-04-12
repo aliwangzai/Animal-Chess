@@ -11,4 +11,5 @@ Point Piece::getPosition(){
 }
 
 int Piece::getPlayer(){
+	return Player;
 }
