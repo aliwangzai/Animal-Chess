@@ -13,8 +13,11 @@
 #endif /* Board_h */
 
 #include "Pieces.h"
-
+#include <vector>
 #include "Move.h"
+
+
+using namespace std;
 
 class Board{
     
@@ -23,13 +26,20 @@ public:
     
     // 0,
     int curPlayer;
-    mPoint selected;
+    int selected_index;
     bool availableMove(Move move);
     void move(Move move);
-    Pieces getPiece(mPoint pt);
-    TypeTerrain getTerrain(mPoint pt){
-        return terrain[pt.x][pt.y];
+    int getPiece(Point pt);
+    TypeTerrain getTerrain(Point pt){
+        return terrain[(int)pt.x][(int)pt.y];
     }
+
+	void initPieces(TMXTiledMap* map);
+	vector<Pieces*> BoardPiece;
+	void moveChess(Pieces* fromPiece, Point to, Pieces* toPiece = nullptr);
+	bool moveable(Point from, Point to);
+
+	int currentPlayer;
     
 private:
     Pieces board[9][7];

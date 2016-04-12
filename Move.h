@@ -9,10 +9,6 @@
 #ifndef Move_h
 #define Move_h
 
-struct mPoint{
-    int x,y;
-};
-
 struct Move{
     mPoint from;
     mPoint to;

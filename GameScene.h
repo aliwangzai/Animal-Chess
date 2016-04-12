@@ -22,15 +22,7 @@ public:
     static Scene* createScene();
     virtual bool init();
     CREATE_FUNC(GameScene);
-    void initPieces(TMXTiledMap* map);
-    Vector<Pieces*> BoardPiece;
-    void moveChess(Pieces* fromPiece, Point to, Pieces* toPiece = nullptr);
-    bool moveable(Point from,Point to);
-    
-    Pieces* pieceSelected;
-    int currentPlayer;
-    int clickNum;
-    int fromIndex,toIndex;
+	bool init();
 };
 
 #endif /* GameScene_h */
