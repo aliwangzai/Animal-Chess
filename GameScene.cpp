@@ -66,7 +66,7 @@ bool GameScene::init(){
 			} else {
 				//reset
 				board->selected->recover();
-				board->selected = board->allPieces.back();
+				board->selected = board->nul_piece;
 			}
 		}
     };

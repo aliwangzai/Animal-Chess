@@ -43,7 +43,6 @@ public:
 	~Board();
 private:
 	vector<vector<Board::TypeTerrain>> terrain;
-
 };
 
 

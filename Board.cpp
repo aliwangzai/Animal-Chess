@@ -120,14 +120,14 @@ void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
 	*/
 	fromPiece->setPositionBlock(to);
 	fromPiece->setPosition((to.x + 1) * 80 + 40, (7 - to.y) * 70 + 35);
-	boardPieces[from.x][from.y] = allPieces.back();
+	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 	}
 	currentPlayer = !currentPlayer;
 	selected->recover();
-	selected = allPieces.back();
+	selected = nul_piece;
 }
 
 Board::Board()

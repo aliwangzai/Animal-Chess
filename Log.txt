@@ -17,3 +17,6 @@ by Wenliang Liu
 	使用了棋盘存棋子，查询时就直接调用了，不用循环找棋子
 	完善了available_move函数
 	player现在是0和1，0代表左侧棋盘，1代表右侧棋盘，相应变量名称最后也变为0或1了
+
+TODO:
+	优化 available_move使运行速度加快。
