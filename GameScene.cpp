@@ -43,8 +43,12 @@ bool GameScene::init(){
         std::cout<<chosenBlock.x<<","<<chosenBlock.y<<"."<<std::endl;
 
 		auto clickedPiece = board->getPiece(chosenBlock);
+
 		// if no piece has been choosen yet
 		if (board->selected->getType() == Pieces::NIL) {
+			// cannot choose opponent's piece
+			if (board->currentPlayer != clickedPiece->getPlayer())
+				return;
 			//  choose this piece and highlight it
 			board->selected = clickedPiece;
 			// if the piece exists, highlight

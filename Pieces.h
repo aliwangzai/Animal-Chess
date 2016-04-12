@@ -25,6 +25,7 @@ protected:
     
 public:
     CREATE_FUNC(Pieces);
+	Pieces() {};
     virtual bool init();
     void bindSprite(Sprite* sprite);
     void setProperty(PointXY p, int play, TypePiece t);

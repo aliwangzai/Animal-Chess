@@ -45,7 +45,7 @@ bool Board::availableMove(Move move) {
 		bool allRiverBetweenFromAndTo = getTerrain({ cmpX,cmpY }) == Board::RIVER;
 		PointXY cmpPt = ptFrom;
 		for (int i = 1; allRiverBetweenFromAndTo&&cmpPt != ptTo; i++) {
-			cmpPt = PointXY{ cmpPt.x - i*signx,cmpPt.y - i*signy };
+			cmpPt = PointXY{ ptFrom.x - i*signx,ptFrom.y - i*signy };
 			allRiverBetweenFromAndTo &= (getTerrain(cmpPt) == Board::RIVER);
 			auto cmpPiece = getPiece(cmpPt);
 			// there if there is an animal that under river
@@ -56,6 +56,8 @@ bool Board::availableMove(Move move) {
 		if (cmpPt==ptTo) {
 			if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
 				return false;
+			} else {
+				return (pieceTypeFrom >= pieceTypeTo);
 			}
 		} else {
 			return false;
@@ -76,11 +78,15 @@ bool Board::availableMove(Move move) {
 	}
 
 	// check the river and land
-	if ((terrainTo == Board::RIVER && terrainFrom == Board::NIL)
-		|| (terrainTo == Board::NIL && terrainFrom == Board::RIVER)) {
+	if ((terrainTo == Board::RIVER && terrainFrom == Board::NIL) ||
+		(terrainTo == Board::NIL && terrainFrom == Board::RIVER)) {
 		if (pieceTypeTo != Pieces::NIL) {
 			return false;
 		}
+		if (pieceFrom->getType() == Pieces::RAT)
+			return true;
+		else
+			return false;
 	}
 
 	// set the priority to lowest if it is trapped
@@ -89,13 +95,13 @@ bool Board::availableMove(Move move) {
 	}
 
 	// check mouse and elephant
-	if (pieceTypeFrom == Pieces::RAT && terrainTo == Pieces::ELEPHANT)
+	if (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT)
 		return true;
-	if (pieceTypeFrom == Pieces::ELEPHANT && terrainTo == Pieces::RAT)
+	if (pieceTypeFrom == Pieces::ELEPHANT && pieceTypeTo == Pieces::RAT)
 		return false;
 
 	// return priority
-	return true;
+	return (pieceTypeFrom >= pieceTypeTo);
 }
 
 Pieces * Board::getPiece(PointXY pt)
@@ -138,6 +144,14 @@ Board::Board()
 		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
 	 currentPlayer = 0;
+}
+
+Board::~Board()
+{
+	if (nul_piece) {
+		delete nul_piece;
+		nul_piece = NULL;
+	}
 }
 
 void Board::initPieces(TMXTiledMap* map) {
@@ -338,7 +352,7 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(catPiece1);
 	allPieces.push_back(ratPiece1);
 
-	auto nul_piece = Pieces::create();
+	nul_piece = new Pieces();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
 	allPieces.push_back(nul_piece);
 	selected = nul_piece;

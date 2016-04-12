@@ -19,27 +19,28 @@
 
 using namespace std;
 
-class Board{
-    
+class Board {
+
 public:
-    enum TypeTerrain {NIL,DEN0,DEN1,TRAP,RIVER};
-    
+	enum TypeTerrain { NIL, DEN0, DEN1, TRAP, RIVER };
+
 	//0,1
 	int currentPlayer;
-    Pieces* selected;
-    bool availableMove(Move move);
+	Pieces* selected;
+	bool availableMove(Move move);
 	Pieces* getPiece(PointXY pt);
-    inline TypeTerrain getTerrain(PointXY pt){
-        return terrain[pt.x][pt.y];
-    }
+	inline TypeTerrain getTerrain(PointXY pt) {
+		return terrain[pt.x][pt.y];
+	}
 
 	void initPieces(TMXTiledMap* map);
 	void moveChess(Pieces* fromPiece, PointXY to, Pieces* toPiece);
 
 	vector<Pieces*> allPieces;
-    vector<vector<Pieces*>> boardPieces;
-    
+	vector<vector<Pieces*>> boardPieces;
+	Pieces* nul_piece;
 	Board();
+	~Board();
 private:
 	vector<vector<Board::TypeTerrain>> terrain;
 
