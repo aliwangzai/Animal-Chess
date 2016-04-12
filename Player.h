@@ -20,8 +20,8 @@ using namespace std;
 class Player{
 public:
     string name;
-    virtual Move genMove(const Board &board){};
-    vector<Move> possible_move;
-    vector<Pieces> available_piece;
+    virtual Move genMove(const Board &board);
+    virtual float eval( const Board &board);
+
 };
 #endif /* Player_h */
