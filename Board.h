@@ -36,8 +36,8 @@ public:
 	void initPieces(TMXTiledMap* map);
 	void moveChess(Pieces* fromPiece, PointXY to, Pieces* toPiece);
 
-	vector<Pieces*> BoardPiece;
-    Pieces* board[7][9];
+	vector<Pieces*> allPieces;
+    vector<vector<Pieces*>> boardPieces;
     
 	Board();
 private:

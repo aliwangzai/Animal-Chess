@@ -15,6 +15,9 @@ struct PointXY {
 	bool operator==(const PointXY &p) {
 		return (x == p.x && y == p.y);
 	}
+	bool operator!=(const PointXY &p) {
+		return (x != p.x || y != p.y);
+	}
 	PointXY(int _x,int _y):x(_x),y(_y){}
 	PointXY(){}
 };

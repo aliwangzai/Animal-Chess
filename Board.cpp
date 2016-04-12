@@ -33,40 +33,33 @@ bool Board::availableMove(Move move) {
 		return false;
 
 	// detect jumping over the river
-	bool isRiver = true;
 	int diffx = ptFrom.x - ptTo.x;
 	int diffy = ptFrom.y - ptTo.y;
-	int signx = (diffx == 0) ? 0 : (diffx>0 ? 1 : -1);
-	int signy = (diffy == 0) ? 0 : (diffy>0 ? 1 : -1);
-	int detectX = ptFrom.x;
-	int detectY = ptFrom.y;
-	int i = 1;
-	do {
-		detectX = detectX - signx * i;
-		detectY = detectY - signy * i;
-		if (ptTo.x == detectX && ptTo.y == detectY) {
-			break;
+	if (abs(diffx) + abs(diffy) > 1) {
+		// must move in a line, not diagonal line
+		if (diffx && diffy) return false;
+		int signx = (diffx == 0) ? 0 : (diffx > 0 ? 1 : -1);
+		int signy = (diffy == 0) ? 0 : (diffy > 0 ? 1 : -1);
+		int cmpX = ptFrom.x - signx*1;
+		int cmpY = ptFrom.y - signy*1;
+		bool allRiverBetweenFromAndTo = getTerrain({ cmpX,cmpY }) == Board::RIVER;
+		PointXY cmpPt = ptFrom;
+		for (int i = 1; allRiverBetweenFromAndTo&&cmpPt != ptTo; i++) {
+			cmpPt = PointXY{ cmpPt.x - i*signx,cmpPt.y - i*signy };
+			allRiverBetweenFromAndTo &= (getTerrain(cmpPt) == Board::RIVER);
+			auto cmpPiece = getPiece(cmpPt);
+			// there if there is an animal that under river
+			if (allRiverBetweenFromAndTo && cmpPiece->getType() != Pieces::NIL) {
+				return false;
+			}
 		}
-		PointXY cmpPoint;
-		cmpPoint.x = detectX;
-		cmpPoint.y = detectY;
-		isRiver &= (getTerrain(cmpPoint) == Board::RIVER);
-		auto cmpPiece = getPiece(cmpPoint);
-		// there if there is an animal that under river
-		if (isRiver && cmpPiece->getType() != Pieces::NIL) {
+		if (cmpPt==ptTo) {
+			if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
+				return false;
+			}
+		} else {
 			return false;
 		}
-		i++;
-	} while (isRiver);
-
-	if (!isRiver) {
-		return false;
-	}
-	if (terrainFrom == Board::RIVER || terrainFrom == Board::RIVER) {
-		return false;
-	}
-	if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
-		return false;
 	}
 
 	// detect if moving into den
@@ -107,38 +100,41 @@ bool Board::availableMove(Move move) {
 
 Pieces * Board::getPiece(PointXY pt)
 {
-	for (auto p : BoardPiece) {
-		if (p->getPositionBlock() == pt)
-			return p;
-	}
-	return BoardPiece.back();
+	return boardPieces[pt.x][pt.y];
 }
 
 
 void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
 
 	PointXY from = fromPiece->getPositionBlock();
+	/*
 	if ((to.x>from.x && fromPiece->getSprite()->isFlippedX()) ||
 		(to.x<from.x && !fromPiece->getSprite()->isFlippedX()))
 		fromPiece->changeDirection();
+	*/
 	fromPiece->setPositionBlock(to);
 	fromPiece->setPosition((to.x + 1) * 80 + 40, (7 - to.y) * 70 + 35);
+	boardPieces[from.x][from.y] = allPieces.back();
+	boardPieces[to.x][to.y] = fromPiece;
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 	}
+	currentPlayer = !currentPlayer;
 
 }
 
 Board::Board()
 {
 	 terrain = {
-		{ Board::NIL,Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::NIL },
-		{ Board::TRAP,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::TRAP },
-		{ Board::DEN0,Board::TRAP, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::TRAP, Board::DEN1 },
-		{ Board::TRAP,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::TRAP },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::NIL },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL }
+		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN0,Board::TRAP,Board::NIL,Board::NIL },
+		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
+		 { Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
+		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		 { Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
+		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
+		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
 }
 
@@ -323,27 +319,39 @@ void Board::initPieces(TMXTiledMap* map) {
 	map->addChild(catPiece2);
 	map->addChild(ratPiece2);
 
-	BoardPiece.push_back(elephantPiece1);
-	BoardPiece.push_back(lionPiece1);
-	BoardPiece.push_back(tigerPiece1);
-	BoardPiece.push_back(leopardPiece1);
-	BoardPiece.push_back(dogPiece1);
-	BoardPiece.push_back(wolfPiece1);
-	BoardPiece.push_back(catPiece1);
-	BoardPiece.push_back(ratPiece1);
-	BoardPiece.push_back(elephantPiece2);
-	BoardPiece.push_back(lionPiece2);
-	BoardPiece.push_back(tigerPiece2);
-	BoardPiece.push_back(leopardPiece2);
-	BoardPiece.push_back(dogPiece2);
-	BoardPiece.push_back(wolfPiece2);
-	BoardPiece.push_back(catPiece2);
-	BoardPiece.push_back(ratPiece2);
+	allPieces.push_back(elephantPiece1);
+	allPieces.push_back(lionPiece1);
+	allPieces.push_back(tigerPiece1);
+	allPieces.push_back(leopardPiece1);
+	allPieces.push_back(dogPiece1);
+	allPieces.push_back(wolfPiece1);
+	allPieces.push_back(catPiece1);
+	allPieces.push_back(ratPiece1);
+	allPieces.push_back(elephantPiece2);
+	allPieces.push_back(lionPiece2);
+	allPieces.push_back(tigerPiece2);
+	allPieces.push_back(leopardPiece2);
+	allPieces.push_back(dogPiece2);
+	allPieces.push_back(wolfPiece2);
+	allPieces.push_back(catPiece2);
+	allPieces.push_back(ratPiece2);
 
 	auto nul_piece = Pieces::create();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
-	BoardPiece.push_back(nul_piece);
+	allPieces.push_back(nul_piece);
 	selected = nul_piece;
+
+	boardPieces = {
+		{tigerPiece1,nul_piece,nul_piece, nul_piece, nul_piece, nul_piece, lionPiece1},
+		{ nul_piece, catPiece1,nul_piece, nul_piece, nul_piece, dogPiece1,nul_piece},
+		{elephantPiece1,nul_piece, wolfPiece1,nul_piece, leopardPiece1,nul_piece, ratPiece1},
+		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece},
+		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece },
+		{ nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, nul_piece },
+		{ratPiece2,nul_piece, leopardPiece2,nul_piece, wolfPiece2,nul_piece, elephantPiece2},
+		{ nul_piece, dogPiece2,nul_piece, nul_piece, nul_piece, catPiece2,nul_piece},
+		{lionPiece2,nul_piece, nul_piece, nul_piece, nul_piece, nul_piece, tigerPiece2}
+	};
 }
 
 
