@@ -22,38 +22,28 @@ using namespace std;
 class Board{
     
 public:
-    enum TypeTerrain {NIL,DEN,TRAP,RIVER};
+    enum TypeTerrain {NIL,DEN0,DEN1,TRAP,RIVER};
     
-    // 0,
-    int curPlayer;
-    int selected_index;
+	//0,1
+	int currentPlayer;
+    Pieces* selected;
     bool availableMove(Move move);
-    void move(Move move);
-    int getPiece(Point pt);
-    TypeTerrain getTerrain(Point pt){
-        return terrain[(int)pt.x][(int)pt.y];
+	Pieces* getPiece(PointXY pt);
+    inline TypeTerrain getTerrain(PointXY pt){
+        return terrain[pt.x][pt.y];
     }
 
 	void initPieces(TMXTiledMap* map);
+	void moveChess(Pieces* fromPiece, PointXY to, Pieces* toPiece);
+
 	vector<Pieces*> BoardPiece;
-	void moveChess(Pieces* fromPiece, Point to, Pieces* toPiece = nullptr);
-	bool moveable(Point from, Point to);
-
-	int currentPlayer;
+    Pieces* board[7][9];
     
+	Board();
 private:
-    Pieces board[9][7];
-    static const Board::TypeTerrain terrain[9][7];
+	vector<vector<Board::TypeTerrain>> terrain;
+
 };
 
-Board::TypeTerrain terrain[9][7]  = {
-    {Board::NIL,Board::NIL,Board::TRAP,Board::DEN,Board::TRAP,Board::NIL,Board::NIL},
-    {Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL},
-    {Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL},
-    {Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL},
-    {Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL},
-    {Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL},
-    {Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL},
-    {Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL},
-    {Board::NIL,Board::NIL,Board::TRAP,Board::DEN,Board::TRAP,Board::NIL,Board::NIL}
-};
+
+

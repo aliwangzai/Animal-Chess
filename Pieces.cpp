@@ -9,13 +9,13 @@
 #include "Pieces.h"
 
 
-void Pieces::setProperty(Point p, int play, TypePiece t){
+void Pieces::setProperty(PointXY p, int play, TypePiece t){
      pos= p;
      player = play;
      type = t;
 }
 
-Point Pieces::getPositionBlock(){
+PointXY Pieces::getPositionBlock(){
     return pos;
 }
 Pieces::TypePiece Pieces::getType(){
@@ -48,7 +48,7 @@ void Pieces::changeDirection(){
        m_sprite->setFlippedX(true);
 
 }
-void Pieces::setPositionBlock(Point p){
+void Pieces::setPositionBlock(PointXY p){
     pos = p;
 }
 Sprite* Pieces::getSprite(){

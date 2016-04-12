@@ -9,9 +9,19 @@
 #ifndef Move_h
 #define Move_h
 
+struct PointXY {
+	char x;
+	char y;
+	bool operator==(const PointXY &p) {
+		return (x == p.x && y == p.y);
+	}
+	PointXY(int _x,int _y):x(_x),y(_y){}
+	PointXY(){}
+};
+
 struct Move{
-    mPoint from;
-    mPoint to;
+    PointXY from;
+    PointXY to;
 };
 
 #endif /* Move_h */

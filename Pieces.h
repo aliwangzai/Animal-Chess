@@ -10,13 +10,14 @@
 #define Pieces_h
 #include "cocos2d.h"
 #include <iostream>
+#include "Move.h"
 
 USING_NS_CC;
 class Pieces : public Node{
 public:
     enum TypePiece {NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT};
 private:
-    Point pos; //列，行
+	PointXY pos; //列，行
     int player;
     TypePiece type;
 protected:
@@ -26,10 +27,10 @@ public:
     CREATE_FUNC(Pieces);
     virtual bool init();
     void bindSprite(Sprite* sprite);
-    void setProperty(Point p, int play, TypePiece t);
+    void setProperty(PointXY p, int play, TypePiece t);
     TypePiece getType();
-    Point getPositionBlock();
-    void setPositionBlock(Point p);
+	PointXY getPositionBlock();
+    void setPositionBlock(PointXY p);
     Sprite* getSprite();
     int getPlayer();
     void highlight();

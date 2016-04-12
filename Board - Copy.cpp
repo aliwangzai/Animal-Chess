@@ -11,98 +11,98 @@
 
 using namespace cocos2d;
 
-bool Board::availableMove(Move move) {
-	PointXY ptFrom = move.from;
-	PointXY ptTo = move.to;
-
+bool Board::availableMove(Move move){
+    PointXY ptFrom 	    = move.from;
+	PointXY ptTo 			= move.to;
+    
 
 	auto pieceFrom = getPiece(ptFrom);
 	auto pieceTo = getPiece(ptTo);
+    
+    Pieces::TypePiece pieceTypeFrom	= pieceFrom->getType();
+    Pieces::TypePiece pieceTypeTo	= pieceTo->getType();
+	Board::TypeTerrain terrainFrom = getTerrain(ptFrom);
+	Board::TypeTerrain terrainTo = getTerrain(ptTo);
 
-	Pieces::TypePiece pieceTypeFrom = pieceFrom->getType();
-	Pieces::TypePiece pieceTypeTo = pieceTo->getType();
-	auto terrainFrom = getTerrain(ptFrom);
-	auto terrainTo = getTerrain(ptTo);
-
-	if (pieceTypeFrom == Pieces::NIL) {
-		return false;
-	}
-
+    if(pieceTypeFrom == Pieces::NIL){
+        return false;
+    }
+    
 	// check if two piece are belong to one player
 	if (pieceFrom->getPlayer() == pieceTo->getPlayer())
 		return false;
 
-	// detect jumping over the river
-	bool isRiver = true;
-	int diffx = ptFrom.x - ptTo.x;
-	int diffy = ptFrom.y - ptTo.y;
-	int signx = (diffx == 0) ? 0 : (diffx>0 ? 1 : -1);
-	int signy = (diffy == 0) ? 0 : (diffy>0 ? 1 : -1);
-	int detectX = ptFrom.x;
-	int detectY = ptFrom.y;
-	int i = 1;
-	do {
-		detectX = detectX - signx * i;
-		detectY = detectY - signy * i;
-		if (ptTo.x == detectX && ptTo.y == detectY) {
-			break;
-		}
-		PointXY cmpPoint;
+    // detect jumping over the river
+    bool isRiver = true;
+    int diffx = ptFrom.x	- ptTo.x;
+    int diffy = ptFrom.y	- ptTo.y;
+    int signx = (diffx==0)?0:(diffx>0?1:-1);
+    int signy = (diffy==0)?0:(diffy>0?1:-1);
+    int detectX = ptFrom.x;
+    int detectY = ptFrom.y;
+    int i=1;
+    do{
+        detectX = detectX - signx * i;
+        detectY = detectY - signy * i;
+        if( ptTo.x == detectX && ptTo.y == detectY){
+            break;
+        }
+        PointXY cmpPoint;
 		cmpPoint.x = detectX;
 		cmpPoint.y = detectY;
-		isRiver &= (getTerrain(cmpPoint) == Board::RIVER);
+        isRiver &= (getTerrain(cmpPoint) == RIVER);
 		auto cmpPiece = getPiece(cmpPoint);
-		// there if there is an animal that under river
-		if (isRiver && cmpPiece->getType() != Pieces::NIL) {
-			return false;
-		}
-		i++;
-	} while (isRiver);
+        // there if there is an animal that under river
+        if( isRiver && cmpPiece->getType() != Pieces::NIL ){
+            return false;
+        }
+        i++;
+    }while(isRiver);
+    
+    if(!isRiver){
+        return false;
+    }
+    if(terrainFrom == RIVER || terrainFrom == RIVER){
+        return false;
+    }
+    if( !(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER) ){
+        return false;
+    }
+    
+    // detect if moving into den
+    if(currentPlayer == 0 && terrainTo == Board::DEN0){
+        return false;
+    }
+    if(currentPlayer == 1 && terrainTo == Board::DEN1){
+        return false;
+    }
 
-	if (!isRiver) {
-		return false;
-	}
-	if (terrainFrom == Board::RIVER || terrainFrom == Board::RIVER) {
-		return false;
-	}
-	if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
-		return false;
-	}
-
-	// detect if moving into den
-	if (currentPlayer == 0 && terrainTo == Board::DEN0) {
-		return false;
-	}
-	if (currentPlayer == 1 && terrainTo == Board::DEN1) {
-		return false;
-	}
-
-	// check if the moving distance is 1
-	if (abs(ptTo.x - ptFrom.x) + abs(ptTo.y - ptFrom.y) != 1) {
-		return false;
-	}
-
-	// check the river and land
-	if ((terrainTo == Board::RIVER && terrainFrom == Board::NIL)
-		|| (terrainTo == Board::NIL && terrainFrom == Board::RIVER)) {
-		if (pieceTypeTo != Pieces::NIL) {
-			return false;
-		}
-	}
-
-	// set the priority to lowest if it is trapped
-	if (terrainTo == Board::TRAP) {
-		pieceTypeTo = Pieces::NIL;
-	}
-
-	// check mouse and elephant
-	if (pieceTypeFrom == Pieces::RAT && terrainTo == Pieces::ELEPHANT)
-		return true;
-	if (pieceTypeFrom == Pieces::ELEPHANT && terrainTo == Pieces::RAT)
-		return false;
-
-	// return priority
-	return true;
+    // check if the moving distance is 1
+    if( abs(ptTo.x-ptFrom.x) + abs(ptTo.y-ptFrom.y) != 1 ){
+        return false;
+    }
+    
+    // check the river and land
+    if( (terrainTo == TypeTerrain::RIVER && terrainFrom == TypeTerrain::NIL)
+       || (terrainTo == TypeTerrain::NIL && terrainFrom == TypeTerrain::RIVER) ){
+        if( pieceTypeTo != Pieces::NIL ){
+            return false;
+        }
+    }
+    
+    // set the priority to lowest if it is trapped
+    if(terrainTo == Board::TRAP){
+        pieceTypeTo = Pieces::NIL;
+    }
+    
+    // check mouse and elephant
+    if( pieceTypeFrom == Pieces::RAT && terrainTo == Pieces::ELEPHANT)
+        return true;
+    if(pieceTypeFrom == Pieces::ELEPHANT && terrainTo == Pieces::RAT)
+        return false;
+    
+    // return priority
+    return (pieceTypeFrom > terrainTo);
 }
 
 Pieces * Board::getPiece(PointXY pt)
@@ -116,7 +116,7 @@ Pieces * Board::getPiece(PointXY pt)
 
 
 void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
-
+	
 	PointXY from = fromPiece->getPositionBlock();
 	if ((to.x>from.x && fromPiece->getSprite()->isFlippedX()) ||
 		(to.x<from.x && !fromPiece->getSprite()->isFlippedX()))
@@ -126,20 +126,7 @@ void Board::moveChess(Pieces *fromPiece, PointXY to, Pieces* toPiece) {
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 	}
-
-}
-
-Board::Board()
-{
-	 terrain = {
-		{ Board::NIL,Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::NIL },
-		{ Board::TRAP,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::TRAP },
-		{ Board::DEN0,Board::TRAP, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::TRAP, Board::DEN1 },
-		{ Board::TRAP,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::TRAP },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::RIVER,Board::RIVER,Board::RIVER,Board::NIL,Board::NIL, Board::NIL },
-		{ Board::NIL,Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL, Board::NIL }
-	};
+	
 }
 
 void Board::initPieces(TMXTiledMap* map) {
@@ -343,7 +330,6 @@ void Board::initPieces(TMXTiledMap* map) {
 	auto nul_piece = Pieces::create();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
 	BoardPiece.push_back(nul_piece);
-	selected = nul_piece;
 }
 
 

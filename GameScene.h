@@ -13,7 +13,8 @@
 #include "cocos-ext.h"
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
-#include "Pieces.h"
+
+#include "Board.h"
 
 USING_NS_CC;
 
@@ -22,7 +23,7 @@ public:
     static Scene* createScene();
     virtual bool init();
     CREATE_FUNC(GameScene);
-	bool init();
+	Board* board;
 };
 
 #endif /* GameScene_h */

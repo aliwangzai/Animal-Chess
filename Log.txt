@@ -1,0 +1,8 @@
+4.12
+转移了GameScene的一些函数到Board里。
+
+1. 实现Piece* getPiece(Point&)
+   点击一个位置，获取Piece* selected，如果点的是空地，则获取的应该是一个‘特殊的’Piece，其type应为PieceType::NIL。
+TODO:
+2. Rewrite moveChess function
+3. 
