@@ -1,8 +1,12 @@
 4.12
 转移了GameScene的一些函数到Board里。
 
+TODO：
 1. 实现Piece* getPiece(Point&)
    点击一个位置，获取Piece* selected，如果点的是空地，则获取的应该是一个‘特殊的’Piece，其type应为PieceType::NIL。
-TODO:
-2. Rewrite moveChess function
-3. 
+   Board里应该通过[7][9]的二维数组保存每个棋子的位置，这样只要知道点击的坐标，就可以直接获取所选棋子。不需要重新遍历一遍。
+2. availableMove（）应该更加精简
+3. 不能运行的原因是因为我写的坐标x是向下扩展，y向右扩展（和C++语言一致）， 熊阳写的坐标x向右扩展，y向下扩展。
+4. MoveChess函数也需要再debug。
+by Wenliang Liu
+
