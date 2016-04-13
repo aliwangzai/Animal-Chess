@@ -17,26 +17,29 @@ class Pieces : public Node{
 public:
     enum TypePiece {NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT};
 private:
-	PointXY pos; //列，行
+    PointXY pos; //列，行
     int player;
     TypePiece type;
+    float chessPower;
 protected:
     Sprite* m_sprite;
     
 public:
     CREATE_FUNC(Pieces);
-	Pieces() {};
+    Pieces() {};
     virtual bool init();
     void bindSprite(Sprite* sprite);
     void setProperty(PointXY p, int play, TypePiece t);
     TypePiece getType();
-	PointXY getPositionBlock();
+    PointXY getPositionBlock();
     void setPositionBlock(PointXY p);
     Sprite* getSprite();
     int getPlayer();
     void highlight();
-    void changeDirection();
     void recover();
+    int getDistanceToEnemyBase();
+    void setChessPower();
+    float getChessPower();
     
 };
 #endif /* Pieces_h */

@@ -22,6 +22,6 @@ public:
     string name;
     virtual Move genMove(const Board &board);
     virtual float eval( const Board &board);
-
+    
 };
 #endif /* Player_h */
