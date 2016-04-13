@@ -10,11 +10,12 @@
 #define Board_h
 
 
-#endif /* Board_h */
+
 
 #include "Pieces.h"
 #include <vector>
 #include "Move.h"
+//#include "GameScene.h"
 
 
 using namespace std;
@@ -44,6 +45,6 @@ public:
 private:
 	vector<vector<Board::TypeTerrain>> terrain;
 };
-
+#endif /* Board_h */
 
 

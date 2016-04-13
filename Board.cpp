@@ -122,7 +122,7 @@ void Board::moveChess(Pieces *fromPiece, PointXY to) {
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 	}
-	currentPlayer = !currentPlayer;
+    currentPlayer = !currentPlayer;
 	selected->recover();
 	selected = nul_piece;
 }

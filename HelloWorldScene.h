@@ -6,6 +6,9 @@
 #include "ui/CocosGUI.h"
 #include "cocos-ext.h"
 #include "SimpleAudioEngine.h"
+#include "PopUpLayer.h"
+#include "GameScene.h"
+#include "LevelSelectLayer.h"
 class HelloWorld : public cocos2d::Layer
 {
 public:

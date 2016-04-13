@@ -1,6 +1,5 @@
 #include "HelloWorldScene.h"
-#include "PopUpLayer.h"
-#include "GameScene.h"
+
 USING_NS_CC;
 
 using namespace cocostudio::timeline;
@@ -78,9 +77,8 @@ void HelloWorld::onExitClick(Ref* pSender,TouchEventType type){
 void HelloWorld::onStartClick(Ref *psender,TouchEventType type){
     switch (type) {
         case TOUCH_EVENT_ENDED:{
-            Scene* newGame = GameScene::createScene();
-            auto transition = TransitionCrossFade::create(0.5f, newGame);
-            Director::getInstance()->replaceScene(transition);
+            LevelSelectLayer* selectLayer = LevelSelectLayer::createSelect();
+            this->addChild(selectLayer);
             break;
         }
         default:

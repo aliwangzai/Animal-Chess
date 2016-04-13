@@ -13,6 +13,7 @@
 #include "cocos-ext.h"
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
+#include "HelloWorldScene.h"
 
 #include "Board.h"
 
@@ -23,7 +24,13 @@ public:
     static Scene* createScene();
     virtual bool init();
     CREATE_FUNC(GameScene);
-	Board* board;
+    Board* board;
+    void gameOverProcess(int winner);
+    void menuRestartCallback(cocos2d::Ref* pSender);
+    void menuBackToMainCallback(cocos2d::Ref* pSender);
+
+
+    
 };
 
 #endif /* GameScene_h */
