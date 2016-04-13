@@ -129,9 +129,9 @@ void Board::moveChess(Pieces *fromPiece, PointXY to) {
 
 int Board::getWinner()
 {
-	if (boardPieces[3][0]->getType() != Pieces::NIL)
+	if (boardPieces[0][3]->getType() != Pieces::NIL)
 		return 1;
-	else if (boardPieces[3][8]->getType() != Pieces::NIL)
+	else if (boardPieces[8][3]->getType() != Pieces::NIL)
 		return 0;
 	else return -1;
 }
