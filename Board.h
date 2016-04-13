@@ -36,6 +36,8 @@ public:
 
 	void initPieces(TMXTiledMap* map);
 	void moveChess(Pieces* fromPiece, PointXY to);
+	// -1 if no winner, else return player
+	int getWinner();
 
 	vector<Pieces*> allPieces;
 	vector<vector<Pieces*>> boardPieces;

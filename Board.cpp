@@ -127,6 +127,15 @@ void Board::moveChess(Pieces *fromPiece, PointXY to) {
 	selected = nul_piece;
 }
 
+int Board::getWinner()
+{
+	if (boardPieces[3][0]->getType() != Pieces::NIL)
+		return 1;
+	else if (boardPieces[3][8]->getType() != Pieces::NIL)
+		return 0;
+	else return -1;
+}
+
 Board::Board()
 {
 	 terrain = {
