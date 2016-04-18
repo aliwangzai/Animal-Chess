@@ -43,7 +43,7 @@ public:
 	vector<vector<Pieces*>> boardPieces;
 	Pieces* nul_piece;
     
-	inline bool hasPiece(int TAG);
+	inline bool hasPiece(int Type, int player);
     bool hasElephant1,hasElephant2;
     
 	Board();

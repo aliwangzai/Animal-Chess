@@ -145,9 +145,9 @@ int Board::getWinner()
 }
 
 
-inline bool Board::hasPiece(int TAG)
+inline bool Board::hasPiece(int Type, int player)
 {
-	return (allPieces[TAG]->getPositionBlock() == PointXY{-1, -1});
+	return (allPieces[Type*2 + player]->getPositionBlock() == PointXY{-1, -1});
 }
 
 Board::Board()
