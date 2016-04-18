@@ -6,7 +6,7 @@
 class AI_Min_Max : public Player{
 public:
 	Move genMove(const Board &board);
-	float eval( const Board &board);
+	virtual float eval( const Board &board);
 
 	Board board;
 
