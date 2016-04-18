@@ -26,7 +26,7 @@ float Player::eval(Board& board){
             if(tempPiece->getType()!=Pieces::TypePiece::NIL){//循环扫到一个棋子
                 if(tempPiece->getPlayer()==0){//扫到的是玩家1的棋子
                     //计算子力
-                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasElephant2 == true)
+                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece(Pieces::ELEPHANT,1))
                         sumPower1 = sumPower1 + 500;
                     else
                         sumPower1 = sumPower1 + tempPiece->getChessPowerValue();
@@ -44,7 +44,7 @@ float Player::eval(Board& board){
                 }
                 else{//扫到的为玩家2的棋子
                     //计算子力
-                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasElephant1 == true)
+                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece(Pieces::ELEPHANT, 0))
                         sumPower2 = sumPower2 + 500;
                     else
                         sumPower2 = sumPower2 + tempPiece->getChessPowerValue();

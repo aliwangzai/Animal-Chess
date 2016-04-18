@@ -109,17 +109,17 @@ bool Board::availableMove(Move move) {
 	return (pieceTypeFrom >= pieceTypeTo);
 }
 
-Pieces * Board::getPiece(PointXY pt)
+inline Pieces * Board::getPiece(PointXY pt)
 {
 	return boardPieces[pt.x][pt.y];
 }
 
 
-void Board::moveChess(Move move) {
+void Board::moveChess(Move& move) {
 
 	auto fromPiece = getPiece(move.from);
 	auto to = move.to;
-	PointXY from = fromPiece->getPositionBlock();
+	auto from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
 	fromPiece->setPositionBlock(to);
 	fromPiece->setPosition((to.x + 1) * 80 + 40, (7 - to.y) * 70 + 35);
@@ -129,6 +129,9 @@ void Board::moveChess(Move move) {
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
 		toPiece->setPosition({ -1,-1 });
+		move.eatinfo = new EatInfo;
+		move.eatinfo->indexInAllPieces = getIndex(toPiece->getType(), toPiece->getPlayer());
+		move.eatinfo->pos = to;
 	}
     currentPlayer = !currentPlayer;
 	selected->recover();
@@ -145,9 +148,9 @@ int Board::getWinner()
 }
 
 
-inline bool Board::hasPiece(Pieces::TypePiece Type, int player)
+bool Board::hasPiece(Pieces::TypePiece type, int player)
 {
-	return (allPieces[Type*2 + player]->getPositionBlock() == PointXY{-1, -1});
+	return (allPieces[getIndex(type,player)]->getPositionBlock() == PointXY{-1, -1});
 }
 
 Board::Board()
@@ -172,6 +175,11 @@ Board::~Board()
 		delete nul_piece;
 		nul_piece = NULL;
 	}
+}
+
+inline int Board::getIndex(Pieces::TypePiece type, int player)
+{
+	return type * 2 + player;
 }
 
 void Board::initPieces(TMXTiledMap* map) {
@@ -380,9 +388,7 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(elephantPiece0);
 	allPieces.push_back(elephantPiece1);
 
-    
-    hasElephant1 = true;
-    hasElephant2 = true;
+   
 
 
 

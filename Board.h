@@ -34,8 +34,10 @@ public:
 		return terrain[pt.x][pt.y];
 	}
 
+	int getIndex(Pieces::TypePiece type, int player);
+
 	void initPieces(TMXTiledMap* map);
-	void moveChess(Move move);
+	void moveChess(Move &move);
 	// -1 if no winner, else return player
 	int getWinner();
 
@@ -43,8 +45,7 @@ public:
 	vector<vector<Pieces*>> boardPieces;
 	Pieces* nul_piece;
     
-	inline bool hasPiece(Pieces::TypePiece Type, int player);
-    bool hasElephant1,hasElephant2;
+	bool hasPiece(Pieces::TypePiece type, int player);
     
 	Board();
 	~Board();

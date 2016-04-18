@@ -5,12 +5,10 @@
 
 class AI_Min_Max : public Player{
 public:
-	Move genMove(const Board &board);
-	virtual float eval( const Board &board);
-
+	//vector<Move> genMove(const Board &board);
+	virtual float eval(const Board &board) { return 0.0; };
+	float AlphaBeta(int depth, int alpha, int beta);
 	Board board;
 
-	AI_Min_Max(const Board& board){
-		this->board = board;
-	}
+	AI_Min_Max(const Board& board);
 };

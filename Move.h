@@ -9,6 +9,9 @@
 #ifndef Move_h
 #define Move_h
 
+
+
+
 struct PointXY {
 	char x;
 	char y;
@@ -22,9 +25,24 @@ struct PointXY {
 	PointXY(){}
 };
 
-struct Move{
+
+struct EatInfo {
+	// in allPieces
+	int indexInAllPieces;
+	PointXY pos;
+};
+
+
+
+class Move{
+public:
     PointXY from;
     PointXY to;
+	EatInfo *eatinfo;
+
+	Move();
+	Move(PointXY f, PointXY t);
+	~Move();
 };
 
 #endif /* Move_h */
