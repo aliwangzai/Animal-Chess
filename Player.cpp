@@ -26,7 +26,7 @@ float Player::eval(Board& board){
             if(tempPiece->getType()!=Pieces::TypePiece::NIL){//循环扫到一个棋子
                 if(tempPiece->getPlayer()==0){//扫到的是玩家1的棋子
                     //计算子力
-                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasElephant2 == true)
+                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece(Pieces::TypePiece::ELEPHANT, 1))
                         sumPower1 = sumPower1 + 500;
                     else
                         sumPower1 = sumPower1 + tempPiece->getChessPowerValue();
@@ -44,7 +44,7 @@ float Player::eval(Board& board){
                 }
                 else{//扫到的为玩家2的棋子
                     //计算子力
-                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasElephant1 == true)
+                    if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece (Pieces::TypePiece::ELEPHANT,0))
                         sumPower2 = sumPower2 + 500;
                     else
                         sumPower2 = sumPower2 + tempPiece->getChessPowerValue();
@@ -77,77 +77,73 @@ vector<Move> Player::potentialMoves(Board &board, Pieces * fromPiece){
     potentialMove.from = fromXY;
     
     if(fromPiece->getType() == Pieces::TypePiece::LION || fromPiece->getType() == Pieces::TypePiece::TIGER){
-        if(board.getTerrain(PointXY (fromXY.x+1,fromXY.y))==Board::TypeTerrain::RIVER){
+        if(board.getTerrain(PointXY (fromXY.x+1,fromXY.y))==Board::TypeTerrain::RIVER){//右边有河
             potentialMove.to = PointXY(fromXY.x+4,fromXY.y);
-            if(fromXY.x+1<=8 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x-1,fromXY.y);
-            if(fromXY.x-1>=0 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y+1);
-            if(fromXY.y+1<=6 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y-1);
-            if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
         }
-        else if(board.getTerrain(PointXY (fromXY.x-1,fromXY.y))==Board::TypeTerrain::RIVER){
+        else if(board.getTerrain(PointXY (fromXY.x-1,fromXY.y))==Board::TypeTerrain::RIVER){//左边有河
             potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
-            if(fromXY.x+1<=8 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x-4,fromXY.y);
-            if(fromXY.x-1>=0 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y+1);
-            if(fromXY.y+1<=6 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y-1);
-            if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
         }
-        else if(fromXY.y == 0 && board.getTerrain(PointXY (fromXY.x,fromXY.y+1))==Board::TypeTerrain::RIVER){
+        else if(fromXY.y == 0 && board.getTerrain(PointXY (fromXY.x,fromXY.y+1))==Board::TypeTerrain::RIVER){//下面有河
             potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
-            if(fromXY.x+1<=8 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x-1,fromXY.y);
-            if(fromXY.x-1>=0 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y+3);
-            if(fromXY.y+1<=6 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
-            potentialMove.to = PointXY(fromXY.x,fromXY.y-1);
-            if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
-                potentialMoves.push_back(potentialMove);
+            //已经在上边缘不用考虑向上走
         }
-        else if(fromXY.y == 6 && board.getTerrain(PointXY (fromXY.x,fromXY.y-1))==Board::TypeTerrain::RIVER){
+        else if(fromXY.y == 6 && board.getTerrain(PointXY (fromXY.x,fromXY.y-1))==Board::TypeTerrain::RIVER){//上面有河
             potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
-            if(fromXY.x+1<=8 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x-1,fromXY.y);
-            if(fromXY.x-1>=0 && board.availableMove(potentialMove))
-                potentialMoves.push_back(potentialMove);
-            potentialMove.to = PointXY(fromXY.x,fromXY.y+1);
-            if(fromXY.y+1<=6 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y-3);
-            if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
+            //已经在下边缘不用考虑向下走
         }
-        else if(fromXY.y == 3 && board.getTerrain(PointXY (fromXY.x,fromXY.y-1))==Board::TypeTerrain::RIVER && board.getTerrain(PointXY (fromXY.x,fromXY.y+1))==Board::TypeTerrain::RIVER){
+        else if(fromXY.y == 3 && board.getTerrain(PointXY (fromXY.x,fromXY.y-1))==Board::TypeTerrain::RIVER && board.getTerrain(PointXY (fromXY.x,fromXY.y+1))==Board::TypeTerrain::RIVER){//在河之间
             potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
-            if(fromXY.x+1<=8 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x-1,fromXY.y);
-            if(fromXY.x-1>=0 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y+3);
-            if(fromXY.y+1<=6 && board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
             potentialMove.to = PointXY(fromXY.x,fromXY.y-3);
-            if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
+            if(board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
         }
-        else{
+        else{//不挨着河
             potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
             if(fromXY.x+1<=8 && board.availableMove(potentialMove))
                 potentialMoves.push_back(potentialMove);
@@ -162,7 +158,7 @@ vector<Move> Player::potentialMoves(Board &board, Pieces * fromPiece){
                 potentialMoves.push_back(potentialMove);
         }
     }
-    else{
+    else{//其他动物
         potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
         if(fromXY.x+1<=8 && board.availableMove(potentialMove))
             potentialMoves.push_back(potentialMove);
