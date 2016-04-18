@@ -21,7 +21,8 @@ class Player{
 public:
     string name;
     virtual Move genMove(const Board &board);
-    virtual float eval( const Board &board);
+    virtual float eval(Board &board);
+    vector<Move> potentialMoves(Board &board, Pieces * fromPiece);
     
 };
 #endif /* Player_h */

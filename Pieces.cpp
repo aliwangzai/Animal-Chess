@@ -13,7 +13,7 @@ void Pieces::setProperty(PointXY p, int play, TypePiece t){
     pos= p;
     player = play;
     type = t;
-    setChessPower();
+    setChessPowerValue();
 }
 
 PointXY Pieces::getPositionBlock(){
@@ -58,31 +58,73 @@ int Pieces::getDistanceToEnemyBase(){
         return abs(0-p.x)+abs(3-p.y);
     }
 }
-void Pieces::setChessPower(){
+float Pieces::getDistanceValue(int dis){
+    switch (dis) {
+        case 11:
+            return 10;
+            break;
+        case 10:
+            return 20;
+            break;
+        case 9:
+            return 30;
+            break;
+        case 8:
+            return 40;
+            break;
+        case 7:
+            return 50;
+            break;
+        case 6:
+            return 70;
+            break;
+        case 5:
+            return 100;
+            break;
+        case 4:
+            return 200;
+            break;
+        case 3:
+            return 500;
+            break;
+        case 2:
+            return 1000;
+            break;
+        case 1:
+            return 5000;
+            break;
+        default:
+            return 10000;
+            break;
+    }
+    
+    
+}
+void Pieces::setChessPowerValue(){
     switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
         case RAT:
-            chessPower = 1;
+            chessPower = 100;
             break;
         case CAT:
-            chessPower = 2;
+            chessPower = 200;
             break;
         case WOLF:
-            chessPower = 3;
+            chessPower = 300;
             break;
         case DOG:
-            chessPower = 4;
+            chessPower = 400;
             break;
         case LEOPARD:
-            chessPower = 5;
+            chessPower = 500;
             break;
         case TIGER:
-            chessPower = 6;
+            chessPower = 600;
             break;
         case LION:
-            chessPower = 7;
+            chessPower = 800;
             break;
         case ELEPHANT:
-            chessPower = 8;
+            chessPower = 1000;
             break;
         default:
             chessPower = 0;
@@ -90,7 +132,7 @@ void Pieces::setChessPower(){
     }
     
 }
-float Pieces::getChessPower(){
+float Pieces::getChessPowerValue(){
     return chessPower;
 }
 

@@ -61,14 +61,11 @@ bool GameScene::init(){
 			PointXY from = board->selected->getPositionBlock();
 			if (board->availableMove(Move{ from,chosenBlock })) {
 				board->moveChess(board->selected, chosenBlock);
-                if (board->getTerrain(chosenBlock) == Board::DEN0 || board->getTerrain(chosenBlock) == Board::DEN1){
-                    if(board->selected->getPlayer() == 0)
-                       gameOverProcess(0);
-                    else
-                       gameOverProcess(1);
-                }
-                    //GameScene::gameOver=true;
-
+				// 我把游戏结束判断封装到了一个函数因为AI也需要有用到__lwl
+				if (int winner = board->getWinner() != -1) {
+					gameOverProcess(winner);
+				}
+                //GameScene::gameOver=true;
 			} else {
 				//reset
 				board->selected->recover();

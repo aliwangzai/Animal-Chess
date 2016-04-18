@@ -37,9 +37,11 @@ public:
     int getPlayer();
     void highlight();
     void recover();
+    
     int getDistanceToEnemyBase();
-    void setChessPower();
-    float getChessPower();
+    float getDistanceValue(int dis);
+    void setChessPowerValue();
+    float getChessPowerValue();
     
 };
 #endif /* Pieces_h */

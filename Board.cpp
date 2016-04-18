@@ -95,8 +95,13 @@ bool Board::availableMove(Move move) {
 	}
 
 	// check mouse and elephant
-	if (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT)
+    if (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT){
+        //if(pieceFrom->getPlayer()==0)
+            //hasElephant2 = false;
+        //if(pieceFrom->getPlayer()==1)
+            //hasElephant1 = false;
 		return true;
+    }
 	if (pieceTypeFrom == Pieces::ELEPHANT && pieceTypeTo == Pieces::RAT)
 		return false;
 
@@ -125,6 +130,15 @@ void Board::moveChess(Pieces *fromPiece, PointXY to) {
     currentPlayer = !currentPlayer;
 	selected->recover();
 	selected = nul_piece;
+}
+
+int Board::getWinner()
+{
+	if (boardPieces[0][3]->getType() != Pieces::NIL)
+		return 1;
+	else if (boardPieces[8][3]->getType() != Pieces::NIL)
+		return 0;
+	else return -1;
 }
 
 Board::Board()
@@ -348,6 +362,9 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(wolfPiece1);
 	allPieces.push_back(catPiece1);
 	allPieces.push_back(ratPiece1);
+    
+    hasElephant1 = true;
+    hasElephant2 = true;
 
 	nul_piece = new Pieces();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
