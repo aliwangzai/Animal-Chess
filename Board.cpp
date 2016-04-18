@@ -115,8 +115,10 @@ Pieces * Board::getPiece(PointXY pt)
 }
 
 
-void Board::moveChess(Pieces *fromPiece, PointXY to) {
+void Board::moveChess(Move move) {
 
+	auto fromPiece = getPiece(move.from);
+	auto to = move.to;
 	PointXY from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
 	fromPiece->setPositionBlock(to);

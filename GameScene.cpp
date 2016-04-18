@@ -60,7 +60,8 @@ bool GameScene::init(){
 		} else {
 			PointXY from = board->selected->getPositionBlock();
 			if (board->availableMove(Move{ from,chosenBlock })) {
-				board->moveChess(board->selected, chosenBlock);
+				Move move = { board->selected->getPositionBlock(),chosenBlock };
+				board->moveChess(move);
 				// 我把游戏结束判断封装到了一个函数因为AI也需要有用到__lwl
 				if (int winner = board->getWinner() != -1) {
 					gameOverProcess(winner);
@@ -74,7 +75,6 @@ bool GameScene::init(){
 		}
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-  
     return true;
 }
 void GameScene::gameOverProcess(int winner){
