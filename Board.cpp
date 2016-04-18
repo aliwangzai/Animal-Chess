@@ -128,6 +128,7 @@ void Board::moveChess(Move move) {
 	//eat
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
+		toPiece->setPosition({ -1,-1 });
 	}
     currentPlayer = !currentPlayer;
 	selected->recover();
@@ -141,6 +142,12 @@ int Board::getWinner()
 	else if (boardPieces[8][3]->getType() != Pieces::NIL)
 		return 0;
 	else return -1;
+}
+
+
+inline bool Board::hasPiece(int TAG)
+{
+	return (allPieces[TAG]->getPositionBlock() == PointXY{-1, -1});
 }
 
 Board::Board()
@@ -330,7 +337,6 @@ void Board::initPieces(TMXTiledMap* map) {
 	ratPiece1->setPosition(Point(x, y));
 	ratPiece1->setProperty(PointXY((int)x / 80 - 1, 7 - (int)y / 70), 1, Pieces::RAT);
 
-
 	map->addChild(elephantPiece0);
 	map->addChild(lionPiece0);
 	map->addChild(tigerPiece0);
@@ -348,30 +354,37 @@ void Board::initPieces(TMXTiledMap* map) {
 	map->addChild(catPiece1);
 	map->addChild(ratPiece1);
 
-	allPieces.push_back(elephantPiece0);
-	allPieces.push_back(lionPiece0);
-	allPieces.push_back(tigerPiece0);
-	allPieces.push_back(leopardPiece0);
-	allPieces.push_back(dogPiece0);
-	allPieces.push_back(wolfPiece0);
-	allPieces.push_back(catPiece0);
-	allPieces.push_back(ratPiece0);
-	allPieces.push_back(elephantPiece1);
-	allPieces.push_back(lionPiece1);
-	allPieces.push_back(tigerPiece1);
-	allPieces.push_back(leopardPiece1);
-	allPieces.push_back(dogPiece1);
-	allPieces.push_back(wolfPiece1);
-	allPieces.push_back(catPiece1);
-	allPieces.push_back(ratPiece1);
-    
-    hasElephant1 = true;
-    hasElephant2 = true;
 
 	nul_piece = new Pieces();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
 	allPieces.push_back(nul_piece);
 	selected = nul_piece;
+	// Must in this order!!!
+	// NIL, RAT, CAT, WOLF, DOG, LEOPARD, TIGER, LION, ELEPHANTs
+	allPieces.push_back(nul_piece);
+	allPieces.push_back(nul_piece);
+	allPieces.push_back(ratPiece0);
+	allPieces.push_back(ratPiece1);
+	allPieces.push_back(catPiece0);
+	allPieces.push_back(catPiece1);
+	allPieces.push_back(wolfPiece0);
+	allPieces.push_back(wolfPiece1);
+	allPieces.push_back(dogPiece0);
+	allPieces.push_back(dogPiece1);
+	allPieces.push_back(leopardPiece0);
+	allPieces.push_back(leopardPiece1);
+	allPieces.push_back(tigerPiece0);
+	allPieces.push_back(tigerPiece1);
+	allPieces.push_back(lionPiece0);
+	allPieces.push_back(lionPiece1);
+	allPieces.push_back(elephantPiece0);
+	allPieces.push_back(elephantPiece1);
+
+    
+    hasElephant1 = true;
+    hasElephant2 = true;
+
+
 
 	boardPieces = {
 		{tigerPiece0,nul_piece,nul_piece, nul_piece, nul_piece, nul_piece, lionPiece0},

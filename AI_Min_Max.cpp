@@ -4,7 +4,9 @@
 
 
 float AlphaBeta(int depth, int alpha, int beta){
-	if(depth <= 0)
-		return eval(board);
-	
+	if (depth <= 0) {
+		//return eval(board);
+	}
+
+	return 0.0;
 }
