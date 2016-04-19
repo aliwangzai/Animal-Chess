@@ -24,8 +24,7 @@ Pieces::TypePiece Pieces::getType(){
 }
 
 int Pieces::getPlayer(){
-    return player;
-    
+    return player;   
 }
 void Pieces::setEaten()
 {
@@ -50,11 +49,14 @@ void Pieces::highlight(){
     ScaleTo* scale = ScaleTo::create(0.0001, 1.2f);
     m_sprite->runAction(scale);
 }
-
-void Pieces::setPositionBlock(PointXY p){
+void Pieces::setPositionBlock(PointXY p, bool show /*= true*/){
     pos = p;
-	setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
+	if (show) {
+		setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
+	}
 }
+
+
 Sprite* Pieces::getSprite(){
     return m_sprite;
 }

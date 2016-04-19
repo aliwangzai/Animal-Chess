@@ -5,13 +5,14 @@
 
 class AI_Min_Max : public Player{
 public:
-	Board board;
+	Board *board;
+	Move best_move;
 
 	virtual float eval(const Board &board) { return 0.0; };
-	float AlphaBeta(int depth, int alpha, int beta);
+	float alphaBeta(int depth, int alpha, int beta);
 	Move getMove();
-	void CancelMove(Move mv);
+	void CancelMove(Move& mv);
+	void applyMove(Move& mv);
 
-
-	AI_Min_Max(const Board& board);
+	AI_Min_Max(Board *board);
 };

@@ -110,6 +110,8 @@ bool Board::availableMove(Move move) {
 
 inline Pieces * Board::getPiece(PointXY pt)
 {
+	if (pt.x < 0 || pt.y < 0 || pt.x > 8 || pt.y > 6)
+		return nul_piece;
 	return boardPieces[pt.x][pt.y];
 }
 
@@ -119,28 +121,32 @@ Pieces * Board::getPiece(Pieces::TypePiece type, int player)
 }
 
 
-void Board::moveChess(Move& move) {
-	CCLOG("%s","hello");
+void Board::moveChess(Move& move, bool show /* = true */) {
 	auto fromPiece = getPiece(move.from);
 	auto to = move.to;
 	auto from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
-	fromPiece->setPositionBlock(to);
+	fromPiece->setPositionBlock(to, show);
 	
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
 	if (toPiece->getType() != Pieces::NIL) {
-		toPiece->removeFromParent();
+		if(show)
+			toPiece->removeFromParent();
 		toPiece->setEaten();
 		move.eatinfo = new EatInfo;
 		move.eatinfo->indexInAllPieces = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 		move.eatinfo->pos = to;
 	}
     currentPlayer = !currentPlayer;
-	selected->recover();
-	selected = nul_piece;
+	if (show && selected->getType() != NIL) {
+		selected->recover();
+		selected = nul_piece;
+	}
 }
+
+
 
 int Board::getWinner()
 {
@@ -369,7 +375,6 @@ void Board::initPieces(TMXTiledMap* map) {
 
 	nul_piece = new Pieces();
 	nul_piece->setProperty({ 0,0 }, -1, Pieces::NIL);
-	allPieces.push_back(nul_piece);
 	selected = nul_piece;
 	// Must in this order!!!
 	// NIL, RAT, CAT, WOLF, DOG, LEOPARD, TIGER, LION, ELEPHANTs

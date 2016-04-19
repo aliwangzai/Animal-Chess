@@ -23,29 +23,34 @@ using namespace std;
 class Board {
 
 public:
-	enum TypeTerrain { NIL, DEN0, DEN1, TRAP, RIVER };
+	enum TypeTerrain { NIL, DEN0, DEN1, TRAP, RIVER, OUT_OF_BOUNDARY };
 
 	//0,1
 	int currentPlayer;
 	Pieces* selected;
-	bool availableMove(Move move);
+	Pieces* nul_piece;
+
 	Pieces* getPiece(PointXY pt);
 	Pieces* getPiece(Pieces::TypePiece type, int player);
-
+	bool availableMove(Move move);
 	inline TypeTerrain getTerrain(PointXY pt) {
+		if (pt.x < 0 || pt.y < 0 || pt.x > 8 || pt.y > 6)
+			return OUT_OF_BOUNDARY;
 		return terrain[pt.x][pt.y];
 	}
+
+
 
 	int getPieceIndex(Pieces::TypePiece type, int player);
 
 	void initPieces(TMXTiledMap* map);
-	void moveChess(Move &move);
+	void moveChess(Move &move, bool show = true);
+
 	// -1 if no winner, else return player
 	int getWinner();
 
 	vector<Pieces*> allPieces;
 	vector<vector<Pieces*>> boardPieces;
-	Pieces* nul_piece;
     
 	bool hasPiece(Pieces::TypePiece type, int player);
     

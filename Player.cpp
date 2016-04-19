@@ -13,8 +13,8 @@
 vector<Move> Player::genAllMoves( Board & board)
 {
 	vector<Move> ret;
-	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type) {
-		auto onePieceMove = genAMove(board, board.allPieces[type*2+board.currentPlayer]);
+	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type--) {
+		auto onePieceMove = genAMove(board, board.allPieces[type*2+1]);
 		for (auto a : onePieceMove) {
 			ret.push_back(a);
 		}

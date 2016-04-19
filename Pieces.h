@@ -33,7 +33,7 @@ public:
     void setProperty(PointXY p, int play, TypePiece t);
     TypePiece getType();
     PointXY getPositionBlock();
-    void setPositionBlock(PointXY p);
+    void setPositionBlock(PointXY p, bool show = true);
     Sprite* getSprite();
     int getPlayer();
 	void setEaten();

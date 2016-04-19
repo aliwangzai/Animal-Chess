@@ -18,6 +18,7 @@
 #include <time.h>
 
 #include "Board.h"
+#include "AI_Min_Max.h"
 
 USING_NS_CC;
 
@@ -27,6 +28,7 @@ public:
     virtual bool init();
     CREATE_FUNC(GameScene);
     Board* board;
+	AI_Min_Max *MinMax;
     void gameOverProcess(int winner);
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuBackToMainCallback(cocos2d::Ref* pSender);
@@ -35,6 +37,10 @@ public:
     void operatePieceVsAI(PointXY chosenBlock);
     virtual void onceUpdate(float dt);
   
+	~GameScene() {
+		delete board;
+		board = NULL;
+	}
     
 };
 

@@ -23,12 +23,15 @@ bool GameScene::init() {
         return false;
     }
     std::cout<<gameMode<<std::endl;
-    board = new Board();
-    
+
+	
+
     TMXTiledMap* gameMap = TMXTiledMap::create("gameMap.tmx");
     this->addChild(gameMap);
+    board = new Board();
     board->initPieces(gameMap);
-    
+	MinMax = new AI_Min_Max(board);
+
     auto listener = EventListenerTouchOneByOne::create();
     
     listener->onTouchBegan = [](Touch* touch, Event* event) {
@@ -98,7 +101,6 @@ void GameScene::operatePieceVsPeople(PointXY chosenBlock){
         if (board->availableMove(Move{ from,chosenBlock })) {
             Move move = { board->selected->getPositionBlock(),chosenBlock };
             board->moveChess(move);
-            // Œ“∞—”Œœ∑Ω· ¯≈–∂œ∑‚◊∞µΩ¡À“ª∏ˆ∫Ø ˝“ÚŒ™AI“≤–Ë“™”–”√µΩ__lwl
             if (int winner = board->getWinner() != -1) {
                 gameOverProcess(winner);
             }
@@ -134,8 +136,7 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
                 board->moveChess(move);
                 if (int winner = board->getWinner() != -1) {
                     gameOverProcess(winner);
-                }
-                else{
+				}else{
                     this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
                 }
             } else {
@@ -150,7 +151,9 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-            board->currentPlayer=0;
+			// TODO: get a move from Min_Max
+			auto val = MinMax->alphaBeta(3, INT_MIN, INT_MAX);
+			board->moveChess(MinMax->best_move);
         }
     }
     if (gameMode==2){
