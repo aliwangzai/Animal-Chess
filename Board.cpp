@@ -5,7 +5,6 @@
 //  Created by yang_xiong on 16/4/11.
 //
 //
-
 #include "Board.h"
 #include "cocos2d.h"
 
@@ -121,7 +120,7 @@ Pieces * Board::getPiece(Pieces::TypePiece type, int player)
 
 
 void Board::moveChess(Move& move) {
-
+	CCLOG("%s","hello");
 	auto fromPiece = getPiece(move.from);
 	auto to = move.to;
 	auto from = fromPiece->getPositionBlock();
