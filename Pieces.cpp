@@ -53,6 +53,7 @@ void Pieces::highlight(){
 
 void Pieces::setPositionBlock(PointXY p){
     pos = p;
+	setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
 }
 Sprite* Pieces::getSprite(){
     return m_sprite;

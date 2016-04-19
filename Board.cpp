@@ -126,7 +126,7 @@ void Board::moveChess(Move& move) {
 	auto from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
 	fromPiece->setPositionBlock(to);
-	fromPiece->setPosition((to.x + 1) * 80 + 40, (7 - to.y) * 70 + 35);
+	
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
