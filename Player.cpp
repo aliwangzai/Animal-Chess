@@ -14,7 +14,7 @@ vector<Move> Player::genAllMoves( Board & board)
 {
 	vector<Move> ret;
 	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type--) {
-		auto onePieceMove = genAMove(board, board.allPieces[type*2+1]);
+		auto onePieceMove = genAMove(board, board.allPieces[type*2 + board.currentPlayer]);
 		for (auto a : onePieceMove) {
 			ret.push_back(a);
 		}
@@ -25,51 +25,49 @@ vector<Move> Player::genAllMoves( Board & board)
 float Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
-    float sumPower1=0, sumPower2=0;
-    float sumDistance1Value=0, sumDistance2Value=0;
-    float threatenTo1=0, threatenTo2=0;
+    float sumPower0=0, sumPower1=0;
+    float sumDistanceValue0=0, sumDistanceValue1=0;
+    float threatenTo0=0, threatenTo1=0;
     float evalValue = 0;
     for(int i= 0 ;i < 9 ;i++){
         for(int j = 0; j<7 ;j++){
             Pieces* tempPiece = board.getPiece(PointXY(i,j));
             if(tempPiece->getType()!=Pieces::TypePiece::NIL){//循环扫到一个棋子
-                if(tempPiece->getPlayer()==0){//扫到的是玩家1的棋子
+                if(tempPiece->getPlayer()==0){//扫到的是玩家0的棋子
                     //计算子力
-
-
                     if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece(Pieces::TypePiece::ELEPHANT, 1))
 
-                        sumPower1 = sumPower1 + 500;
+                        sumPower0 = sumPower0 + 500;
                     else
-                        sumPower1 = sumPower1 + tempPiece->getChessPowerValue();
+                        sumPower0 = sumPower0 + tempPiece->getChessPowerValue();
                     //计算距离价值
-                    sumDistance1Value = sumDistance1Value + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
+                    sumDistanceValue0 = sumDistanceValue0 + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
                     //计算威胁价值
                     vector<Move> possibleMoves = genAMove(board,tempPiece);//可以到达则我方棋子比对方大
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
                         if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==1){
                             //我放比对方大，增加对方威胁
-                            threatenTo2 = threatenTo2 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
+                            threatenTo1 = threatenTo1 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
                         }
                     }
                 }
-                else{//扫到的为玩家2的棋子
+                else{//扫到的为玩家1的棋子
                     //计算子力
 
                     if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece (Pieces::TypePiece::ELEPHANT,0))
-                        sumPower2 = sumPower2 + 500;
+                        sumPower1 = sumPower1 + 500;
                     else
-                        sumPower2 = sumPower2 + tempPiece->getChessPowerValue();
+                        sumPower1 = sumPower1 + tempPiece->getChessPowerValue();
                     //计算距离价值
-                    sumDistance2Value = sumDistance2Value + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
+                    sumDistanceValue1 = sumDistanceValue1 + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
                     //计算威胁价值
                     vector<Move> possibleMoves = genAMove(board,tempPiece);
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
                         if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==0){
                             //我放比对方大，增加对方威胁
-                            threatenTo1 = threatenTo1 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
+                            threatenTo0 = threatenTo0 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
                         }
                     }
                 }
@@ -79,7 +77,7 @@ float Player::eval( Board& board){
             }
         }
     }
-    evalValue =(sumPower1+sumDistance1Value+threatenTo2)-(sumPower2+sumDistance2Value+threatenTo2);
+    evalValue =(sumPower1+sumDistanceValue1+threatenTo0) - (sumPower0 + sumDistanceValue0 + threatenTo1);
     return evalValue;
 }
 

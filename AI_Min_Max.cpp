@@ -2,24 +2,45 @@
 
 
 
-
-float AI_Min_Max::alphaBeta(int depth, int alpha, int beta){
+float AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int maxplayer){
 	if (depth <= 0) {
 		return Player::eval(*board);
 	}
 	auto allMoves = genAllMoves(*board);
-	
-	for (auto mv : allMoves) {
-		applyMove(mv);
-		auto val = -alphaBeta(depth - 1, -beta, -alpha);
-		if(val >= beta)
-			return beta;
-		if (val > alpha)
-			alpha = val;
-		best_move = mv;
-		CancelMove(mv);
+
+	if(maxplayer){
+		float best_value = INT_MIN;
+		for(auto mv : allMoves ){
+			applyMove(mv);
+			auto val = alphaBeta(depth-1, alpha, beta, false);
+			CancelMove(mv);
+			alpha = alpha > best_value ? alpha : best_value;
+			if(beta <= alpha){
+				return alpha;
+			}
+			if(best_value < val){
+				best_value = val;
+				best_move = mv;
+			}
+		}
+		return best_value;
+	}else{
+		float best_value = INT_MAX;
+		for( auto mv : allMoves ){
+			applyMove(mv);
+			auto val = alphaBeta( depth-1, alpha, beta, true );
+			CancelMove(mv);
+			beta = beta < val ? beta : val;
+			if( beta <= alpha ){
+				return beta;
+			}
+			if(best_value > val ){
+				best_value = val;
+				best_move = mv;
+			}
+		}
+		return best_value;
 	}
-	return alpha;
 }
 
 Move AI_Min_Max::getMove()
@@ -44,6 +65,7 @@ void AI_Min_Max::CancelMove(Move& mv)
 		auto eatenPiece = board->allPieces[eatInfo->indexInAllPieces];
 		board->boardPieces[to.x][to.y] = eatenPiece;
 		eatenPiece->setPositionBlock(to,false);
+		board->nPiecesExisted[eatenPiece->getPlayer()] ++;
 	} else {
 		board->boardPieces[to.x][to.y] = board->nul_piece;
 	}

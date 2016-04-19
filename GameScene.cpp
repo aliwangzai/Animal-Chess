@@ -152,7 +152,7 @@ void GameScene::onceUpdate(float dt){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
 			// TODO: get a move from Min_Max
-			auto val = MinMax->alphaBeta(3, INT_MIN, INT_MAX);
+			auto val = MinMax->alphaBeta(3, INT_MIN, INT_MAX, 1);
 			board->moveChess(MinMax->best_move);
         }
     }

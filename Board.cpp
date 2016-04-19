@@ -55,7 +55,7 @@ bool Board::availableMove(Move move) {
 			if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
 				return false;
 			} else {
-				return (pieceTypeFrom >= pieceTypeTo);
+				return (terrainTo == Board::NIL) && (pieceTypeFrom >= pieceTypeTo);
 			}
 		} else {
 			return false;
@@ -122,19 +122,24 @@ Pieces * Board::getPiece(Pieces::TypePiece type, int player)
 
 
 void Board::moveChess(Move& move, bool show /* = true */) {
+	if (move.from == PointXY{ -1,-1 } && move.to == PointXY{ -1,-1 }) {
+		return;
+	}
 	auto fromPiece = getPiece(move.from);
 	auto to = move.to;
 	auto from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
+	auto toType = toPiece->getType();
 	fromPiece->setPositionBlock(to, show);
 	
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
-	if (toPiece->getType() != Pieces::NIL) {
+	if (toType != Pieces::NIL) {
 		if(show)
 			toPiece->removeFromParent();
 		toPiece->setEaten();
+		nPiecesExisted[toPiece->getPlayer()]--;
 		move.eatinfo = new EatInfo;
 		move.eatinfo->indexInAllPieces = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 		move.eatinfo->pos = to;
@@ -150,9 +155,9 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 
 int Board::getWinner()
 {
-	if (boardPieces[0][3]->getType() != Pieces::NIL)
+	if (boardPieces[0][3]->getType() != Pieces::NIL || !nPiecesExisted[0])
 		return 1;
-	else if (boardPieces[8][3]->getType() != Pieces::NIL)
+	else if (boardPieces[8][3]->getType() != Pieces::NIL || !nPiecesExisted[1])
 		return 0;
 	else return -1;
 }
@@ -396,7 +401,8 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(lionPiece1);
 	allPieces.push_back(elephantPiece0);
 	allPieces.push_back(elephantPiece1);
-
+	
+	nPiecesExisted[0] = nPiecesExisted[1] = 8;
    
 
 

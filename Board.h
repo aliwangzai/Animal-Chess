@@ -51,7 +51,8 @@ public:
 
 	vector<Pieces*> allPieces;
 	vector<vector<Pieces*>> boardPieces;
-    
+	int nPiecesExisted[2];
+
 	bool hasPiece(Pieces::TypePiece type, int player);
     
 	Board();
