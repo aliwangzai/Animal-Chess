@@ -8,12 +8,21 @@
 #include "Player.h"
 
 
-Move Player::genMove(const Board& board){
-    return {PointXY{0,0},PointXY{0,0}};
+
+
+vector<Move> Player::genAllMoves( Board & board)
+{
+	vector<Move> ret;
+	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type) {
+		auto onePieceMove = genAMove(board, board.allPieces[type*2+board.currentPlayer]);
+		for (auto a : onePieceMove) {
+			ret.push_back(a);
+		}
+	}
+	return ret;
 }
 
-
-float Player::eval(Board& board){
+float Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
     float sumPower1=0, sumPower2=0;
@@ -36,7 +45,7 @@ float Player::eval(Board& board){
                     //计算距离价值
                     sumDistance1Value = sumDistance1Value + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
                     //计算威胁价值
-                    vector<Move> possibleMoves = potentialMoves(board,tempPiece);//可以到达则我方棋子比对方大
+                    vector<Move> possibleMoves = genAMove(board,tempPiece);//可以到达则我方棋子比对方大
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
                         if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==1){
@@ -55,7 +64,7 @@ float Player::eval(Board& board){
                     //计算距离价值
                     sumDistance2Value = sumDistance2Value + tempPiece->getDistanceValue(tempPiece->getDistanceToEnemyBase());
                     //计算威胁价值
-                    vector<Move> possibleMoves = potentialMoves(board,tempPiece);
+                    vector<Move> possibleMoves = genAMove(board,tempPiece);
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
                         if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==0){
@@ -74,7 +83,11 @@ float Player::eval(Board& board){
     return evalValue;
 }
 
-vector<Move> Player::potentialMoves(Board &board, Pieces * fromPiece){
+vector<Move> Player::genAMove( Board &board, Pieces * fromPiece){
+	if (fromPiece->isEaten()) {
+		return vector<Move>();
+	}
+
     PointXY fromXY = fromPiece->getPositionBlock();
     vector<Move> potentialMoves;
     Move potentialMove;

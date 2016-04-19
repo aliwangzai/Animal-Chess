@@ -27,9 +27,17 @@ int Pieces::getPlayer(){
     return player;
     
 }
+void Pieces::setEaten()
+{
+	eaten = true;
+}
 void Pieces::bindSprite(Sprite* sprite){
     m_sprite = sprite;
     this->addChild(m_sprite);
+}
+Pieces::Pieces()
+{
+	eaten = false;
 }
 bool Pieces::init(){
     return true;
@@ -49,6 +57,13 @@ void Pieces::setPositionBlock(PointXY p){
 Sprite* Pieces::getSprite(){
     return m_sprite;
 }
+
+bool Pieces::isEaten()
+{
+	return eaten;
+}
+
+
 int Pieces::getDistanceToEnemyBase(){
     PointXY p = getPositionBlock();
     if(getPlayer()==0){

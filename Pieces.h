@@ -21,12 +21,13 @@ private:
     int player;
     TypePiece type;
     float chessPower;
+	bool eaten;
 protected:
     Sprite* m_sprite;
     
 public:
     CREATE_FUNC(Pieces);
-    Pieces() {};
+	Pieces();
     virtual bool init();
     void bindSprite(Sprite* sprite);
     void setProperty(PointXY p, int play, TypePiece t);
@@ -35,9 +36,11 @@ public:
     void setPositionBlock(PointXY p);
     Sprite* getSprite();
     int getPlayer();
+	void setEaten();
     void highlight();
     void recover();
     
+	bool isEaten();
     int getDistanceToEnemyBase();
     float getDistanceValue(int dis);
     void setChessPowerValue();

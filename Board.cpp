@@ -114,6 +114,11 @@ inline Pieces * Board::getPiece(PointXY pt)
 	return boardPieces[pt.x][pt.y];
 }
 
+Pieces * Board::getPiece(Pieces::TypePiece type, int player)
+{
+	return allPieces[getPieceIndex(type, player)];
+}
+
 
 void Board::moveChess(Move& move) {
 
@@ -128,9 +133,9 @@ void Board::moveChess(Move& move) {
 	//eat
 	if (toPiece->getType() != Pieces::NIL) {
 		toPiece->removeFromParent();
-		toPiece->setPosition({ -1,-1 });
+		toPiece->setEaten();
 		move.eatinfo = new EatInfo;
-		move.eatinfo->indexInAllPieces = getIndex(toPiece->getType(), toPiece->getPlayer());
+		move.eatinfo->indexInAllPieces = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 		move.eatinfo->pos = to;
 	}
     currentPlayer = !currentPlayer;
@@ -150,7 +155,7 @@ int Board::getWinner()
 
 bool Board::hasPiece(Pieces::TypePiece type, int player)
 {
-	return (allPieces[getIndex(type,player)]->getPositionBlock() == PointXY{-1, -1});
+	return (allPieces[getPieceIndex(type,player)]->getPositionBlock() == PointXY{-1, -1});
 }
 
 Board::Board()
@@ -177,7 +182,7 @@ Board::~Board()
 	}
 }
 
-inline int Board::getIndex(Pieces::TypePiece type, int player)
+inline int Board::getPieceIndex(Pieces::TypePiece type, int player)
 {
 	return type * 2 + player;
 }

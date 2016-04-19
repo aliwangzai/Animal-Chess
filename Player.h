@@ -20,9 +20,9 @@ using namespace std;
 class Player{
 public:
     string name;
-    virtual Move genMove(const Board &board);
-    virtual float eval(Board &board);
-    vector<Move> potentialMoves(Board &board, Pieces * fromPiece);
+    virtual vector<Move> genAllMoves( Board &board);
+    virtual float eval( Board &board);
+    vector<Move> genAMove( Board &board, Pieces * fromPiece);
     
 };
 #endif /* Player_h */

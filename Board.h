@@ -30,11 +30,13 @@ public:
 	Pieces* selected;
 	bool availableMove(Move move);
 	Pieces* getPiece(PointXY pt);
+	Pieces* getPiece(Pieces::TypePiece type, int player);
+
 	inline TypeTerrain getTerrain(PointXY pt) {
 		return terrain[pt.x][pt.y];
 	}
 
-	int getIndex(Pieces::TypePiece type, int player);
+	int getPieceIndex(Pieces::TypePiece type, int player);
 
 	void initPieces(TMXTiledMap* map);
 	void moveChess(Move &move);
