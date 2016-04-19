@@ -7,6 +7,7 @@
 //
 
 #include "LevelSelectLayer.h"
+int gameMode;
 
 LevelSelectLayer* LevelSelectLayer::createSelect(){
     LevelSelectLayer* layer = LevelSelectLayer::create();
@@ -33,16 +34,30 @@ bool LevelSelectLayer::init(){
     return true;
 }
 void LevelSelectLayer::onPVPButtonClick(cocos2d::Ref *psender,cocos2d::ui::TouchEventType type){
+     gameMode = 0;
      Scene* newGame = GameScene::createScene();
      auto transition = TransitionCrossFade::create(0.5f, newGame);
      Director::getInstance()->replaceScene(transition);
 }
 void LevelSelectLayer::onPVMinimaxButtonClick(cocos2d::Ref *psender,cocos2d::ui::TouchEventType type){
+    gameMode = 1;
+    Scene* newGame = GameScene::createScene();
+    auto transition = TransitionCrossFade::create(0.5f, newGame);
+    Director::getInstance()->replaceScene(transition);
+
     
 }
 void LevelSelectLayer::onPVMTCSButtonClick(cocos2d::Ref *psender,cocos2d::ui::TouchEventType type){
+    gameMode = 2;
+    Scene* newGame = GameScene::createScene();
+    auto transition = TransitionCrossFade::create(0.5f, newGame);
+    Director::getInstance()->replaceScene(transition);
+
     
 }
 void LevelSelectLayer::onMinimaxVMTCSButtonClick(cocos2d::Ref *psender,cocos2d::ui::TouchEventType type){
-    
+    gameMode = 3;
+    Scene* newGame = GameScene::createScene();
+    auto transition = TransitionCrossFade::create(0.5f, newGame);
+    Director::getInstance()->replaceScene(transition);    
 }

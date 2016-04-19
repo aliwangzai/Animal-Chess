@@ -14,6 +14,8 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "HelloWorldScene.h"
+#include "LevelSelectLayer.h"
+#include <time.h>
 
 #include "Board.h"
 
@@ -28,8 +30,11 @@ public:
     void gameOverProcess(int winner);
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuBackToMainCallback(cocos2d::Ref* pSender);
-
-
+    
+    void operatePieceVsPeople(PointXY chosenBlock);
+    void operatePieceVsAI(PointXY chosenBlock);
+    virtual void onceUpdate(float dt);
+  
     
 };
 

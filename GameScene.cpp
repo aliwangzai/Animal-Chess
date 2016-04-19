@@ -9,6 +9,8 @@
 #include "GameScene.h"
 #include <iostream>
 
+extern int gameMode;
+
 Scene* GameScene::createScene(){
     Scene* myScene = Scene::create();
     GameScene* myLayer = GameScene::create();
@@ -16,65 +18,40 @@ Scene* GameScene::createScene(){
     return myScene;
 }
 
-bool GameScene::init(){
-    if ( !Layer::init() ){
+bool GameScene::init() {
+    if (!Layer::init()) {
         return false;
     }
-
-	board = new Board();
-
+    std::cout<<gameMode<<std::endl;
+    board = new Board();
+    
     TMXTiledMap* gameMap = TMXTiledMap::create("gameMap.tmx");
     this->addChild(gameMap);
     board->initPieces(gameMap);
     
     auto listener = EventListenerTouchOneByOne::create();
     
-    listener->onTouchBegan = [](Touch* touch, Event* event){
+    listener->onTouchBegan = [](Touch* touch, Event* event) {
         return true;
     };
     
-    listener->onTouchMoved = [](Touch* touch, Event* event){
+    listener->onTouchMoved = [](Touch* touch, Event* event) {
         return true;
     };
     
-    listener->onTouchEnded = [=](Touch* touch, Event* event)->void{
-        Point clickPos =Director::getInstance()->convertToGL(touch->getLocationInView());
+    listener->onTouchEnded = [=](Touch* touch, Event* event)->void {
+        Point clickPos = Director::getInstance()->convertToGL(touch->getLocationInView());
         PointXY chosenBlock = PointXY((int)clickPos.x / 80 - 1, 7 - (int)clickPos.y / 70);
-
-		if (chosenBlock.x < 0 || chosenBlock.y < 0)
-			return;
-		if (chosenBlock.x > 8 || chosenBlock.y>6)
-			return;
-		auto clickedPiece = board->getPiece(chosenBlock);
-
-		// if no piece has been choosen yet
-		if (board->selected->getType() == Pieces::NIL) {
-			// cannot choose opponent's piece
-			if (board->currentPlayer != clickedPiece->getPlayer())
-				return;
-			//  choose this piece and highlight it
-			board->selected = clickedPiece;
-			// if the piece exists, highlight
-			if(clickedPiece->getType() != Pieces::NIL)
-				clickedPiece->highlight();
-		} else {
-			PointXY from = board->selected->getPositionBlock();
-			if (board->availableMove(Move{ from,chosenBlock })) {
-				Move move = { board->selected->getPositionBlock(),chosenBlock };
-				board->moveChess(move);
-				// �Ұ���Ϸ�����жϷ�װ����һ��������ΪAIҲ��Ҫ���õ�__lwl
-				if (int winner = board->getWinner() != -1) {
-					gameOverProcess(winner);
-				}
-                //GameScene::gameOver=true;
-			} else {
-				//reset
-				board->selected->recover();
-				board->selected = board->nul_piece;
-			}
-		}
+        if(gameMode==0)
+            operatePieceVsPeople(chosenBlock);
+        if(gameMode==1 || gameMode== 2)
+            operatePieceVsAI(chosenBlock);
+        return;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    if(gameMode==3)
+        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+    
     return true;
 }
 void GameScene::gameOverProcess(int winner){
@@ -100,6 +77,102 @@ void GameScene::gameOverProcess(int winner){
     this->addChild(menu, 1);
 
 }
+void GameScene::operatePieceVsPeople(PointXY chosenBlock){
+    if (chosenBlock.x < 0 || chosenBlock.y < 0)
+        return;
+    if (chosenBlock.x > 8 || chosenBlock.y>6)
+        return;
+    auto clickedPiece = board->getPiece(chosenBlock);
+    // if no piece has been choosen yet
+    if (board->selected->getType() == Pieces::NIL) {
+        // cannot choose opponent's piece
+        if (board->currentPlayer != clickedPiece->getPlayer())
+            return;
+        //  choose this piece and highlight it
+        board->selected = clickedPiece;
+        // if the piece exists, highlight
+        if (clickedPiece->getType() != Pieces::NIL)
+            clickedPiece->highlight();
+    } else {
+        PointXY from = board->selected->getPositionBlock();
+        if (board->availableMove(Move{ from,chosenBlock })) {
+            Move move = { board->selected->getPositionBlock(),chosenBlock };
+            board->moveChess(move);
+            // Œ“∞—”Œœ∑Ω· ¯≈–∂œ∑‚◊∞µΩ¡À“ª∏ˆ∫Ø ˝“ÚŒ™AI“≤–Ë“™”–”√µΩ__lwl
+            if (int winner = board->getWinner() != -1) {
+                gameOverProcess(winner);
+            }
+            //GameScene::gameOver=true;
+        } else {
+            //reset
+            board->selected->recover();
+            board->selected = board->nul_piece;
+        }
+    }
+    
+}
+void GameScene::operatePieceVsAI(PointXY chosenBlock){
+    if (chosenBlock.x < 0 || chosenBlock.y < 0)
+        return;
+    if (chosenBlock.x > 8 || chosenBlock.y>6)
+        return;
+    auto clickedPiece = board->getPiece(chosenBlock);
+    if(board->currentPlayer==0){
+        if (board->selected->getType() == Pieces::NIL) {
+            // cannot choose opponent's piece
+            if (board->currentPlayer != clickedPiece->getPlayer())
+                return;
+            //  choose this piece and highlight it
+            board->selected = clickedPiece;
+            // if the piece exists, highlight
+            if (clickedPiece->getType() != Pieces::NIL)
+                clickedPiece->highlight();
+        } else {
+            PointXY from = board->selected->getPositionBlock();
+            if (board->availableMove(Move{ from,chosenBlock })) {
+                Move move = { board->selected->getPositionBlock(),chosenBlock };
+                board->moveChess(move);
+                if (int winner = board->getWinner() != -1) {
+                    gameOverProcess(winner);
+                }
+                else{
+                    this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+                }
+            } else {
+                //reset
+                board->selected->recover();
+                board->selected = board->nul_piece;
+            }
+        }
+    }
+}
+void GameScene::onceUpdate(float dt){
+    if(gameMode==1){
+        if(board->currentPlayer==1){
+            std::cout<<"Minimax take step."<<std::endl;
+            board->currentPlayer=0;
+        }
+    }
+    if (gameMode==2){
+        if(board->currentPlayer==1){
+            std::cout<<"MCTS take step."<<std::endl;
+            board->currentPlayer=0;
+        }
+    }
+    if (gameMode==3){
+        while(1){
+            if(board->currentPlayer==0){
+                std::cout<<"Minimax take step."<<std::endl;
+                board->currentPlayer=1;
+            }
+            else{
+                std::cout<<"MCTS take step."<<std::endl;
+                board->currentPlayer=0;
+            }
+        }
+    }
+}
+
 
 void GameScene::menuRestartCallback(cocos2d::Ref* pSender){
      Scene* newGame = GameScene::createScene();
