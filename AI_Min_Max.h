@@ -6,11 +6,14 @@
 class AI_Min_Max : public Player{
 public:
 	Board *board;
-	Move best_move;
+	struct BestMove {
+		Move move;
+		float value;
+	};
 
 	virtual float eval(const Board &board) { return 0.0; };
-	float alphaBeta(int depth, int alpha, int beta, int maxplayer);
-	Move getMove();
+	BestMove alphaBeta(int depth, int alpha, int beta, int player);
+	Move getMove(int depth, int player);
 	void CancelMove(Move& mv);
 	void applyMove(Move& mv);
 

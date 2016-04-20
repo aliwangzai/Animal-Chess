@@ -111,7 +111,6 @@ void GameScene::operatePieceVsPeople(PointXY chosenBlock){
             board->selected = board->nul_piece;
         }
     }
-    
 }
 void GameScene::operatePieceVsAI(PointXY chosenBlock){
     if (chosenBlock.x < 0 || chosenBlock.y < 0)
@@ -134,11 +133,7 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             if (board->availableMove(Move{ from,chosenBlock })) {
                 Move move = { board->selected->getPositionBlock(),chosenBlock };
                 board->moveChess(move);
-                if (int winner = board->getWinner() != -1) {
-                    gameOverProcess(winner);
-				}else{
-                    this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
-                }
+                this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
             } else {
                 //reset
                 board->selected->recover();
@@ -146,14 +141,17 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             }
         }
     }
+	if (int winner = board->getWinner() != -1) {
+		gameOverProcess(winner);
+	}
 }
 void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
 			// TODO: get a move from Min_Max
-			auto val = MinMax->alphaBeta(3, INT_MIN, INT_MAX, 1);
-			board->moveChess(MinMax->best_move);
+			auto val = MinMax->getMove(3, 1);
+			board->moveChess(val);
         }
     }
     if (gameMode==2){

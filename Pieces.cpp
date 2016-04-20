@@ -26,9 +26,9 @@ Pieces::TypePiece Pieces::getType(){
 int Pieces::getPlayer(){
     return player;   
 }
-void Pieces::setEaten()
+void Pieces::setEatenValue( bool val)
 {
-	eaten = true;
+	eaten = val;
 }
 void Pieces::bindSprite(Sprite* sprite){
     m_sprite = sprite;
@@ -79,37 +79,37 @@ int Pieces::getDistanceToEnemyBase(){
 float Pieces::getDistanceValue(int dis){
     switch (dis) {
         case 11:
-            return 10;
-            break;
-        case 10:
-            return 20;
-            break;
-        case 9:
             return 30;
             break;
-        case 8:
-            return 40;
-            break;
-        case 7:
+        case 10:
             return 50;
             break;
-        case 6:
+        case 9:
             return 70;
             break;
-        case 5:
+        case 8:
             return 100;
+            break;
+        case 7:
+            return 100;
+            break;
+        case 6:
+            return 100;
+            break;
+        case 5:
+            return 150;
             break;
         case 4:
             return 200;
             break;
         case 3:
-            return 500;
+            return 350;
             break;
         case 2:
-            return 1000;
+            return 400;
             break;
         case 1:
-            return 5000;
+            return 500;
             break;
         default:
             return 10000;

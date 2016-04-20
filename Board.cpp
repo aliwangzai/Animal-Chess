@@ -138,7 +138,7 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 	if (toType != Pieces::NIL) {
 		if(show)
 			toPiece->removeFromParent();
-		toPiece->setEaten();
+		toPiece->setEatenValue(true);
 		nPiecesExisted[toPiece->getPlayer()]--;
 		move.eatinfo = new EatInfo;
 		move.eatinfo->indexInAllPieces = getPieceIndex(toPiece->getType(), toPiece->getPlayer());

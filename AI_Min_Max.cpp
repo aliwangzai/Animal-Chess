@@ -2,50 +2,55 @@
 
 
 
-float AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int maxplayer){
+AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int player){
+	BestMove best_move{ Move(),0.0 };
 	if (depth <= 0) {
-		return Player::eval(*board);
+		best_move.value = Player::eval(*board);
+		return best_move;
 	}
 	auto allMoves = genAllMoves(*board);
 
-	if(maxplayer){
-		float best_value = INT_MIN;
+	if(player){
+		best_move.value = INT_MIN;
 		for(auto mv : allMoves ){
 			applyMove(mv);
 			auto val = alphaBeta(depth-1, alpha, beta, false);
+			val.move = mv;
 			CancelMove(mv);
-			alpha = alpha > best_value ? alpha : best_value;
+			if (val.value > alpha) alpha = val.value;
 			if(beta <= alpha){
-				return alpha;
+				BestMove ret{ Move(),alpha };
+				return ret;
 			}
-			if(best_value < val){
-				best_value = val;
-				best_move = mv;
+			if (best_move.value < val.value) {
+				best_move = val;
 			}
 		}
-		return best_value;
 	}else{
-		float best_value = INT_MAX;
+		best_move.value = INT_MAX;
 		for( auto mv : allMoves ){
 			applyMove(mv);
 			auto val = alphaBeta( depth-1, alpha, beta, true );
+			val.move = mv;
 			CancelMove(mv);
-			beta = beta < val ? beta : val;
+			
+			if (val.value < beta ) beta = val.value;
 			if( beta <= alpha ){
-				return beta;
+				BestMove ret{ Move(),beta };
+				return ret;
 			}
-			if(best_value > val ){
-				best_value = val;
-				best_move = mv;
+			if (val.value < best_move.value) {
+				best_move = val;
 			}
 		}
-		return best_value;
 	}
+	return best_move;
 }
 
-Move AI_Min_Max::getMove()
+Move AI_Min_Max::getMove(int depth, int player)
 {
-	return Move();
+	auto best_move = alphaBeta(2, INT_MIN, INT_MAX, 1);
+	return best_move.move;
 }
 
 void AI_Min_Max::applyMove(Move & mv)
@@ -64,7 +69,8 @@ void AI_Min_Max::CancelMove(Move& mv)
 	if (eatInfo) {
 		auto eatenPiece = board->allPieces[eatInfo->indexInAllPieces];
 		board->boardPieces[to.x][to.y] = eatenPiece;
-		eatenPiece->setPositionBlock(to,false);
+		eatenPiece->setPositionBlock(to, false);
+		eatenPiece->setEatenValue(false);
 		board->nPiecesExisted[eatenPiece->getPlayer()] ++;
 	} else {
 		board->boardPieces[to.x][to.y] = board->nul_piece;

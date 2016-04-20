@@ -36,7 +36,7 @@ public:
     void setPositionBlock(PointXY p, bool show = true);
     Sprite* getSprite();
     int getPlayer();
-	void setEaten();
+	void setEatenValue( bool val );
     void highlight();
     void recover();
     
