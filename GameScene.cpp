@@ -101,9 +101,7 @@ void GameScene::operatePieceVsPeople(PointXY chosenBlock){
         if (board->availableMove(Move{ from,chosenBlock })) {
             Move move = { board->selected->getPositionBlock(),chosenBlock };
             board->moveChess(move);
-            if (int winner = board->getWinner() != -1) {
-                gameOverProcess(winner);
-            }
+			gameOverDetect();
             //GameScene::gameOver=true;
         } else {
             //reset
@@ -141,17 +139,16 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             }
         }
     }
-	if (int winner = board->getWinner() != -1) {
-		gameOverProcess(winner);
-	}
+	gameOverDetect();
 }
 void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
 			// TODO: get a move from Min_Max
-			auto val = MinMax->getMove(3, 1);
-			board->moveChess(val);
+			auto mv = MinMax->getMove(7, 1);
+			board->moveChess(mv);
+			gameOverDetect();
         }
     }
     if (gameMode==2){
@@ -174,6 +171,13 @@ void GameScene::onceUpdate(float dt){
     }
 }
 
+
+void GameScene::gameOverDetect()
+{
+	if (int winner = board->getWinner() != -1) {
+		gameOverProcess(winner);
+	}
+}
 
 void GameScene::menuRestartCallback(cocos2d::Ref* pSender){
      Scene* newGame = GameScene::createScene();

@@ -109,7 +109,7 @@ float Pieces::getDistanceValue(int dis){
             return 400;
             break;
         case 1:
-            return 500;
+            return 5000;
             break;
         default:
             return 10000;

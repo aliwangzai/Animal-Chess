@@ -28,8 +28,8 @@ public:
     virtual bool init();
     CREATE_FUNC(GameScene);
     Board* board;
+	void gameOverDetect();
 	AI_Min_Max *MinMax;
-    void gameOverProcess(int winner);
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuBackToMainCallback(cocos2d::Ref* pSender);
     
@@ -41,7 +41,9 @@ public:
 		delete board;
 		board = NULL;
 	}
-    
+
+private:
+    void gameOverProcess(int winner);
 };
 
 #endif /* GameScene_h */

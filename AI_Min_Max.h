@@ -12,10 +12,12 @@ public:
 	};
 
 	virtual float eval(const Board &board) { return 0.0; };
-	BestMove alphaBeta(int depth, int alpha, int beta, int player);
 	Move getMove(int depth, int player);
 	void CancelMove(Move& mv);
 	void applyMove(Move& mv);
 
 	AI_Min_Max(Board *board);
+
+private:
+	BestMove alphaBeta(int depth, int alpha, int beta, int player);
 };
