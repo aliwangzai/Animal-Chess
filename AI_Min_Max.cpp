@@ -95,11 +95,10 @@ void AI_Min_Max::CancelMove(Move& mv)
 	auto from = mv.from;
 	auto to = mv.to;
 	auto toPiece = board->getPiece(to);
-	auto eatInfo = mv.eatinfo;
 	board->boardPieces[from.x][from.y] = board->boardPieces[to.x][to.y];
 	toPiece->setPositionBlock(from, false);
-	if (eatInfo) {
-		auto eatenPiece = board->allPieces[eatInfo->indexInAllPieces];
+	if (mv.eatenIndex != -1) {
+		auto eatenPiece = board->allPieces[mv.eatenIndex];
 		board->boardPieces[to.x][to.y] = eatenPiece;
 		eatenPiece->setPositionBlock(to, false);
 		eatenPiece->setEatenValue(false);

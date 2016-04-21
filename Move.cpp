@@ -4,18 +4,14 @@
 
 Move::Move() {
 	to = from = { -1,-1 };
-	eatinfo = NULL;
+	eatenIndex = -1;
 }
 
 Move::Move(PointXY f, PointXY t) {
 	from = f;
 	to = t;
-	eatinfo = NULL;
+	eatenIndex = -1;
 }
 
 Move::~Move() {
-	if (eatinfo) {
-		delete eatinfo;
-		eatinfo = NULL;
-	}
 }

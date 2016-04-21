@@ -25,20 +25,12 @@ struct PointXY {
 	PointXY(){}
 };
 
-
-struct EatInfo {
-	// in allPieces
-	int indexInAllPieces;
-	PointXY pos;
-};
-
-
-
 class Move{
 public:
     PointXY from;
     PointXY to;
-	EatInfo *eatinfo;
+	int eatenIndex;
+
 
 	Move();
 	Move(PointXY f, PointXY t);
