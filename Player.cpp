@@ -217,19 +217,29 @@ vector<Move> Player::genAMove( Board &board, Pieces * fromPiece){
         }
     }
     else{//其他动物
-        potentialMove.to = PointXY(fromXY.x+1,fromXY.y);
-        if(fromXY.x+1<=8 && board.availableMove(potentialMove))
-            potentialMoves.push_back(potentialMove);
-        potentialMove.to = PointXY(fromXY.x-1,fromXY.y);
-        if(fromXY.x-1>=0 && board.availableMove(potentialMove))
-            potentialMoves.push_back(potentialMove);
-        potentialMove.to = PointXY(fromXY.x,fromXY.y+1);
-        if(fromXY.y+1<=6 && board.availableMove(potentialMove))
-            potentialMoves.push_back(potentialMove);
-        potentialMove.to = PointXY(fromXY.x,fromXY.y-1);
-        if(fromXY.y-1>=0 &&board.availableMove(potentialMove))
-            potentialMoves.push_back(potentialMove);
-    }
+		//优先生成向前的move
+		if (fromPiece->getPlayer()) {
+			potentialMove.to = PointXY(fromXY.x - 1, fromXY.y);
+			if (fromXY.x - 1 >= 0 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+			potentialMove.to = PointXY(fromXY.x + 1, fromXY.y);
+			if (fromXY.x + 1 <= 8 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+		} else {
+			potentialMove.to = PointXY(fromXY.x + 1, fromXY.y);
+			if (fromXY.x + 1 <= 8 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+			potentialMove.to = PointXY(fromXY.x - 1, fromXY.y);
+			if (fromXY.x - 1 >= 0 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+		}
+			potentialMove.to = PointXY(fromXY.x, fromXY.y + 1);
+			if (fromXY.y + 1 <= 6 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+			potentialMove.to = PointXY(fromXY.x, fromXY.y - 1);
+			if (fromXY.y - 1 >= 0 && board.availableMove(potentialMove))
+				potentialMoves.push_back(potentialMove);
+		}
     return potentialMoves;
 
 

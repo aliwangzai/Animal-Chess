@@ -45,6 +45,8 @@ bool GameScene::init() {
     listener->onTouchEnded = [=](Touch* touch, Event* event)->void {
         Point clickPos = Director::getInstance()->convertToGL(touch->getLocationInView());
         PointXY chosenBlock = PointXY((int)clickPos.x / 80 - 1, 7 - (int)clickPos.y / 70);
+		if (board->getWinner() != -1)
+			return;
         if(gameMode==0)
             operatePieceVsPeople(chosenBlock);
         if(gameMode==1 || gameMode== 2)
@@ -102,7 +104,6 @@ void GameScene::operatePieceVsPeople(PointXY chosenBlock){
             Move move = { board->selected->getPositionBlock(),chosenBlock };
             board->moveChess(move);
 			gameOverDetect();
-            //GameScene::gameOver=true;
         } else {
             //reset
             board->selected->recover();
@@ -131,7 +132,10 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             if (board->availableMove(Move{ from,chosenBlock })) {
                 Move move = { board->selected->getPositionBlock(),chosenBlock };
                 board->moveChess(move);
-                this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+				if (int winner = board->getWinner() == -1)
+					this->scheduleOnce(schedule_selector(GameScene::onceUpdate), 0.01f);
+				else
+					gameOverProcess(winner);
             } else {
                 //reset
                 board->selected->recover();
@@ -139,13 +143,12 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             }
         }
     }
-	gameOverDetect();
 }
 void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(3, 1);
+			auto mv = MinMax->getMove(4, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
