@@ -55,7 +55,7 @@ bool GameScene::init() {
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     if(gameMode==3)
-        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),1.0f);
     
     return true;
 }
@@ -148,7 +148,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(4, 1);
+			auto mv = MinMax->getMove(5, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -162,23 +162,33 @@ void GameScene::onceUpdate(float dt){
     if (gameMode==3){
         while(1){
             if(board->currentPlayer==0){
-                std::cout<<"Minimax take step."<<std::endl;
-                board->currentPlayer=1;
+                auto mv = MinMax->getMove(5, 0);
+                board->moveChess(mv,true);
+                std::cout<<"Minimax1 take step."<<std::endl;
+                if(gameOverDetect())
+                    break;
+                
             }
             else{
-                std::cout<<"MCTS take step."<<std::endl;
-                board->currentPlayer=0;
+                auto mv = MinMax->getMove(5, 1);
+                board->moveChess(mv,true);
+                std::cout<<"Minimax2 take step."<<std::endl;
+                if(gameOverDetect())
+                    break;
             }
         }
     }
 }
 
 
-void GameScene::gameOverDetect()
+bool GameScene::gameOverDetect()
 {
 	if (int winner = board->getWinner() != -1) {
 		gameOverProcess(winner);
+        return true;
 	}
+    else
+        return false;
 }
 
 void GameScene::menuRestartCallback(cocos2d::Ref* pSender){
