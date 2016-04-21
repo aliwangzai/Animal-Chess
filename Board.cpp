@@ -22,9 +22,11 @@ bool Board::availableMove(Move move) {
 	auto terrainFrom = getTerrain(ptFrom);
 	auto terrainTo = getTerrain(ptTo);
 
-	if (pieceTypeFrom == Pieces::NIL) {
+	if (pieceTypeFrom == Pieces::NIL || pieceFrom->isEaten()) {
 		return false;
 	}
+	if (pieceTo->isEaten())
+		pieceTypeTo = Pieces::NIL;
 
 	// check if two piece are belong to one player
 	if (pieceFrom->getPlayer() == pieceTo->getPlayer())
@@ -47,7 +49,7 @@ bool Board::availableMove(Move move) {
 			allRiverBetweenFromAndTo &= (getTerrain(cmpPt) == Board::RIVER);
 			auto cmpPiece = getPiece(cmpPt);
 			// there if there is an animal that under river
-			if (allRiverBetweenFromAndTo && cmpPiece->getType() != Pieces::NIL) {
+			if (allRiverBetweenFromAndTo && cmpPiece->getType() != Pieces::NIL && !cmpPiece->isEaten() ) {
 				return false;
 			}
 		}
@@ -95,10 +97,6 @@ bool Board::availableMove(Move move) {
 
 	// check mouse and elephant
     if (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT){
-        //if(pieceFrom->getPlayer()==0)
-            //hasElephant2 = false;
-        //if(pieceFrom->getPlayer()==1)
-            //hasElephant1 = false;
 		return true;
     }
 	if (pieceTypeFrom == Pieces::ELEPHANT && pieceTypeTo == Pieces::RAT)
@@ -165,7 +163,40 @@ int Board::getWinner()
 
 bool Board::hasPiece(Pieces::TypePiece type, int player)
 {
-	return (allPieces[getPieceIndex(type,player)]->getPositionBlock() == PointXY{-1, -1});
+	auto piece = allPieces[getPieceIndex(type, player)];
+	return (!piece->isEaten() && piece->getPositionBlock() != PointXY{-1, -1});
+}
+
+void Board::fcoutBoard()
+{
+	FILE *pf = fopen("board.txt", "w+");
+	for (auto i = 0; i < boardPieces[0].size();i++) {
+		for (auto j = 0; j < boardPieces.size();j++) {
+			auto piece = boardPieces[j][i];
+			switch (piece->getType()) {
+			case Pieces::RAT:	fprintf(pf, "Rat\t"); break;
+			case Pieces::CAT:	fprintf(pf, "Cat\t"); break;
+			case Pieces::WOLF:	fprintf(pf, "Wol\t"); break;
+			case Pieces::DOG:	fprintf(pf, "Dog\t"); break;
+			case Pieces::LEOPARD:	fprintf(pf, "Leo\t"); break;
+			case Pieces::TIGER:	fprintf(pf, "Tig\t"); break;
+			case Pieces::LION:	fprintf(pf, "Lio\t"); break;
+			case Pieces::ELEPHANT:	fprintf(pf, "Ele\t"); break;
+			default: {
+				switch (getTerrain({ j,i })) {
+				case NIL:  fprintf(pf, "___\t"); break;
+				case RIVER: fprintf(pf, "riv\t"); break;
+				case DEN1: 
+				case DEN0: fprintf(pf, "den\t"); break;
+				case TRAP: fprintf(pf, "tra\t"); break;
+				default:break;
+				}
+			}break;
+			}
+		}
+		fprintf(pf, "\n");
+	}
+	fclose(pf);
 }
 
 Board::Board()

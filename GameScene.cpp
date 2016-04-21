@@ -145,8 +145,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			// TODO: get a move from Min_Max
-			auto mv = MinMax->getMove(7, 1);
+			auto mv = MinMax->getMove(3, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }

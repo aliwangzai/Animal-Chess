@@ -55,6 +55,8 @@ public:
 
 	bool hasPiece(Pieces::TypePiece type, int player);
     
+
+	void fcoutBoard();
 	Board();
 	~Board();
 private:

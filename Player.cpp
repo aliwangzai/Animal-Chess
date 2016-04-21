@@ -16,7 +16,11 @@ vector<Move> Player::genAllMoves( Board & board)
 	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type--) {
 		auto onePieceMove = genAMove(board, board.allPieces[type*2 + board.currentPlayer]);
 		for (auto a : onePieceMove) {
-			ret.push_back(a);
+			if (ret.size() < 5)
+				ret.push_back(a);
+			else
+				ret.push_back(a);
+			//	break;
 		}
 	}
 	return ret;
@@ -25,14 +29,52 @@ vector<Move> Player::genAllMoves( Board & board)
 float Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
+
+	float sumPower[2] = { 0,0 };
+	float sumDistanceValue[2] = { 0,0 };
+	float threatento[2] = { 0,0 };
+	float eval = 0;
+	
+	// for each pieces
+	for (auto &ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
+		auto piece = *ps;
+		int player = piece->getPlayer();
+		if (!board.hasPiece(piece->getType(),player))
+			continue;
+		// pieces power
+		if (board.getTerrain(piece->getPositionBlock()) == Board::TRAP)
+			sumPower[player] += 0;
+		else if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
+			sumPower[player] += 500;
+		else
+			sumPower[player] += piece->getChessPowerValue();
+		// Distance
+		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase());
+		// threaten
+		auto possibleMoves = genAMove(board, piece);
+		for (auto mv : possibleMoves) {
+			auto toPieces = board.getPiece(mv.to);
+			if (toPieces->getType() != Pieces::NIL) 
+				sumPower[player] += toPieces->getChessPowerValue()/2.0;
+		}
+	}
+	board.fcoutBoard();
+	eval = sumPower[0] - sumPower[1];
+	return -eval;
+	/*
+	2016-04-20: commented by lwl, rewrite as above
+	this takes 7*9 = 63 times loop, we can do evaluation in 16 times loop
+
+	
     float sumPower0=0, sumPower1=0;
     float sumDistanceValue0=0, sumDistanceValue1=0;
     float threatenTo0=0, threatenTo1=0;
     float evalValue = 0;
+
     for(int i= 0 ;i < 9 ;i++){
         for(int j = 0; j<7 ;j++){
             Pieces* tempPiece = board.getPiece(PointXY(i,j));
-            if(tempPiece->getType()!=Pieces::TypePiece::NIL){//循环扫到一个棋子
+            if(tempPiece->getType()!=Pieces::TypePiece::NIL && !tempPiece->isEaten()){//循环扫到一个棋子
                 if(tempPiece->getPlayer()==0){//扫到的是玩家0的棋子
                     //计算子力
                     if(tempPiece->getType() == Pieces::TypePiece::RAT && board.hasPiece(Pieces::TypePiece::ELEPHANT, 1))
@@ -46,7 +88,7 @@ float Player::eval( Board& board){
                     vector<Move> possibleMoves = genAMove(board,tempPiece);//可以到达则我方棋子比对方大
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
-                        if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==1){
+                        if(toPiece->getType()!=Pieces::TypePiece::NIL ){
                             //我放比对方大，增加对方威胁
                             threatenTo1 = threatenTo1 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
                         }
@@ -65,7 +107,7 @@ float Player::eval( Board& board){
                     vector<Move> possibleMoves = genAMove(board,tempPiece);
                     for(int i = 0; i < possibleMoves.size() ;i++){
                         Pieces* toPiece = board.getPiece(possibleMoves[i].to);
-                        if(toPiece->getType()!=Pieces::TypePiece::NIL && toPiece->getPlayer()==0){
+                        if(toPiece->getType()!=Pieces::TypePiece::NIL ){
                             //我放比对方大，增加对方威胁
                             threatenTo0 = threatenTo0 + toPiece->getChessPowerValue()/2;//取棋子1/2的power值作为对对方的威胁
                         }
@@ -79,6 +121,7 @@ float Player::eval( Board& board){
     }
     evalValue =(sumPower1+sumDistanceValue1+threatenTo0) - (sumPower0 + sumDistanceValue0 + threatenTo1);
     return evalValue;
+	*/
 }
 
 vector<Move> Player::genAMove( Board &board, Pieces * fromPiece){

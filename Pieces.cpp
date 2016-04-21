@@ -13,6 +13,10 @@ void Pieces::setProperty(PointXY p, int play, TypePiece t){
     pos= p;
     player = play;
     type = t;
+	if (t == NIL)
+		eaten = true;
+	else
+		eaten = false;
     setChessPowerValue();
 }
 
@@ -34,10 +38,7 @@ void Pieces::bindSprite(Sprite* sprite){
     m_sprite = sprite;
     this->addChild(m_sprite);
 }
-Pieces::Pieces()
-{
-	eaten = false;
-}
+
 bool Pieces::init(){
     return true;
 }
@@ -97,19 +98,19 @@ float Pieces::getDistanceValue(int dis){
             return 100;
             break;
         case 5:
-            return 150;
+            return 100;
             break;
         case 4:
-            return 200;
+            return 100;
             break;
         case 3:
-            return 350;
+            return 150;
             break;
         case 2:
-            return 400;
+            return 200;
             break;
         case 1:
-            return 5000;
+            return 500;
             break;
         default:
             return 10000;
@@ -151,6 +152,9 @@ void Pieces::setChessPowerValue(){
     
 }
 float Pieces::getChessPowerValue(){
-    return chessPower;
+	if (isEaten())
+		return 0;
+	else
+		return chessPower;
 }
 
