@@ -52,9 +52,6 @@ void Pieces::highlight(){
 }
 void Pieces::setPositionBlock(PointXY p, bool show /*= true*/){
     pos = p;
-	if (p.x > 8 || p.x < 0 || p.y > 6 || p.y < 0) {
-		auto a = 3.0;
-	}
 	if (show) {
 		setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
 	}
@@ -81,46 +78,47 @@ int Pieces::getDistanceToEnemyBase(){
     }
 }
 float Pieces::getDistanceValue(int dis){
+	float ret = 0.0;
     switch (dis) {
         case 11:
-            return 30;
+            ret =  30.0;
             break;
         case 10:
-            return 50;
+            ret =  150.0;
             break;
         case 9:
-            return 70;
+            ret =  180.0;
             break;
         case 8:
-            return 100;
+            ret =  220.0;
             break;
         case 7:
-            return 100;
+            ret =  200;
             break;
         case 6:
-            return 100;
+            ret =  200.0;
             break;
         case 5:
-            return 100;
+            ret =  300.0;
             break;
         case 4:
-            return 100;
+            ret =  400.0;
             break;
         case 3:
-            return 150;
+            ret =  600.0;
             break;
         case 2:
-            return 200;
+            ret =  800.0;
             break;
         case 1:
-            return 500;
+            ret =  1000.0;
             break;
         default:
-            return 10000;
+            ret =  10000.0;
             break;
     }
-    
-    
+	ret += getChessPowerValue() * 0.15 / 11 * (11-getDistanceToEnemyBase());
+	return ret;
 }
 void Pieces::setChessPowerValue(){
     switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
@@ -146,7 +144,7 @@ void Pieces::setChessPowerValue(){
             chessPower = 800;
             break;
         case ELEPHANT:
-            chessPower = 1000;
+            chessPower = 1200;
             break;
         default:
             chessPower = 0;
@@ -157,7 +155,6 @@ void Pieces::setChessPowerValue(){
 float Pieces::getChessPowerValue(){
 	if (isEaten())
 		return 0;
-	else
-		return chessPower;
+	return chessPower;
 }
 

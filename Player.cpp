@@ -13,14 +13,12 @@
 vector<Move> Player::genAllMoves( Board & board)
 {
 	vector<Move> ret;
-	for (int type = Pieces::TypePiece::ELEPHANT; type > Pieces::TypePiece::NIL; type--) {
+	for (int type = Pieces::ELEPHANT; type > Pieces::NIL; type--) {
 		auto onePieceMove = genAMove(board, board.allPieces[type*2 + board.currentPlayer]);
 		for (auto a : onePieceMove) {
-			if (ret.size() < 5)
+			auto type = board.getPiece(a.from)->getType();
+			//if ( type == Pieces::LION || type == Pieces::TIGER || type == Pieces::ELEPHANT || type == Pieces::LEOPARD)
 				ret.push_back(a);
-			else
-				ret.push_back(a);
-			//	break;
 		}
 	}
 	return ret;
@@ -33,21 +31,22 @@ float Player::eval( Board& board){
 	float sumPower[2] = { 0,0 };
 	float sumDistanceValue[2] = { 0,0 };
 	float threatento[2] = { 0,0 };
-	float eval = 0;
+	float eval = 0.0f;
 	
+
 	// for each pieces
-	for (auto &ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
+	for (auto ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
 		auto piece = *ps;
 		int player = piece->getPlayer();
 		if (!board.hasPiece(piece->getType(),player))
 			continue;
 		// pieces power
-		if (board.getTerrain(piece->getPositionBlock()) == Board::TRAP)
-			sumPower[player] += 0;
-		else if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
+		if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
 			sumPower[player] += 500;
 		else
 			sumPower[player] += piece->getChessPowerValue();
+		if (TLBesideRiver(board, *ps))
+			sumPower[player] += 100;
 		// Distance
 		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase());
 		// threaten
@@ -58,9 +57,13 @@ float Player::eval( Board& board){
 				sumPower[player] += toPieces->getChessPowerValue()/2.0;
 		}
 	}
+	eval = sumPower[1] - sumPower[0];
+
 	board.fcoutBoard();
-	eval = sumPower[0] - sumPower[1];
-	return -eval;
+	FILE *pf = fopen("board.txt", "a+");
+	fprintf(pf, "\n%f\n", eval);
+	fclose(pf);
+	return eval;
 	/*
 	2016-04-20: commented by lwl, rewrite as above
 	this takes 7*9 = 63 times loop, we can do evaluation in 16 times loop
@@ -240,8 +243,28 @@ vector<Move> Player::genAMove( Board &board, Pieces * fromPiece){
 			if (fromXY.y - 1 >= 0 && board.availableMove(potentialMove))
 				potentialMoves.push_back(potentialMove);
 		}
+
+	// set eatinfo
+	for (auto &mv : potentialMoves) {
+		auto pieceTo = board.getPiece(mv.to);
+		if (pieceTo ->getType() != Pieces::NIL) {
+			mv.eatenIndex = board.getPieceIndex(pieceTo->getType(), pieceTo->getPlayer());
+		}
+	}
     return potentialMoves;
+}
 
-
+bool Player::TLBesideRiver(Board &board, Pieces *piece)
+{		
+	auto x = piece->getPositionBlock().x;
+	auto y = piece->getPositionBlock().y;
+	return (
+		(piece->getType() != Pieces::LION || piece->getType() != Pieces::TIGER) &&
+		(
+			(x && board.getTerrain({ x - 1,y }) == Board::RIVER) ||
+			(y && board.getTerrain({ x,y - 1 }) == Board::RIVER) ||
+			(x < 8 && board.getTerrain({ x + 1,y }) == Board::RIVER) ||
+			(y < 6 && board.getTerrain({ x,y + 1 }) == Board::RIVER)
+		));
 }
 

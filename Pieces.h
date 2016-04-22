@@ -44,6 +44,8 @@ public:
     float getDistanceValue(int dis);
     void setChessPowerValue();
     float getChessPowerValue();
+private:
+
     
 };
 #endif /* Pieces_h */

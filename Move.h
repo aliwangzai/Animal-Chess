@@ -29,12 +29,17 @@ class Move{
 public:
     PointXY from;
     PointXY to;
-	int eatenIndex;
-
+	int  eatenIndex;
 
 	Move();
 	Move(PointXY f, PointXY t);
 	~Move();
+
+	inline bool operator==(const Move& cmp) {
+		return (from == cmp.from && to == cmp.to);
+	}
+
+
 };
 
 #endif /* Move_h */

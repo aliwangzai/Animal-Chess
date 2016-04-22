@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <vector>
 #include "Move.h"
 using namespace std;
 class Gene{

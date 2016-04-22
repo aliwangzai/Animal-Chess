@@ -30,6 +30,8 @@ public:
     bool isThinking;
 	Pieces* selected;
 	Pieces* nul_piece;
+	vector<Move> moveHistory;
+
 
 	Pieces* getPiece(PointXY pt);
 	Pieces* getPiece(Pieces::TypePiece type, int player);
@@ -46,6 +48,7 @@ public:
 
 	void initPieces(TMXTiledMap* map);
 	void moveChess(Move &move, bool show = true);
+
 
 	// -1 if no winner, else return player
 	int getWinner();

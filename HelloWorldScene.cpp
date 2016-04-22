@@ -28,7 +28,7 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
+    srand(time(0));
     auto rootNode = CSLoader::createNode("MainScene.csb");
     addChild(rootNode);
     startButton = static_cast<Button*>(rootNode->getChildByName("StartButton"));

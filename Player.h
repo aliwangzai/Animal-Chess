@@ -24,5 +24,7 @@ public:
     virtual float eval( Board &board);
     vector<Move> genAMove( Board &board, Pieces * fromPiece);
     
+private:
+	bool TLBesideRiver(Board &board, Pieces *piece);
 };
 #endif /* Player_h */

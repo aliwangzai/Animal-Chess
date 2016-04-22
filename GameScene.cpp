@@ -52,8 +52,9 @@ bool GameScene::init() {
         return;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    if(gameMode==3)
-        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+    if(gameMode==3){
+       this->scheduleOnce(schedule_selector(GameScene::startUpdate),1.0f);
+    }
     return true;
 }
 void GameScene::startUpdate(float dt){
@@ -159,7 +160,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(3, 1);
+			auto mv = MinMax->getMove(4, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -172,7 +173,7 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(4, 0);
+    auto mv = MinMax->getMove(3, 0);
     board->moveChess(mv,true);
     std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect())
@@ -180,7 +181,7 @@ void GameScene::firstAIPlay(){
 }
 void GameScene::secondAIPlay(){
     
-    auto mv = MinMax->getMove(4, 1);
+    auto mv = MinMax->getMove(2, 1);
     board->moveChess(mv,true);
     std::cout<<"Minimax2 take step."<<std::endl;
     if(gameOverDetect())

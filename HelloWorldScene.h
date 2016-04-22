@@ -9,6 +9,7 @@
 #include "PopUpLayer.h"
 #include "GameScene.h"
 #include "LevelSelectLayer.h"
+#include <time.h>
 class HelloWorld : public cocos2d::Layer
 {
 public:

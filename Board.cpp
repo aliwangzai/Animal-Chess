@@ -28,20 +28,62 @@ bool Board::availableMove(Move move) {
 	if (pieceTo->isEaten())
 		pieceTypeTo = Pieces::NIL;
 
-	// check if two piece are belong to one player
+	// detect recursively move
+	if (moveHistory.size() >= 8 && 
+		(move == *(moveHistory.end() - 4)) &&
+		(*(moveHistory.end() - 2) == *(moveHistory.end() - 6)) &&
+		(*(moveHistory.end() - 4) == *(moveHistory.end() - 8))
+		)
+		return false;
+
+	
+
+	// check if two pieces are belong to same player
 	if (pieceFrom->getPlayer() == pieceTo->getPlayer())
 		return false;
+
+	// set the priority to lowest if it is trapped
+	if (terrainTo == Board::TRAP)
+		pieceTypeTo = Pieces::NIL;
+
+
 
 	// detect jumping over the river
 	int diffx = ptFrom.x - ptTo.x;
 	int diffy = ptFrom.y - ptTo.y;
-	if (abs(diffx) + abs(diffy) > 1) {
+	int distance = abs(diffx) + abs(diffy);
+	if (distance == 1) {
+		bool land2land = false;
+		land2land = ((pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT) || (pieceTypeFrom >= pieceTypeTo));
+		land2land &= !(pieceTypeFrom == Pieces::ELEPHANT && pieceTypeTo == Pieces::RAT);
+		land2land &= ((terrainFrom != RIVER) && (terrainTo != RIVER));
+		if (pieceFrom->getPlayer())
+			land2land &= (terrainTo != DEN1);
+		else
+			land2land &= (terrainTo != DEN0);
+		if (land2land)
+			return true;
+
+		bool land2river = false;
+		land2river = (terrainFrom == RIVER  || terrainTo == RIVER);
+		land2river &= (pieceTypeFrom == Pieces::RAT);
+		land2river &= pieceTypeTo == NIL;
+		if (land2river)
+			return true;
+
+		bool river2river = false;
+		river2river = (terrainFrom == RIVER && terrainTo == RIVER) && (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::RAT);
+		
+		return river2river;
+	}
+	else{
 		// must move in a line, not diagonal line
-		if (diffx && diffy) return false;
+		if (diffx && diffy)
+			return false;
 		int signx = (diffx == 0) ? 0 : (diffx > 0 ? 1 : -1);
 		int signy = (diffy == 0) ? 0 : (diffy > 0 ? 1 : -1);
-		int cmpX = ptFrom.x - signx*1;
-		int cmpY = ptFrom.y - signy*1;
+		int cmpX = ptFrom.x - signx * 1;
+		int cmpY = ptFrom.y - signy * 1;
 		bool allRiverBetweenFromAndTo = getTerrain({ cmpX,cmpY }) == Board::RIVER;
 		PointXY cmpPt = ptFrom;
 		for (int i = 1; allRiverBetweenFromAndTo&&cmpPt != ptTo; i++) {
@@ -49,11 +91,11 @@ bool Board::availableMove(Move move) {
 			allRiverBetweenFromAndTo &= (getTerrain(cmpPt) == Board::RIVER);
 			auto cmpPiece = getPiece(cmpPt);
 			// there if there is an animal that under river
-			if (allRiverBetweenFromAndTo && cmpPiece->getType() != Pieces::NIL && !cmpPiece->isEaten() ) {
+			if (allRiverBetweenFromAndTo && cmpPiece->getType() != Pieces::NIL && !cmpPiece->isEaten()) {
 				return false;
 			}
 		}
-		if (cmpPt==ptTo) {
+		if (cmpPt == ptTo) {
 			if (!(pieceTypeFrom == Pieces::LION || pieceTypeFrom == Pieces::TIGER)) {
 				return false;
 			} else {
@@ -63,45 +105,6 @@ bool Board::availableMove(Move move) {
 			return false;
 		}
 	}
-
-	// detect if moving into den
-	if (terrainTo == Board::DEN0) {
-		return (currentPlayer != 0);
-	}
-	if (terrainTo == Board::DEN1) {
-		return (currentPlayer != 1);
-	}
-
-	// check if the moving distance is 1
-	if (abs(ptTo.x - ptFrom.x) + abs(ptTo.y - ptFrom.y) != 1) {
-		return false;
-	}
-
-	// check the river and land
-	if ((terrainTo == Board::RIVER && terrainFrom == Board::NIL) ||
-		(terrainTo == Board::NIL && terrainFrom == Board::RIVER)) {
-		if (pieceTypeTo != Pieces::NIL) {
-			return false;
-		} else {
-			if (pieceFrom->getType() == Pieces::RAT)
-				return true;
-			else
-				return false;
-		}
-	}
-
-	// set the priority to lowest if it is trapped
-	if (terrainTo == Board::TRAP) {
-		pieceTypeTo = Pieces::NIL;
-	}
-
-	// check mouse and elephant
-    if (pieceTypeFrom == Pieces::RAT && pieceTypeTo == Pieces::ELEPHANT){
-		return true;
-    }
-	if (pieceTypeFrom == Pieces::ELEPHANT && pieceTypeTo == Pieces::RAT)
-		return false;
-
 	// return priority
 	return (pieceTypeFrom >= pieceTypeTo);
 }
@@ -128,23 +131,27 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 	auto from = fromPiece->getPositionBlock();
 	auto toPiece = getPiece(to);
 	auto toType = toPiece->getType();
+
+	if (show)
+		moveHistory.push_back(move);
 	fromPiece->setPositionBlock(to, show);
-	
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
 	if (toType != Pieces::NIL) {
-		if(show)
-			toPiece->removeFromParent();
+		if (show)
+			toPiece->setPositionBlock({ -2,-2 });
 		toPiece->setEatenValue(true);
 		nPiecesExisted[toPiece->getPlayer()]--;
-        move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());	
-    }
-    currentPlayer = !currentPlayer;
+		move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
+	}
+	currentPlayer = !currentPlayer;
 	if (show && selected->getType() != NIL) {
 		selected->recover();
 		selected = nul_piece;
 	}
+	if (show)
+		fcoutBoard();
 }
 
 
@@ -162,14 +169,14 @@ int Board::getWinner()
 bool Board::hasPiece(Pieces::TypePiece type, int player)
 {
 	auto piece = allPieces[getPieceIndex(type, player)];
-	return (!piece->isEaten() && piece->getPositionBlock() != PointXY{-1, -1});
+	return (!piece->isEaten() && piece->getPositionBlock() != PointXY{ -1, -1 });
 }
 
 void Board::fcoutBoard()
 {
 	FILE *pf = fopen("board.txt", "w+");
-	for (auto i = 0; i < boardPieces[0].size();i++) {
-		for (auto j = 0; j < boardPieces.size();j++) {
+	for (auto i = 0; i < boardPieces[0].size(); i++) {
+		for (auto j = 0; j < boardPieces.size(); j++) {
 			auto piece = boardPieces[j][i];
 			switch (piece->getType()) {
 			case Pieces::RAT:	fprintf(pf, "Rat\t"); break;
@@ -177,14 +184,14 @@ void Board::fcoutBoard()
 			case Pieces::WOLF:	fprintf(pf, "Wol\t"); break;
 			case Pieces::DOG:	fprintf(pf, "Dog\t"); break;
 			case Pieces::LEOPARD:	fprintf(pf, "Leo\t"); break;
-			//case Pieces::TIGER:	fprintf(pf, "Tig\t"); break;
+			case Pieces::TIGER:	fprintf(pf, "Tig\t"); break;
 			case Pieces::LION:	fprintf(pf, "Lio\t"); break;
 			case Pieces::ELEPHANT:	fprintf(pf, "Ele\t"); break;
 			default: {
 				switch (getTerrain({ j,i })) {
 				case NIL:  fprintf(pf, "___\t"); break;
 				case RIVER: fprintf(pf, "riv\t"); break;
-				case DEN1: 
+				case DEN1:
 				case DEN0: fprintf(pf, "den\t"); break;
 				case TRAP: fprintf(pf, "tra\t"); break;
 				default:break;
@@ -199,19 +206,20 @@ void Board::fcoutBoard()
 
 Board::Board()
 {
-	 terrain = {
-		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN0,Board::TRAP,Board::NIL,Board::NIL },
-		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
-		 { Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
-		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
-		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
-		 { Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
-		 { Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
-		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
-		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
+	terrain = {
+		{ Board::NIL,Board::NIL,Board::TRAP,Board::DEN0,Board::TRAP,Board::NIL,Board::NIL },
+		{ Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
+		{ Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
+		{ Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		{ Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		{ Board::NIL,Board::RIVER,Board::RIVER,Board::NIL,Board::RIVER,Board::RIVER,Board::NIL },
+		{ Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL,Board::NIL },
+		{ Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
+		{ Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
-    currentPlayer = 0;
-    isThinking = false;
+	currentPlayer = 0;
+	isThinking = false;
+	moveHistory.clear();
 }
 
 Board::~Board()
@@ -431,9 +439,9 @@ void Board::initPieces(TMXTiledMap* map) {
 	allPieces.push_back(lionPiece1);
 	allPieces.push_back(elephantPiece0);
 	allPieces.push_back(elephantPiece1);
-	
+
 	nPiecesExisted[0] = nPiecesExisted[1] = 8;
-   
+
 
 
 
