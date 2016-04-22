@@ -138,8 +138,8 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 			toPiece->removeFromParent();
 		toPiece->setEatenValue(true);
 		nPiecesExisted[toPiece->getPlayer()]--;
-		move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
-	}
+        move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());	
+    }
     currentPlayer = !currentPlayer;
 	if (show && selected->getType() != NIL) {
 		selected->recover();
@@ -177,7 +177,7 @@ void Board::fcoutBoard()
 			case Pieces::WOLF:	fprintf(pf, "Wol\t"); break;
 			case Pieces::DOG:	fprintf(pf, "Dog\t"); break;
 			case Pieces::LEOPARD:	fprintf(pf, "Leo\t"); break;
-			case Pieces::TIGER:	fprintf(pf, "Tig\t"); break;
+			//case Pieces::TIGER:	fprintf(pf, "Tig\t"); break;
 			case Pieces::LION:	fprintf(pf, "Lio\t"); break;
 			case Pieces::ELEPHANT:	fprintf(pf, "Ele\t"); break;
 			default: {
@@ -210,7 +210,8 @@ Board::Board()
 		 { Board::NIL,Board::NIL,Board::NIL,Board::TRAP,Board::NIL,Board::NIL,Board::NIL },
 		 { Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
-	 currentPlayer = 0;
+    currentPlayer = 0;
+    isThinking = false;
 }
 
 Board::~Board()

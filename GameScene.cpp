@@ -24,8 +24,6 @@ bool GameScene::init() {
     }
     std::cout<<gameMode<<std::endl;
 
-	
-
     TMXTiledMap* gameMap = TMXTiledMap::create("gameMap.tmx");
     this->addChild(gameMap);
     board = new Board();
@@ -54,11 +52,24 @@ bool GameScene::init() {
         return;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
-    if(gameMode==3)
-        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),1.0f);
-    
+    if(gameMode==3){
+       this->scheduleOnce(schedule_selector(GameScene::startUpdate),1.0f);
+    }
     return true;
+}
+void GameScene::startUpdate(float dt){
+     this->scheduleUpdate();
+}
+
+void GameScene::update(float dt){
+    if(!board->isThinking && board->getWinner() == -1){
+        board->isThinking = true;
+        if(board->currentPlayer==0)
+            firstAIPlay();
+        else
+            secondAIPlay();
+        board->isThinking = false;
+    }
 }
 void GameScene::gameOverProcess(int winner){
     Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -159,31 +170,24 @@ void GameScene::onceUpdate(float dt){
             std::cout<<"MCTS take step."<<std::endl;
             board->currentPlayer=0;
         }
-	}
-	if (gameMode == 3) {
-		while (board->getWinner() == -1) {
-			if (board->currentPlayer == 0) {
-				auto mv = MinMax->getMove(3, 0);
-				board->moveChess(mv, true);
-				std::cout << "Minimax1 take step." << std::endl;
-				if (gameOverDetect())
-					break;
-
-			} else {
-				auto mv = MinMax->getMove(3, 1);
-				board->moveChess(mv, true);
-				std::cout << "Minimax2 take step." << std::endl;
-				if (gameOverDetect())
-					break;
-
-			}
-		}
     }
 }
-
-
-bool GameScene::gameOverDetect()
-{
+void GameScene::firstAIPlay(){
+    auto mv = MinMax->getMove(4, 0);
+    board->moveChess(mv,true);
+    std::cout<<"Minimax1 take step."<<std::endl;
+    if(gameOverDetect())
+        cout<<"GameOver"<<endl;
+}
+void GameScene::secondAIPlay(){
+    
+    auto mv = MinMax->getMove(4, 1);
+    board->moveChess(mv,true);
+    std::cout<<"Minimax2 take step."<<std::endl;
+    if(gameOverDetect())
+        cout<<"GameOver"<<endl;
+}
+bool GameScene::gameOverDetect(){
 	if (int winner = board->getWinner() != -1) {
 		gameOverProcess(winner);
         return true;
@@ -191,7 +195,6 @@ bool GameScene::gameOverDetect()
     else
         return false;
 }
-
 void GameScene::menuRestartCallback(cocos2d::Ref* pSender){
      Scene* newGame = GameScene::createScene();
      auto transition = TransitionCrossFade::create(0.5f, newGame);

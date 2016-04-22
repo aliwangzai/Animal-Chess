@@ -27,6 +27,7 @@ public:
 
 	//0,1
 	int currentPlayer;
+    bool isThinking;
 	Pieces* selected;
 	Pieces* nul_piece;
 
