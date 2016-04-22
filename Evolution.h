@@ -10,23 +10,33 @@
 #define Evolution_h
 #include "Gene.h"
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 using namespace std;
-class Evolution{
+class Evolution {
 private:
-    vector<Gene> population;
-    int generationNum;
-    float crossCoverRate;
-    float mutationRate;
+	int generationNum;
+	float crossCoverRate;
+	float mutationRate;
+	Evolution();
+	static Evolution* m_pInstance;
 public:
-    Evolution(int g_Num,int P_Num);//generation num and population num;
-    ~Evolution();
-    void generatePopulation(int popuNum);
-    void mutation(int genePos, float mutationRate);
-    void crossCover(int genePos1,int genePos2,float crossCoverRate);
-    void select();
-    int getGenerationNum();
-    void storePopulationGenes();
-    void loadPopulationGenes();
+	int currentPairNum; //current fight gene
+	vector<Gene> population;
+	static Evolution* GetInstance() {
+		if (m_pInstance == NULL)  //判断是否第一次调用
+			m_pInstance = new Evolution();
+		return m_pInstance;
+	}
+	~Evolution();
+	void generatePopulation(int popuNum);
+	void mutation(int genePos);
+	void crossCover(int genePos1, int genePos2);
+	void select();
+	int getGenerationNum();
+	void storePopulationGenes();
+	void loadPopulationGenes();
 };
 
 #endif /* Evolution_h */

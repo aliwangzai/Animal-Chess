@@ -45,14 +45,13 @@ public:
     int getDistanceToEnemyBase();
     
     float getDistanceValue(int dis);
-    float setDistanceValye(Gene gene);
+    void setDistanceValye(Gene gene);
     void setChessPowerValue(Gene gene);
     float getChessPowerValue();
-private:
 
-    
-    vector<float> distanceValues;
     float threatenFraction;
+    vector<float> distanceValues;
+private:
     
     
 };

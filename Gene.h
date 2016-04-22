@@ -13,18 +13,20 @@
 #include <string>
 #include <iostream>
 #include <vector>
+
 #include "Move.h"
 using namespace std;
-class Gene{
+class Gene {
 private:
-    vector<float> gene;
+	vector<float> gene;
 public:
-    int winState;           // 0 not start game, 1 win game, -1 lose game
-    Gene();
-    ~Gene();
-    void generateRandomGene();
-    void printGene();
-    vector<float>getGene();
-    };
+	int winState;           // 0 not start game, 1 win game, -1 lose game
+	Gene();
+	~Gene();
+	void generateRandomGene();
+	void printGene();
+	vector<float>getGene();
+	void setGene(vector<float> m_gene);
+};
 
 #endif /* Gene_h */

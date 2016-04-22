@@ -189,12 +189,12 @@ void Pieces::setChessPowerValue(Gene gene){
 
     
 }
-float Pieces::setDistanceValye(Gene gene){
+void Pieces::setDistanceValye(Gene gene){
     for(int i = 8 ; i< 20 ;i++){
         distanceValues.push_back(gene.getGene().at(i));
     }
-    
 }
+
 float Pieces::getChessPowerValue(){
 	if (isEaten())
 		return 0;

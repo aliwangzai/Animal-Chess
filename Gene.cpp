@@ -1,3 +1,4 @@
+
 //
 //  Gene.cpp
 //  Animal
@@ -8,21 +9,24 @@
 
 #include "Gene.h"
 
-Gene::Gene(){ winState = 0;}
-Gene::~Gene(){}
+Gene::Gene() { winState = 0; }
+Gene::~Gene() {}
 
-void Gene::generateRandomGene(){
-    for(int i = 0; i<21;i++){
-        gene.push_back((float)rand()/RAND_MAX);
-    }
+void Gene::generateRandomGene() {
+	for (int i = 0; i<20; i++) {
+		gene.push_back((float)(rand() % 101));
+	}
+	gene.push_back((float)(rand() % 11));
 }
-void Gene::printGene(){
-    for(int i = 0; i< gene.size();i++){
-        cout<<gene.at(i)<<"#";
-    }
-    cout<<endl;
+void Gene::printGene() {
+	for (int i = 0; i< gene.size(); i++) {
+		cout << gene.at(i) << "#";
+	}
+	cout << endl;
 }
-vector<float> Gene::getGene(){
-    return this->gene;
+vector<float> Gene::getGene() {
+	return this->gene;
 }
-
+void Gene::setGene(vector<float> m_gene) {
+	gene = m_gene;
+}
