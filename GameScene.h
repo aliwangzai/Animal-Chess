@@ -28,7 +28,7 @@ public:
     virtual bool init();
     CREATE_FUNC(GameScene);
     Board* board;
-	void gameOverDetect();
+	bool gameOverDetect();
 	AI_Min_Max *MinMax;
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuBackToMainCallback(cocos2d::Ref* pSender);
