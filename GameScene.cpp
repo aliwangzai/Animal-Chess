@@ -54,8 +54,8 @@ bool GameScene::init() {
         return;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    if(gameMode==3)
-        this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
+	if (gameMode == 3) 		
+			this->scheduleOnce(schedule_selector(GameScene::onceUpdate), 0.01f);
     
     return true;
 }
@@ -160,16 +160,18 @@ void GameScene::onceUpdate(float dt){
         }
     }
     if (gameMode==3){
-        while(1){
+        //while(board->getWinner() == -1){
             if(board->currentPlayer==0){
                 std::cout<<"Minimax take step."<<std::endl;
-                board->currentPlayer=1;
+				auto mv = MinMax->getMove(2, 0);
+				board->moveChess(mv);
             }
             else{
                 std::cout<<"MCTS take step."<<std::endl;
-                board->currentPlayer=0;
+				auto mv = MinMax->getMove(2, 1);
+				board->moveChess(mv);
             }
-        }
+     //   }
     }
 }
 

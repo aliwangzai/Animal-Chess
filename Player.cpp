@@ -26,7 +26,7 @@ vector<Move> Player::genAllMoves( Board & board)
 	return ret;
 }
 
-float Player::eval( Board& board){
+int Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
 

@@ -2,6 +2,7 @@
 
 
 #include "Player.h"
+#define INF 88888888
 
 class AI_Min_Max : public Player{
 public:
@@ -20,4 +21,6 @@ public:
 
 private:
 	BestMove alphaBeta(int depth, int alpha, int beta, int player);
+	int alphaBeta2(int depth, int alpha, int beta, Move &move);
+	void storeBestMove(vector<BestMove> &allBestMoves, BestMove best_move);
 };
