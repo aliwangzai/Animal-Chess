@@ -52,7 +52,6 @@ bool GameScene::init() {
         return;
     };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
     if(gameMode==3)
         this->scheduleOnce(schedule_selector(GameScene::onceUpdate),0.01f);
     return true;

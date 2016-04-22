@@ -2,69 +2,55 @@
 #include "time.h"
 
 
-AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int player){
-	BestMove best_move{ Move(),0.0 };
+
+
+AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int player) {
+	BestMove best_move{ Move(),-INF };
 	vector<BestMove> allBestMoves;
 
-	if (depth <= 0 ) {
+	if (depth <= 0) {
 		best_move.value = Player::eval(*board);
 		return best_move;
 	}
-
 	auto allMoves = genAllMoves(*board);
 
-	if(player){
+	if (player) {
 		best_move.value = INT_MIN;
-		for(auto mv : allMoves ){
+		for (auto mv : allMoves) {
 			applyMove(mv);
-			auto val = alphaBeta(depth-1, alpha, beta, false);
+			auto val = alphaBeta(depth - 1, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
 			if (val.value >= best_move.value) {
 				best_move = val;
-				if (allBestMoves.size() < 5)
-					allBestMoves.push_back(best_move);
-				else
-					allBestMoves[rand() % 5] = best_move;
+				alpha = val.value;
+				storeBestMove(allBestMoves, best_move);
 			}
-			if (best_move.value > alpha)
-				alpha = best_move.value;
-			if(beta < alpha){
-				BestMove ret{ Move(),alpha };
-				return ret;
-			}
-			if (beta < alpha )
-				return BestMove { Move(),alpha };
+			if (beta < alpha)
+				return BestMove{ Move(),alpha };
 		}
 		filterBestMoves(allBestMoves, best_move, 1);
-	}else{
+	} else {
 		best_move.value = INT_MAX;
-		for( auto mv : allMoves ){
+		for (auto mv : allMoves) {
 			applyMove(mv);
-			auto val = alphaBeta( depth-1, alpha, beta, true );
+			auto val = alphaBeta(depth - 1, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
 			if (val.value <= best_move.value) {
 				best_move = val;
-				if (allBestMoves.size() < 5)
-					allBestMoves.push_back(best_move);
-				else
-					allBestMoves[rand() % 5] = best_move;
+				beta = val.value;
+				storeBestMove(allBestMoves, best_move);
 			}
-			if (best_move.value < beta )
-				beta = best_move.value;
-			if( beta < alpha ){
-				BestMove ret{ Move(),beta };
-				return ret;
-			}
-			if( val.value < alpha )
+			if (val.value < alpha)
 				return BestMove{ Move(),beta };
-
 		}
-		filterBestMoves(allBestMoves,best_move,0);
+		filterBestMoves(allBestMoves, best_move, 0);
 	}
+
+
 	return allBestMoves[rand() % allBestMoves.size()];
-	
+
 }
 
 void AI_Min_Max::storeBestMove(vector<BestMove>& allBestMoves, BestMove best_move)
@@ -75,23 +61,20 @@ void AI_Min_Max::storeBestMove(vector<BestMove>& allBestMoves, BestMove best_mov
 		allBestMoves[rand() % 5] = best_move;
 }
 
-
-int AI_Min_Max::alphaBeta2(int depth, int alpha, int beta, BestMove &move)
+int AI_Min_Max::alphaBeta2(int depth, int alpha, int beta, Move &move)
 {
-	vector<BestMove> allBestMoves;
-	BestMove best_move;
-
 	if (depth <= 0)
 		return Player::eval(*board);
 	// Null move
-	//board->currentPlayer = !board->currentPlayer;
-	//auto val = -alphaBeta2(depth - 3, -beta, -beta + 1, BestMove());
-	//board->currentPlayer = !board->currentPlayer;
+	board->currentPlayer = !board->currentPlayer;
+	//auto val = -alphaBeta2(depth - 3, -beta, -beta + 1, Move());
+	board->currentPlayer = !board->currentPlayer;
 	//if (val >= beta)
-		//return beta;
+	//return beta;
 	// End of null move
-
+	Move best_move;
 	auto allMoves = genAllMoves(*board);
+
 	for (auto mv : allMoves) {
 		applyMove(mv);
 		int val = -alphaBeta2(depth - 1, -beta, -alpha, best_move);
@@ -100,21 +83,20 @@ int AI_Min_Max::alphaBeta2(int depth, int alpha, int beta, BestMove &move)
 			return beta;
 		if (val > alpha) {
 			alpha = val;
-			move.move = mv;	move.value = val;
+			move = mv;
 		}
 	}
 	return alpha;
-
 }
 
 Move AI_Min_Max::getMove(int depth, int player)
 {
-	
 
-	//auto best_move = alphaBeta(depth, INT_MIN, INT_MAX, player);
-	BestMove best_move;
-	alphaBeta2(depth, -INF, INF, best_move);
+	auto best_move = alphaBeta(depth, INT_MIN, INT_MAX, player);
 	return best_move.move;
+	//Move bset_move;
+	//alphaBeta2(depth, -INF, INF, bset_move);
+	//return bset_move;
 }
 
 void AI_Min_Max::applyMove(Move & mv)
@@ -137,9 +119,8 @@ void AI_Min_Max::filterBestMoves(vector<BestMove>& allBestMoves, BestMove best_m
 			else
 				it++;
 	}
-	
-}
 
+}
 
 void AI_Min_Max::CancelMove(Move& mv)
 {
