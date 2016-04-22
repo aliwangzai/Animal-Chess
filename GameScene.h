@@ -36,6 +36,11 @@ public:
     void operatePieceVsPeople(PointXY chosenBlock);
     void operatePieceVsAI(PointXY chosenBlock);
     virtual void onceUpdate(float dt);
+    void firstAIPlay();
+    void secondAIPlay();
+    void startUpdate(float dt);
+    virtual void update(float dt);
+    
   
 	~GameScene() {
 		delete board;
