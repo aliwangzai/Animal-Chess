@@ -17,7 +17,6 @@ void Pieces::setProperty(PointXY p, int play, TypePiece t){
 		eaten = true;
 	else
 		eaten = false;
-    setChessPowerValue();
 }
 
 PointXY Pieces::getPositionBlock(){
@@ -52,9 +51,6 @@ void Pieces::highlight(){
 }
 void Pieces::setPositionBlock(PointXY p, bool show /*= true*/){
     pos = p;
-	if (p.x > 8 || p.x < 0 || p.y > 6 || p.y < 0) {
-		auto a = 3.0;
-	}
 	if (show) {
 		setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
 	}
@@ -81,6 +77,7 @@ int Pieces::getDistanceToEnemyBase(){
     }
 }
 float Pieces::getDistanceValue(int dis){
+    /*
     switch (dis) {
         case 11:
             return 30;
@@ -119,10 +116,13 @@ float Pieces::getDistanceValue(int dis){
             return 10000;
             break;
     }
+     */
+    return distanceValues[dis];
     
     
 }
-void Pieces::setChessPowerValue(){
+void Pieces::setChessPowerValue(Gene gene){
+    /*
     switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
         case RAT:
             chessPower = 100;
@@ -151,6 +151,43 @@ void Pieces::setChessPowerValue(){
         default:
             chessPower = 0;
             break;
+    }
+     */
+    switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
+        case RAT:
+            chessPower = gene.getGene().at(0);
+            break;
+        case CAT:
+            chessPower = gene.getGene().at(1);
+            break;
+        case WOLF:
+            chessPower = gene.getGene().at(2);
+            break;
+        case DOG:
+            chessPower = gene.getGene().at(3);
+            break;
+        case LEOPARD:
+            chessPower = gene.getGene().at(4);
+            break;
+        case TIGER:
+            chessPower = gene.getGene().at(5);
+            break;
+        case LION:
+            chessPower = gene.getGene().at(6);
+            break;
+        case ELEPHANT:
+            chessPower = gene.getGene().at(7);
+            break;
+        default:
+            chessPower = 0;
+            break;
+    }
+
+    
+}
+float Pieces::setDistanceValye(Gene gene){
+    for(int i = 8 ; i< 20 ;i++){
+        distanceValues.push_back(gene.getGene().at(i));
     }
     
 }

@@ -11,8 +11,10 @@
 #include "cocos2d.h"
 #include <iostream>
 #include "Move.h"
+#include "Gene.h"
 
 USING_NS_CC;
+using namespace std;
 class Pieces : public Node{
 public:
     enum TypePiece {NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT};
@@ -41,9 +43,15 @@ public:
     
 	bool isEaten();
     int getDistanceToEnemyBase();
+    
     float getDistanceValue(int dis);
-    void setChessPowerValue();
+    float setDistanceValye(Gene gene);
+    void setChessPowerValue(Gene gene);
     float getChessPowerValue();
+    
+    vector<float> distanceValues;
+    float threatenFraction;
+    
     
 };
 #endif /* Pieces_h */

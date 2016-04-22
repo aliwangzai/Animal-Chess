@@ -26,7 +26,7 @@ vector<Move> Player::genAllMoves( Board & board)
 	return ret;
 }
 
-float Player::eval( Board& board){
+int Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
 
@@ -36,7 +36,7 @@ float Player::eval( Board& board){
 	float eval = 0;
 	
 	// for each pieces
-	for (auto &ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
+	for (auto ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
 		auto piece = *ps;
 		int player = piece->getPlayer();
 		if (!board.hasPiece(piece->getType(),player))
@@ -55,10 +55,10 @@ float Player::eval( Board& board){
 		for (auto mv : possibleMoves) {
 			auto toPieces = board.getPiece(mv.to);
 			if (toPieces->getType() != Pieces::NIL) 
-				sumPower[player] += toPieces->getChessPowerValue()/2.0;
+				sumPower[player] += toPieces->getChessPowerValue()/piece->threatenFraction;
 		}
 	}
-	board.fcoutBoard();
+	//board.fcoutBoard();
 	eval = sumPower[0] - sumPower[1];
 	return -eval;
 	/*
