@@ -15,6 +15,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "GameScene.h"
+#include "Evolution.h"
 USING_NS_CC;
 using namespace cocos2d::ui;
 class LevelSelectLayer: public cocos2d::Layer{

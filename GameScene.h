@@ -15,6 +15,7 @@
 #include "ui/CocosGUI.h"
 #include "HelloWorldScene.h"
 #include "LevelSelectLayer.h"
+#include "Evolution.h"
 #include <time.h>
 
 #include "Board.h"
@@ -36,10 +37,14 @@ public:
     void operatePieceVsPeople(PointXY chosenBlock);
     void operatePieceVsAI(PointXY chosenBlock);
     virtual void onceUpdate(float dt);
+    
     void firstAIPlay();
     void secondAIPlay();
     void startUpdate(float dt);
     virtual void update(float dt);
+    
+    void startEvolutionPrcess();
+    void finishEvolutionProcess();
     
   
 	~GameScene() {

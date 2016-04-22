@@ -57,6 +57,7 @@ void LevelSelectLayer::onPVMTCSButtonClick(cocos2d::Ref *psender,cocos2d::ui::To
 }
 void LevelSelectLayer::onMinimaxVMTCSButtonClick(cocos2d::Ref *psender,cocos2d::ui::TouchEventType type){
     gameMode = 3;
+    Evolution::GetInstance();
     Scene* newGame = GameScene::createScene();
     auto transition = TransitionCrossFade::create(0.5f, newGame);
     Director::getInstance()->replaceScene(transition);    

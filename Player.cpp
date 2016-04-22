@@ -24,7 +24,7 @@ vector<Move> Player::genAllMoves( Board & board)
 	return ret;
 }
 
-float Player::eval( Board& board){
+int Player::eval( Board& board){
     //Pieces::getDistanceToEnemyBase() 获取棋子离敌方base的距离
     //pieces::getChessPower() 获取子力
 
@@ -54,7 +54,7 @@ float Player::eval( Board& board){
 		for (auto mv : possibleMoves) {
 			auto toPieces = board.getPiece(mv.to);
 			if (toPieces->getType() != Pieces::NIL) 
-				sumPower[player] += toPieces->getChessPowerValue()/2.0;
+				sumPower[player] += toPieces->getChessPowerValue()/piece->threatenFraction;
 		}
 	}
 	eval = sumPower[1] - sumPower[0];
@@ -64,6 +64,7 @@ float Player::eval( Board& board){
 	fprintf(pf, "\n%f\n", eval);
 	fclose(pf);
 	return eval;
+
 	/*
 	2016-04-20: commented by lwl, rewrite as above
 	this takes 7*9 = 63 times loop, we can do evaluation in 16 times loop

@@ -22,14 +22,15 @@ bool GameScene::init() {
     if (!Layer::init()) {
         return false;
     }
-    std::cout<<gameMode<<std::endl;
+    //std::cout<<gameMode<<std::endl;
 
     TMXTiledMap* gameMap = TMXTiledMap::create("gameMap.tmx");
     this->addChild(gameMap);
     board = new Board();
     board->initPieces(gameMap);
 	MinMax = new AI_Min_Max(board);
-
+    startEvolutionPrcess();
+    
     auto listener = EventListenerTouchOneByOne::create();
     
     listener->onTouchBegan = [](Touch* touch, Event* event) {
@@ -57,6 +58,57 @@ bool GameScene::init() {
     }
     return true;
 }
+
+void GameScene::startEvolutionPrcess(){
+    //Evolution::GetInstance()->loadPopulationGenes();
+    int pairnum =Evolution::GetInstance()->currentPairNum;
+    int populationNum =Evolution::GetInstance()->population.size();
+    Gene gene1 = Evolution::GetInstance()->population[pairnum];
+    Gene gene2 = Evolution::GetInstance()->population[populationNum-1-pairnum];
+    for(int i =0; i< board->allPieces.size();i++){
+        if(board->allPieces[i]->getPlayer()==0){
+            board->allPieces[i]->setChessPowerValue(gene1);  //index 0-7 represent chess value 
+            board->allPieces[i]->setDistanceValye(gene1); //index 8-19 represent distance value from  dis =0 to dis = 11
+            board->allPieces[i]->threatenFraction = gene1.getGene().at(20);
+        }
+        else{
+            board->allPieces[i]->setChessPowerValue(gene2);
+            board->allPieces[i]->setDistanceValye(gene2);
+            board->allPieces[i]->threatenFraction = gene2.getGene().at(20);
+        }
+    }
+
+    
+    
+}
+void GameScene::finishEvolutionProcess(){
+    int pairnum =Evolution::GetInstance()->currentPairNum;
+    int populationNum =Evolution::GetInstance()->population.size();
+    if(board->getWinner()==0){
+        Evolution::GetInstance()->population[pairnum].winState = 1;
+        Evolution::GetInstance()->population[populationNum-1-pairnum].winState = -1;
+    }
+    else{
+        Evolution::GetInstance()->population[pairnum].winState = -1;
+        Evolution::GetInstance()->population[populationNum-1-pairnum].winState = 1;
+    }
+    if(Evolution::GetInstance()->currentPairNum != Evolution::GetInstance()->population.size()/2){ //not all pairs finish their game
+        Evolution::GetInstance()->currentPairNum++;
+    }
+    else{//all pair finish game
+        Evolution::GetInstance()->select();
+        if(Evolution::GetInstance()->getGenerationNum()==0){
+            Evolution::GetInstance()->storePopulationGenes();
+            gameOverProcess(board->getWinner());//evolution end
+        }
+        else{
+            Evolution::GetInstance()->currentPairNum = 0;
+            Evolution::GetInstance()->storePopulationGenes();
+        }
+    }
+     
+}
+
 void GameScene::startUpdate(float dt){
      this->scheduleUpdate();
 }
@@ -175,17 +227,27 @@ void GameScene::onceUpdate(float dt){
 void GameScene::firstAIPlay(){
     auto mv = MinMax->getMove(3, 0);
     board->moveChess(mv,true);
-    std::cout<<"Minimax1 take step."<<std::endl;
-    if(gameOverDetect())
+    //std::cout<<"Minimax1 take step."<<std::endl;
+    if(gameOverDetect()){
         cout<<"GameOver"<<endl;
+        finishEvolutionProcess();
+        Scene* newGame = GameScene::createScene();
+        auto transition = TransitionCrossFade::create(0.5f, newGame);
+        Director::getInstance()->replaceScene(transition);
+    }
 }
 void GameScene::secondAIPlay(){
     
     auto mv = MinMax->getMove(2, 1);
     board->moveChess(mv,true);
-    std::cout<<"Minimax2 take step."<<std::endl;
-    if(gameOverDetect())
+    //std::cout<<"Minimax2 take step."<<std::endl;
+    if(gameOverDetect()){
         cout<<"GameOver"<<endl;
+        finishEvolutionProcess();
+        Scene* newGame = GameScene::createScene();
+        auto transition = TransitionCrossFade::create(0.5f, newGame);
+        Director::getInstance()->replaceScene(transition);
+    }
 }
 bool GameScene::gameOverDetect(){
 	if (int winner = board->getWinner() != -1) {
