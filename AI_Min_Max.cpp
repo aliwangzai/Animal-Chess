@@ -12,25 +12,7 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int p
 		best_move.value = Player::eval(*board);
 		return best_move;
 	}
-	auto allMoves = genAllMoves(*board);
-
-	// Null move
-	/*
-	board->currentPlayer = !board->currentPlayer;
-	auto val = alphaBeta(depth - 3, beta-1, beta, player);
-	board->currentPlayer = !board->currentPlayer;
-	if (player)
-		if (beta < val.value)
-			return BestMove{ Move(), (float)beta };
-		else;
-	else
-		if( alpha < val.value )
-			return BestMove{ Move(), (float)beta };
-		else;
-		*/
-
-	// End of null move
-	
+	auto allMoves = genAllMoves(*board);	
 	
 	if(player){
 		best_move.value = INT_MIN;
@@ -45,8 +27,7 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int p
 				storeBestMove(allBestMoves, best_move);
 			}
 			if (beta < alpha )
-				//return BestMove { Move(),(float)alpha };
-				break;
+				return BestMove { Move(),(float)alpha };
 		}
 		filterBestMoves(allBestMoves, best_move, 1);
 	}else{
@@ -62,8 +43,7 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, int alpha, int beta, int p
 				storeBestMove(allBestMoves, best_move);
 			}
 			if( val.value < alpha )
-				//return BestMove{ Move(),(float)beta };
-				break;
+				return BestMove{ Move(),(float)beta };
 		}
 		filterBestMoves(allBestMoves,best_move,0);
 	}
@@ -85,25 +65,28 @@ int AI_Min_Max::alphaBeta2(int depth, int alpha, int beta, Move &move)
 {
 	if (depth <= 0)
 		return Player::eval(*board);
-
-
-
-	int local_alpha = alpha;
+	// Null move
+	board->currentPlayer = !board->currentPlayer;
+	//auto val = -alphaBeta2(depth - 3, -beta, -beta + 1, Move());
+	board->currentPlayer = !board->currentPlayer;
+	//if (val >= beta)
+		//return beta;
+	// End of null move
 	Move best_move;
 	auto allMoves = genAllMoves(*board);
 
 	for (auto mv : allMoves) {
 		applyMove(mv);
-		int val = -alphaBeta2(depth - 1, -beta, -local_alpha, best_move);
+		int val = -alphaBeta2(depth - 1, -beta, -alpha, best_move);
 		CancelMove(mv);
 		if (val >= beta)
 			return beta;
-		if (val > local_alpha) {
-			local_alpha = val;
+		if (val > alpha) {
+			alpha = val;
 			move = mv;
 		}
 	}
-	return local_alpha;
+	return alpha;
 }
 
 Move AI_Min_Max::getMove(int depth, int player)
@@ -111,9 +94,9 @@ Move AI_Min_Max::getMove(int depth, int player)
 	
 	//auto best_move = alphaBeta(depth, INT_MIN, INT_MAX, player);
 	//return best_move.move;
-	Move ret;
-	alphaBeta2(depth, -INF, INF, ret);
-	return ret;
+	Move bset_move;
+	alphaBeta2(depth, -INF, INF, bset_move);
+	return bset_move;
 }
 
 void AI_Min_Max::applyMove(Move & mv)
