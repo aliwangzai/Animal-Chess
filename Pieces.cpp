@@ -52,6 +52,9 @@ void Pieces::highlight(){
 }
 void Pieces::setPositionBlock(PointXY p, bool show /*= true*/){
     pos = p;
+	if (p.x > 8 || p.x < 0 || p.y > 6 || p.y < 0) {
+		auto a = 3.0;
+	}
 	if (show) {
 		setPosition((p.x + 1) * 80.0 + 40, (7 - p.y) * 70.0 + 35);
 	}

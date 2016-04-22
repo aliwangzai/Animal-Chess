@@ -149,7 +149,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(4, 1);
+			auto mv = MinMax->getMove(3, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -163,14 +163,14 @@ void GameScene::onceUpdate(float dt){
 	if (gameMode == 3) {
 		while (board->getWinner() == -1) {
 			if (board->currentPlayer == 0) {
-				auto mv = MinMax->getMove(5, 0);
+				auto mv = MinMax->getMove(3, 0);
 				board->moveChess(mv, true);
 				std::cout << "Minimax1 take step." << std::endl;
 				if (gameOverDetect())
 					break;
 
 			} else {
-				auto mv = MinMax->getMove(5, 1);
+				auto mv = MinMax->getMove(3, 1);
 				board->moveChess(mv, true);
 				std::cout << "Minimax2 take step." << std::endl;
 				if (gameOverDetect())
