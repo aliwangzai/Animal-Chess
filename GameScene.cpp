@@ -63,19 +63,13 @@ void GameScene::startEvolutionPrcess(){
     //Evolution::GetInstance()->loadPopulationGenes();
     int pairnum =Evolution::GetInstance()->currentPairNum;
     int populationNum =Evolution::GetInstance()->population.size();
-    Gene gene1 = Evolution::GetInstance()->population[pairnum];
-    Gene gene2 = Evolution::GetInstance()->population[populationNum-1-pairnum];
-    for(int i =0; i< board->allPieces.size();i++){
-        if(board->allPieces[i]->getPlayer()==0){
-            board->allPieces[i]->setChessPowerValue(gene1);  //index 0-7 represent chess value 
-            board->allPieces[i]->setDistanceValye(gene1); //index 8-19 represent distance value from  dis =0 to dis = 11
-            board->allPieces[i]->threatenFraction = gene1.getGene().at(20);
-        }
-        else{
-            board->allPieces[i]->setChessPowerValue(gene2);
-            board->allPieces[i]->setDistanceValye(gene2);
-            board->allPieces[i]->threatenFraction = gene2.getGene().at(20);
-        }
+    Gene gene0 = Evolution::GetInstance()->population[pairnum];
+    Gene gene1 = Evolution::GetInstance()->population[populationNum-1-pairnum];
+    for(int i =2; i< board->allPieces.size();i++){
+		if (board->allPieces[i]->getPlayer() == 0)
+			board->allPieces[i]->setGene(gene0);
+		else
+			board->allPieces[i]->setGene(gene1);
     }
 
     
@@ -128,7 +122,8 @@ void GameScene::gameOverProcess(int winner){
     Sprite* sp;
     if(winner == 0)
         sp = Sprite::create("gameover_blue.png");
-    else
+	// TODO: draw game
+    else if(winner == 1 || winner == 2)
         sp = Sprite::create("gameover_red.png");
     sp->setPosition(Point(visibleSize.width/2,visibleSize.height/2));
     auto restartItem = MenuItemImage::create ("restart_normal.png",
@@ -225,7 +220,7 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(3, 0);
+    auto mv = MinMax->getMove(1, 0);
     board->moveChess(mv,true);
     //std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect()){

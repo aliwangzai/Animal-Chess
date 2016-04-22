@@ -162,6 +162,8 @@ int Board::getWinner()
 		return 1;
 	else if (boardPieces[8][3]->getType() != Pieces::NIL || !nPiecesExisted[1])
 		return 0;
+	else if (moveHistory.size() >= 200)
+		return 2;
 	else return -1;
 }
 

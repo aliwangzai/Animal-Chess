@@ -14,9 +14,9 @@ Gene::~Gene() {}
 
 void Gene::generateRandomGene() {
 	for (int i = 0; i<20; i++) {
-		gene.push_back((float)(rand() % 101));
+		gene.push_back((float)(rand() % 101)+1);
 	}
-	gene.push_back((float)(rand() % 11));
+	gene.push_back((float)(rand() % 11)+1);
 }
 void Gene::printGene() {
 	for (int i = 0; i< gene.size(); i++) {

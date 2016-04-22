@@ -29,17 +29,16 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 				val = alphaBeta(depth - 1, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
-			if (val.value >= best_move.value) {
+			if (val.value > best_move.value) {
 				best_move = val;
-				filterBestMoves(allBestMoves, best_move, player);
-				storeBestMove(allBestMoves, best_move);
+				//filterBestMoves(allBestMoves, best_move, player);
+				//storeBestMove(allBestMoves, best_move);
 			}
-			if (val.value > alpha)
+			if (val.value >= alpha)
 				alpha = val.value;
-			if (beta <= alpha)
+			if (beta < alpha)
 				return BestMove{ Move(),alpha };
 		}
-		filterBestMoves(allBestMoves, best_move, player);
 	} else {
 		best_move.value = INF;
 		for (auto mv : allMoves) {
@@ -50,19 +49,19 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 				val = alphaBeta(depth -1, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
-			if (val.value <= best_move.value) {
+			if (val.value < best_move.value) {
 				best_move = val;
-				filterBestMoves(allBestMoves, best_move,player);
-				storeBestMove(allBestMoves, best_move);
+				//filterBestMoves(allBestMoves, best_move,player);
+				//storeBestMove(allBestMoves, best_move);
 			}
 			if (val.value < beta)
 				beta = val.value;
 			if (beta <= alpha)
 				return BestMove{ Move(),beta };
 		}
-		filterBestMoves(allBestMoves, best_move, player);
 	}
-	return allBestMoves[rand() % allBestMoves.size()];
+	//return allBestMoves[rand() % allBestMoves.size()];
+	return best_move;
 
 }
 
@@ -76,10 +75,8 @@ void AI_Min_Max::storeBestMove(vector<BestMove>& allBestMoves, BestMove best_mov
 
 Move AI_Min_Max::getMove(int depth, int player)
 {
-
 	auto best_move = alphaBeta(depth, INT_MIN, INT_MAX, player);
-	return best_move.move;
-	
+	return best_move.move;	
 }
 
 void AI_Min_Max::applyMove(Move & mv)

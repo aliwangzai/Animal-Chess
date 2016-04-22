@@ -51,6 +51,8 @@ public:
 
     float threatenFraction;
     vector<float> distanceValues;
+
+	void setGene(Gene &gen);
 private:
     
     

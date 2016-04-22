@@ -260,7 +260,7 @@ bool Player::TLBesideRiver(Board &board, Pieces *piece)
 	auto x = piece->getPositionBlock().x;
 	auto y = piece->getPositionBlock().y;
 	return (
-		(piece->getType() != Pieces::LION || piece->getType() != Pieces::TIGER) &&
+		(piece->getType() == Pieces::LION || piece->getType() == Pieces::TIGER) &&
 		(
 			(x && board.getTerrain({ x - 1,y }) == Board::RIVER) ||
 			(y && board.getTerrain({ x,y - 1 }) == Board::RIVER) ||
