@@ -27,6 +27,7 @@ public:
 	void printGene();
 	vector<float>getGene();
 	void setGene(vector<float> m_gene);
+    void updateGene(int pos, float value);
 };
 
 #endif /* Gene_h */

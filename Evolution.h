@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 using namespace std;
 class Evolution {
 private:
@@ -22,6 +23,7 @@ private:
 	Evolution();
 	static Evolution* m_pInstance;
 public:
+    bool evolutionEnd;
 	int currentPairNum; //current fight gene
 	vector<Gene> population;
 	static Evolution* GetInstance() {

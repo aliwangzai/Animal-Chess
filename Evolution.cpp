@@ -12,38 +12,66 @@ Evolution* Evolution::m_pInstance = NULL;
 
 Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.3;
-	mutationRate = 0.05;
-	generationNum = 50;
-	generatePopulation(200);
+	mutationRate = 0.1;
+	generationNum = 1; //50
+	generatePopulation(4);//200 need to be divede by 4
 	currentPairNum = 0;
+    evolutionEnd = false;
 }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
-	for (int i = 0; i < popuNum; i++) {
-		Gene newgene = Gene::Gene();
-		newgene.generateRandomGene();
-		population.push_back(newgene);
-	}
+    fstream f("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+    if(f.fail()){
+        cout<<"file not exist!"<<endl;
+        for (int i = 0; i < popuNum; i++) {
+            Gene newgene = Gene::Gene();
+            newgene.generateRandomGene();
+            population.push_back(newgene);
+        //newgene.printGene();
+        }
+    }
+    else{
+        cout<<"load genes from exist file"<<endl;
+        loadPopulationGenes();
+    }
 	storePopulationGenes();
 }
 void Evolution::mutation(int genePos) {
+   
 	for (int i = 0; i<21; i++) {
 		float a = (float)rand() / RAND_MAX;
-		if (a<mutationRate)
-			population.at(genePos).getGene().at(i) = (float)rand() / RAND_MAX;
+        if (a<mutationRate){
+            cout<<"I am mutate pos "<<i<<endl;
+            cout<<"original value is "<<population.at(genePos).getGene().at(i)<<endl;
+            float a =(float)(rand()%101+1);
+            population.at(genePos).updateGene(i, a);
+            cout<<"random value is "<<a<<" new value is "<<population.at(genePos).getGene().at(i)<<endl;
+
+        }
 	}
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
+     cout<<"I am crosscover "<<genePos1<<" and "<<genePos2<<endl;
 	for (int i = 0; i<21; i++) {
 		float a = (float)rand() / RAND_MAX;
-		if (a<crossCoverRate) {
+		if (a<crossCoverRate) {/*
 			float temp = population.at(genePos1).getGene().at(i);
 			population.at(genePos1).getGene().at(i) = population.at(genePos2).getGene().at(i);
 			population.at(genePos2).getGene().at(i) = temp;
+                                */
+            cout<<"crossed genepos is "<<i<<endl;
+            cout<<"original value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
+            float a =(population.at(genePos1).getGene().at(i)+population.at(genePos2).getGene().at(i))/2;
+            population.at(genePos1).updateGene(i, a);
+            population.at(genePos2).updateGene(i, a);
+            cout<<"new value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
+
+
 		}
 	}
 }
 void Evolution::select() {
+    cout<<"I am select"<<endl;
 	if (generationNum>0) {
 		vector<Gene> temp;
 
@@ -52,6 +80,7 @@ void Evolution::select() {
 				temp.push_back(population.at(i));
 			}
 		}
+        population.clear();
 		population = temp;
 
 		for (int j = 0; j< population.size() / 2; j++) {//do crosscover
@@ -70,13 +99,13 @@ void Evolution::select() {
 }
 
 int Evolution::getGenerationNum() {
-	return generationNum--;
+	return generationNum;
 }
 
 void Evolution::storePopulationGenes() {
 	int size1 = population.size();
 	int size2 = population[0].getGene().size();
-	ofstream outfile("out1.txt");
+	ofstream outfile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
 	if (!outfile)
 		cout << "cant open out file" << endl;
 	else {
@@ -86,14 +115,14 @@ void Evolution::storePopulationGenes() {
 			}
 			outfile << endl;
 		}
-		cout << "write" << size1 << "genes to file" << endl;
+		cout << "write " << size1 << " genes to file" << endl;
 		outfile.close();
 	}
 
 }
 void Evolution::loadPopulationGenes() {
 	int numwrite = 0;
-	ifstream infile("out1.txt");
+	ifstream infile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
 	if (!infile)
 		cout << "cant open infile " << endl;
 	else {
@@ -115,6 +144,6 @@ void Evolution::loadPopulationGenes() {
 			numwrite++;
 		}
 	}
-	cout << "write in " << numwrite << "genes" << endl;
+	cout << "write in " << numwrite << " genes" << endl;
 	infile.close();
 }

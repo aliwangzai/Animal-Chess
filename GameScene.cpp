@@ -78,6 +78,8 @@ void GameScene::startEvolutionPrcess(){
 void GameScene::finishEvolutionProcess(){
     int pairnum =Evolution::GetInstance()->currentPairNum;
     int populationNum =Evolution::GetInstance()->population.size();
+    cout<<"current pair are gene "<<pairnum<<" and gene "<<populationNum-1-pairnum<<endl;
+    cout<<"current left generation "<<Evolution::GetInstance()->getGenerationNum()<<endl;
     if(board->getWinner()==0){
         Evolution::GetInstance()->population[pairnum].winState = 1;
         Evolution::GetInstance()->population[populationNum-1-pairnum].winState = -1;
@@ -86,13 +88,14 @@ void GameScene::finishEvolutionProcess(){
         Evolution::GetInstance()->population[pairnum].winState = -1;
         Evolution::GetInstance()->population[populationNum-1-pairnum].winState = 1;
     }
-    if(Evolution::GetInstance()->currentPairNum != Evolution::GetInstance()->population.size()/2){ //not all pairs finish their game
+    if(Evolution::GetInstance()->currentPairNum != Evolution::GetInstance()->population.size()/2-1){ //not all pairs finish their game
         Evolution::GetInstance()->currentPairNum++;
     }
     else{//all pair finish game
         Evolution::GetInstance()->select();
         if(Evolution::GetInstance()->getGenerationNum()==0){
             Evolution::GetInstance()->storePopulationGenes();
+            Evolution::GetInstance()->evolutionEnd = true;
             gameOverProcess(board->getWinner());//evolution end
         }
         else{
@@ -106,7 +109,6 @@ void GameScene::finishEvolutionProcess(){
 void GameScene::startUpdate(float dt){
      this->scheduleUpdate();
 }
-
 void GameScene::update(float dt){
     if(!board->isThinking && board->getWinner() == -1){
         board->isThinking = true;
@@ -220,28 +222,32 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(1, 0);
+    auto mv = MinMax->getMove(4, 0);
     board->moveChess(mv,true);
     //std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect()){
-        cout<<"GameOver"<<endl;
+        cout<<"GameOver player0 win"<<endl;
         finishEvolutionProcess();
-        Scene* newGame = GameScene::createScene();
-        auto transition = TransitionCrossFade::create(0.5f, newGame);
-        Director::getInstance()->replaceScene(transition);
+        if(!Evolution::GetInstance()->evolutionEnd){
+            Scene* newGame = GameScene::createScene();
+            auto transition = TransitionCrossFade::create(0.5f, newGame);
+            Director::getInstance()->replaceScene(transition);
+        }
     }
 }
 void GameScene::secondAIPlay(){
     
-    auto mv = MinMax->getMove(2, 1);
+    auto mv = MinMax->getMove(4, 1);
     board->moveChess(mv,true);
     //std::cout<<"Minimax2 take step."<<std::endl;
     if(gameOverDetect()){
-        cout<<"GameOver"<<endl;
+        cout<<"GameOver player1 win"<<endl;
         finishEvolutionProcess();
+        if(!Evolution::GetInstance()->evolutionEnd){
         Scene* newGame = GameScene::createScene();
         auto transition = TransitionCrossFade::create(0.5f, newGame);
         Director::getInstance()->replaceScene(transition);
+        }
     }
 }
 bool GameScene::gameOverDetect(){

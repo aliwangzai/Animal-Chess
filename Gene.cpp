@@ -13,8 +13,16 @@ Gene::Gene() { winState = 0; }
 Gene::~Gene() {}
 
 void Gene::generateRandomGene() {
+    vector<float> temp;
+    for(int i  = 0 ; i<20;i++){
+        temp.push_back((float)(rand() % 101)+1);
+    }
+    std::sort(temp.begin(),temp.begin()+8);
+    std::sort(temp.begin()+8,temp.end());
+    std::reverse(temp.begin()+8, temp.end());
+
 	for (int i = 0; i<20; i++) {
-		gene.push_back((float)(rand() % 101)+1);
+        gene.push_back(temp[i]);
 	}
 	gene.push_back((float)(rand() % 11)+1);
 }
@@ -30,3 +38,7 @@ vector<float> Gene::getGene() {
 void Gene::setGene(vector<float> m_gene) {
 	gene = m_gene;
 }
+void Gene::updateGene(int pos, float value){
+    gene[pos] = value;
+}
+
