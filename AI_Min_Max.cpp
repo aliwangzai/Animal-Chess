@@ -26,14 +26,11 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 			if(mv.eatenIndex < 2) // no piece eaten
 				val = alphaBeta(depth - 1, alpha, beta, !player);
 			else
-				val = alphaBeta(depth - 1, alpha, beta, !player);
+				val = alphaBeta(depth, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
-			if (val.value > best_move.value) {
+			if (val.value > best_move.value)
 				best_move = val;
-				//filterBestMoves(allBestMoves, best_move, player);
-				//storeBestMove(allBestMoves, best_move);
-			}
 			if (val.value >= alpha)
 				alpha = val.value;
 			if (beta < alpha)
@@ -46,21 +43,17 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 			if (mv.eatenIndex < 2) // no piece eaten
 				val = alphaBeta(depth - 1, alpha, beta, !player);
 			else
-				val = alphaBeta(depth -1, alpha, beta, !player);
+				val = alphaBeta(depth, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
-			if (val.value < best_move.value) {
+			if (val.value < best_move.value) 
 				best_move = val;
-				//filterBestMoves(allBestMoves, best_move,player);
-				//storeBestMove(allBestMoves, best_move);
-			}
 			if (val.value < beta)
 				beta = val.value;
 			if (beta <= alpha)
 				return BestMove{ Move(),beta };
 		}
 	}
-	//return allBestMoves[rand() % allBestMoves.size()];
 	return best_move;
 
 }
