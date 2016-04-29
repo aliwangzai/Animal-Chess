@@ -22,7 +22,6 @@ public:
 
 private:
 	BestMove alphaBeta(int depth, float alpha, float beta, int player);
-	void storeBestMove(vector<BestMove> &allBestMoves, BestMove best_move);
 	void filterBestMoves(vector<BestMove> &allBestMoves, BestMove best_move, int player);
 
 };

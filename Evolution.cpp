@@ -14,13 +14,13 @@ Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.3;
 	mutationRate = 0.1;
 	generationNum = 1; //50
-	generatePopulation(4);//200 need to be divede by 4
+	generatePopulation(8);//200 need to be divede by 4
 	currentPairNum = 0;
     evolutionEnd = false;
 }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
-    fstream f("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+    fstream f("out1.txt");
     if(f.fail()){
         cout<<"file not exist!"<<endl;
         for (int i = 0; i < popuNum; i++) {
@@ -43,7 +43,7 @@ void Evolution::mutation(int genePos) {
         if (a<mutationRate){
             cout<<"I am mutate pos "<<i<<endl;
             cout<<"original value is "<<population.at(genePos).getGene().at(i)<<endl;
-            float a =(float)(rand()%101+1);
+            float a =(float)(rand()%401+1);
             population.at(genePos).updateGene(i, a);
             cout<<"random value is "<<a<<" new value is "<<population.at(genePos).getGene().at(i)<<endl;
 
@@ -105,7 +105,7 @@ int Evolution::getGenerationNum() {
 void Evolution::storePopulationGenes() {
 	int size1 = population.size();
 	int size2 = population[0].getGene().size();
-	ofstream outfile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+	ofstream outfile("out1.txt");
 	if (!outfile)
 		cout << "cant open out file" << endl;
 	else {
@@ -122,7 +122,7 @@ void Evolution::storePopulationGenes() {
 }
 void Evolution::loadPopulationGenes() {
 	int numwrite = 0;
-	ifstream infile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+	ifstream infile("out1.txt");
 	if (!infile)
 		cout << "cant open infile " << endl;
 	else {

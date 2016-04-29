@@ -15,7 +15,7 @@ Gene::~Gene() {}
 void Gene::generateRandomGene() {
     vector<float> temp;
     for(int i  = 0 ; i<20;i++){
-        temp.push_back((float)(rand() % 101)+1);
+        temp.push_back((float)(rand() % 401)+1);
     }
     std::sort(temp.begin(),temp.begin()+8);
     std::sort(temp.begin()+8,temp.end());

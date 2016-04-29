@@ -141,6 +141,8 @@ void GameScene::gameOverProcess(int winner){
     menu->setPosition(Vec2::ZERO);
     this->addChild(sp);
     this->addChild(menu, 1);
+	if (gameMode == 3)
+		menuRestartCallback(this);
 
 }
 void GameScene::operatePieceVsPeople(PointXY chosenBlock){
@@ -205,11 +207,12 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
         }
     }
 }
+
 void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(2, 1);
+			auto mv = MinMax->getMove(1, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -221,8 +224,9 @@ void GameScene::onceUpdate(float dt){
         }
     }
 }
+
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(4, 0);
+    auto mv = MinMax->getMove(2, 0);
     board->moveChess(mv,true);
     //std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect()){
@@ -235,9 +239,9 @@ void GameScene::firstAIPlay(){
         }
     }
 }
+
 void GameScene::secondAIPlay(){
-    
-    auto mv = MinMax->getMove(4, 1);
+    auto mv = MinMax->getMove(2, 1);
     board->moveChess(mv,true);
     //std::cout<<"Minimax2 take step."<<std::endl;
     if(gameOverDetect()){

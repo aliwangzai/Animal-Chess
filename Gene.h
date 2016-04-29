@@ -13,6 +13,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "Move.h"
 using namespace std;
