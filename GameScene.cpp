@@ -80,7 +80,16 @@ void GameScene::finishEvolutionProcess(){
     int populationNum =Evolution::GetInstance()->population.size();
     cout<<"current pair are gene "<<pairnum<<" and gene "<<populationNum-1-pairnum<<endl;
     cout<<"current left generation "<<Evolution::GetInstance()->getGenerationNum()<<endl;
-    if(board->getWinner()==0){
+    
+    int winner = -1;
+    if(board->getWinner() == 2){
+        Player eval;
+        winner = eval.eval(*board) < 0;
+    }else{
+        winner = board->getWinner();
+    }
+    
+    if(winner){
         Evolution::GetInstance()->population[pairnum].winState = 1;
         Evolution::GetInstance()->population[populationNum-1-pairnum].winState = -1;
     }
@@ -88,6 +97,7 @@ void GameScene::finishEvolutionProcess(){
         Evolution::GetInstance()->population[pairnum].winState = -1;
         Evolution::GetInstance()->population[populationNum-1-pairnum].winState = 1;
     }
+    
     if(Evolution::GetInstance()->currentPairNum != Evolution::GetInstance()->population.size()/2-1){ //not all pairs finish their game
         Evolution::GetInstance()->currentPairNum++;
     }
@@ -96,6 +106,7 @@ void GameScene::finishEvolutionProcess(){
         if(Evolution::GetInstance()->getGenerationNum()==0){
             Evolution::GetInstance()->storePopulationGenes();
             Evolution::GetInstance()->evolutionEnd = true;
+            //Evolution::GetInstance()->generationNum = 1;
             gameOverProcess(board->getWinner());//evolution end
         }
         else{
@@ -209,7 +220,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(2, 1);
+			auto mv = MinMax->getMove(6, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -222,7 +233,7 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(4, 0);
+    auto mv = MinMax->getMove(5, 0);
     board->moveChess(mv,true);
     //std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect()){

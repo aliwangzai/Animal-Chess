@@ -25,6 +25,9 @@ void Gene::generateRandomGene() {
         gene.push_back(temp[i]);
 	}
 	gene.push_back((float)(rand() % 11)+1);
+    
+    // River bouns
+    gene.push_back((float)(rand() % 10));
 }
 void Gene::printGene() {
 	for (int i = 0; i< gene.size(); i++) {

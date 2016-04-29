@@ -41,12 +41,12 @@ float Player::eval( Board& board){
 		if (!board.hasPiece(piece->getType(),player))
 			continue;
 		// pieces power
-		if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
-			sumPower[player] += 500;
-		else
+		//if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
+			//sumPower[player] += 500;
+		//else
 			sumPower[player] += piece->getChessPowerValue();
-		if (TLBesideRiver(board, *ps))
-			sumPower[player] += 100;
+        if (TLBesideRiver(board, *ps))
+			sumPower[player] += piece->riverBounus;
 		// Distance
 		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase());
 		// threaten
@@ -59,10 +59,10 @@ float Player::eval( Board& board){
 	}
 	eval = sumPower[1] - sumPower[0];
 
-	board.fcoutBoard();
-	FILE *pf = fopen("board.txt", "a+");
-	fprintf(pf, "\n%f\n", eval);
-	fclose(pf);
+	//board.fcoutBoard();
+	//FILE *pf = fopen("board.txt", "a+");
+	//fprintf(pf, "\n%f\n", eval);
+	//fclose(pf);
 	return eval;
 
 	/*
