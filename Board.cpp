@@ -10,6 +10,7 @@
 
 using namespace cocos2d;
 
+
 bool Board::availableMove(Move move) {
 	PointXY ptFrom = move.from;
 	PointXY ptTo = move.to;
@@ -146,12 +147,14 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 		move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 	}
 	currentPlayer = !currentPlayer;
-	if (show && selected->getType() != NIL) {
+    if (show && selected->getType() != Pieces::NIL) {
 		selected->recover();
 		selected = nul_piece;
 	}
-	if (show)
-		fcoutBoard();
+
+    
+    if (show){}
+		//fcoutBoard();
 }
 
 
@@ -221,8 +224,7 @@ Board::Board()
 	};
 	currentPlayer = 0;
 	isThinking = false;
-	moveHistory.clear();
-}
+	moveHistory.clear();}
 
 Board::~Board()
 {

@@ -24,14 +24,19 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 		for (auto mv : allMoves) {
 			applyMove(mv);
 			if(mv.eatenIndex < 2) // no piece eaten
-				val = alphaBeta(depth - 1, alpha, beta, !player);
+				val = alphaBeta(depth -1, alpha, beta, !player);
 			else
 				val = alphaBeta(depth - 1, alpha, beta, !player);
 			val.move = mv;
 			CancelMove(mv);
 			if (val.value > best_move.value) {
 				best_move = val;
+<<<<<<< HEAD
 				allBestMoves.push_back(best_move);
+=======
+				filterBestMoves(allBestMoves, best_move, player);
+				storeBestMove(allBestMoves, best_move);
+>>>>>>> origin/master
 			}
 			if (val.value >= alpha)
 				alpha = val.value;
@@ -44,14 +49,23 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 		for (auto mv : allMoves) {
 			applyMove(mv);
 			if (mv.eatenIndex < 2) // no piece eaten
-				val = alphaBeta(depth - 1, alpha, beta, !player);
+				val = alphaBeta(depth - 1, alpha, beta, !player );
 			else
+<<<<<<< HEAD
 				val = alphaBeta(depth - 1, alpha, beta, !player);
+=======
+				val = alphaBeta(depth -1, alpha, beta, !player);
+>>>>>>> origin/master
 			val.move = mv;
 			CancelMove(mv);
 			if (val.value < best_move.value) {
 				best_move = val;
+<<<<<<< HEAD
 				allBestMoves.push_back(best_move);
+=======
+				filterBestMoves(allBestMoves, best_move,player);
+				storeBestMove(allBestMoves, best_move);
+>>>>>>> origin/master
 			}
 			if (val.value < beta)
 				beta = val.value;
@@ -60,9 +74,24 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 		}
 		filterBestMoves(allBestMoves, best_move,0);
 	}
+<<<<<<< HEAD
 	
 	if (allBestMoves.size()>1)
 		best_move = allBestMoves[rand()%allBestMoves.size()];
+=======
+    
+    std::sort(allBestMoves.begin(), allBestMoves.end(), [](const BestMove &a, const BestMove &b)->bool{
+        return a.value > b.value;
+    });
+    auto sizeCandidates = allBestMoves.size();
+    if(1.0*rand() / INT_MAX > 0.70)
+        return allBestMoves[0 % sizeCandidates];
+    if(1.0*rand() / INT_MAX > 0.20)
+        return allBestMoves[1 % sizeCandidates];
+    else
+        return allBestMoves[2 % sizeCandidates];
+
+>>>>>>> origin/master
 	return best_move;
 
 }
@@ -75,7 +104,7 @@ Move AI_Min_Max::getMove(int depth, int player)
 void AI_Min_Max::applyMove(Move & mv)
 {
 	board->moveChess(mv, false);
-	board->fcoutBoard();
+	//board->fcoutBoard();
 }
 
 void AI_Min_Max::filterBestMoves(vector<BestMove>& allBestMoves, BestMove best_move, int player)
@@ -112,7 +141,7 @@ void AI_Min_Max::CancelMove(Move& mv)
 		board->boardPieces[to.x][to.y] = board->nul_piece;
 	}
 	board->currentPlayer = !board->currentPlayer;
-	board->fcoutBoard();
+	//board->fcoutBoard();
 }
 
 AI_Min_Max::AI_Min_Max(Board *board)

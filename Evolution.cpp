@@ -38,7 +38,7 @@ void Evolution::generatePopulation(int popuNum) {
 }
 void Evolution::mutation(int genePos) {
    
-	for (int i = 0; i<21; i++) {
+	for (int i = 0; i<22; i++) {
 		float a = (float)rand() / RAND_MAX;
         if (a<mutationRate){
             cout<<"I am mutate pos "<<i<<endl;
@@ -52,7 +52,7 @@ void Evolution::mutation(int genePos) {
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
      cout<<"I am crosscover "<<genePos1<<" and "<<genePos2<<endl;
-	for (int i = 0; i<21; i++) {
+	for (int i = 0; i<22; i++) {
 		float a = (float)rand() / RAND_MAX;
 		if (a<crossCoverRate) {/*
 			float temp = population.at(genePos1).getGene().at(i);

@@ -17,12 +17,13 @@
 using namespace std;
 class Evolution {
 private:
-	int generationNum;
+	
 	float crossCoverRate;
 	float mutationRate;
 	Evolution();
 	static Evolution* m_pInstance;
 public:
+    int generationNum;
     bool evolutionEnd;
 	int currentPairNum; //current fight gene
 	vector<Gene> population;

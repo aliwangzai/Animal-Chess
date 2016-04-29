@@ -206,5 +206,6 @@ void Pieces::setGene(Gene & gene)
 	setChessPowerValue(gene);  //index 0-7 represent chess value 
 	setDistanceValye(gene); //index 8-19 represent distance value from  dis =0 to dis = 11
 	threatenFraction = gene.getGene().at(20);
+    riverBounus = gene.getGene().at(21);
 }
 

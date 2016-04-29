@@ -21,7 +21,7 @@ class Player{
 public:
     string name;
     virtual vector<Move> genAllMoves( Board &board);
-    virtual float eval( Board &board);
+    float eval( Board &board);
     vector<Move> genAMove( Board &board, Pieces * fromPiece);
     
 private:
