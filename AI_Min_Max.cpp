@@ -1,4 +1,5 @@
 #include "AI_Min_Max.h"
+
 #include "time.h"
 #include <algorithm>
 
@@ -37,7 +38,8 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 			if (val.value >= alpha)
 				alpha = val.value;
 			if (beta < alpha)
-				return BestMove{ Move(),alpha };
+				//return BestMove{ Move(),alpha };
+				break;
 		}
 	} else {
 		best_move.value = INF;
@@ -57,22 +59,29 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 			if (val.value < beta)
 				beta = val.value;
 			if (beta <= alpha)
-				return BestMove{ Move(),beta };
+				//return BestMove{ Move(),beta };
+				break;
 		}
 	}
     
     std::sort(allBestMoves.begin(), allBestMoves.end(), [](const BestMove &a, const BestMove &b)->bool{
         return a.value > b.value;
     });
-    auto sizeCandidates = allBestMoves.size();
-    if(1.0*rand() / INT_MAX > 0.70)
-        return allBestMoves[0 % sizeCandidates];
-    if(1.0*rand() / INT_MAX > 0.20)
-        return allBestMoves[1 % sizeCandidates];
-    else
-        return allBestMoves[2 % sizeCandidates];
 
-	return best_move;
+	if (abs(best_move.value) > 5000) {
+		return best_move;
+	}
+	else {
+		auto sizeCandidates = allBestMoves.size();
+		assert(sizeCandidates != 0);
+		auto _rand = 1.0 * rand() / INT_MAX;
+		if (_rand > 0.70)
+			return allBestMoves[0 % sizeCandidates];
+		if (_rand > 0.20)
+			return allBestMoves[1 % sizeCandidates];
+		else
+			return allBestMoves[2 % sizeCandidates];
+	}
 
 }
 
