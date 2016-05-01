@@ -19,8 +19,7 @@ class Pieces : public Node{
 public:
     enum TypePiece {NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT};
 private:
-    PointXY pos;
-
+    PointXY pos; //列，行
     int player;
     TypePiece type;
     float chessPower;

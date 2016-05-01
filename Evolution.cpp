@@ -13,14 +13,14 @@ Evolution* Evolution::m_pInstance = NULL;
 Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.3;
 	mutationRate = 0.1;
-	generationNum = 1; //50
-	generatePopulation(4);//200 need to be divede by 4
+	generationNum = 50; //50
+	generatePopulation(100);//200 need to be divede by 4
 	currentPairNum = 0;
     evolutionEnd = false;
 }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
-    fstream f("out1.txt");
+    fstream f("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
     if(f.fail()){
         cout<<"file not exist!"<<endl;
         for (int i = 0; i < popuNum; i++) {
@@ -41,8 +41,6 @@ void Evolution::mutation(int genePos) {
 	for (int i = 0; i<population[0].getGene().size(); i++) {
         float c = (float)rand() / RAND_MAX;
         if (c<mutationRate){
-            cout<<"I am mutate pos "<<i<<endl;
-            cout<<"original value is "<<population.at(genePos).getGene().at(i)<<endl;
             int upperBound, lowerBound;
             
             if(i == 0){
@@ -77,13 +75,17 @@ void Evolution::mutation(int genePos) {
                 lowerBound = 0;
                 upperBound = 10;
             }
-            
+        
+            if(lowerBound>upperBound){
+                float temp = lowerBound;
+                lowerBound = upperBound;
+                upperBound = temp;
+            }
+           
             
             float a =(float)(rand()%(upperBound-lowerBound+1)+lowerBound);
             
             population.at(genePos).updateGene(i, a);
-            cout<<"random value is "<<a<<" new value is "<<population.at(genePos).getGene().at(i)<<endl;
-            
         }
 	}
 }
@@ -91,17 +93,15 @@ void Evolution::crossCover(int genePos1, int genePos2) {
      cout<<"I am crosscover "<<genePos1<<" and "<<genePos2<<endl;
 	for (int i = 0; i<population[0].getGene().size(); i++) {
 		float a = (float)rand() / RAND_MAX;
-		if (a<crossCoverRate) {/*
+		if (a<crossCoverRate) {
+            
 			float temp = population.at(genePos1).getGene().at(i);
-			population.at(genePos1).getGene().at(i) = population.at(genePos2).getGene().at(i);
-			population.at(genePos2).getGene().at(i) = temp;
-                                */
-            cout<<"crossed genepos is "<<i<<endl;
-            cout<<"original value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
-            float a =(population.at(genePos1).getGene().at(i)+population.at(genePos2).getGene().at(i))/2;
-            population.at(genePos1).updateGene(i, a);
-            population.at(genePos2).updateGene(i, a);
-            cout<<"new value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
+            population.at(genePos1).updateGene(i,population.at(genePos2).getGene().at(i));
+            population.at(genePos2).updateGene(i, temp);
+            //float a =(population.at(genePos1).getGene().at(i)+population.at(genePos2).getGene().at(i))/2;
+            //population.at(genePos1).updateGene(i, a);
+            //population.at(genePos2).updateGene(i, a);
+            
 
 
 		}
@@ -142,7 +142,7 @@ int Evolution::getGenerationNum() {
 void Evolution::storePopulationGenes() {
 	int size1 = population.size();
 	int size2 = population[0].getGene().size();
-	ofstream outfile("out1.txt");
+	ofstream outfile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
 	if (!outfile)
 		cout << "cant open out file" << endl;
 	else {
@@ -159,7 +159,7 @@ void Evolution::storePopulationGenes() {
 }
 void Evolution::loadPopulationGenes() {
 	int numwrite = 0;
-	ifstream infile("out1.txt");
+	ifstream infile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
 	if (!infile)
 		cout << "cant open infile " << endl;
 	else {

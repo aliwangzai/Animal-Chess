@@ -60,17 +60,32 @@ bool GameScene::init() {
 }
 
 void GameScene::startEvolutionPrcess(){
-    //Evolution::GetInstance()->loadPopulationGenes();
-    int pairnum =Evolution::GetInstance()->currentPairNum;
-    int populationNum =Evolution::GetInstance()->population.size();
-    Gene gene0 = Evolution::GetInstance()->population[pairnum];
-    Gene gene1 = Evolution::GetInstance()->population[populationNum-1-pairnum];
+    //int pairnum =Evolution::GetInstance()->currentPairNum;
+    //int populationNum =Evolution::GetInstance()->population.size();
+    //Gene gene0 = Evolution::GetInstance()->population[pairnum];
+    //Gene gene1 = Evolution::GetInstance()->population[populationNum-1-pairnum];
+    
+    Gene gene0,gene1;
+    string s_gene0 = "18 52 65 119 132 133 175 181 133 130 126 118 112 94 86 65 42 27 5 0";
+    string s_gene1 = "9 51 95 74 133 147 157 194 185 148 186 109 119 86 93 74 31 1 11 4";
+    string word0,word1;
+    vector<float> geneVec0,geneVec1;
+    stringstream ss0(s_gene0),ss1(s_gene1);
+    while (ss0 >> word0)
+        geneVec0.push_back(atof(word0.c_str()));
+    gene0.setGene(geneVec0);
+    while (ss1 >> word1)
+        geneVec1.push_back(atof(word1.c_str()));
+    gene1.setGene(geneVec1);
+    
+    
     for(int i =2; i< board->allPieces.size();i++){
 		if (board->allPieces[i]->getPlayer() == 0)
 			board->allPieces[i]->setGene(gene0);
 		else
 			board->allPieces[i]->setGene(gene1);
     }
+    
 
     
     
@@ -81,15 +96,6 @@ void GameScene::finishEvolutionProcess(){
     cout<<"current pair are gene "<<pairnum<<" and gene "<<populationNum-1-pairnum<<endl;
     cout<<"current left generation "<<Evolution::GetInstance()->getGenerationNum()<<endl;
     
-    /*
-    int winner = -1;
-    if(board->getWinner() == 2){
-        Player eval;
-        winner = eval.eval(*board) < 0;
-    }else{
-        winner = board->getWinner();
-    }
-    */
     if(board->getWinner() == 2){
         Gene m_gene ;
         m_gene.generateRandomGene();
@@ -233,7 +239,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(3, 1);
+			auto mv = MinMax->getMove(5, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
@@ -246,32 +252,34 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(2, 0);
+    auto mv = MinMax->getMove(4, 0);
     board->moveChess(mv,true);
-    //std::cout<<"Minimax1 take step."<<std::endl;
     if(gameOverDetect()){
-        cout<<"GameOver player0 win"<<endl;
+        cout<<"GameOver player 0 win"<<endl;
+        /*
         finishEvolutionProcess();
         if(!Evolution::GetInstance()->evolutionEnd){
             Scene* newGame = GameScene::createScene();
             auto transition = TransitionCrossFade::create(0.5f, newGame);
             Director::getInstance()->replaceScene(transition);
         }
+         */
     }
 }
 void GameScene::secondAIPlay(){
     
-    auto mv = MinMax->getMove(2, 1);
+    auto mv = MinMax->getMove(4, 1);
     board->moveChess(mv,true);
-    //std::cout<<"Minimax2 take step."<<std::endl;
     if(gameOverDetect()){
-        cout<<"GameOver player1 win"<<endl;
+        cout<<"GameOver player 1 win"<<endl;
+        /*
         finishEvolutionProcess();
         if(!Evolution::GetInstance()->evolutionEnd){
         Scene* newGame = GameScene::createScene();
         auto transition = TransitionCrossFade::create(0.5f, newGame);
         Director::getInstance()->replaceScene(transition);
         }
+         */
     }
 }
 bool GameScene::gameOverDetect(){
