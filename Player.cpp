@@ -42,7 +42,7 @@ float Player::eval(Board& board) {
 			continue;
 		// pieces power
 		//if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
-			//sumPower[player] += 500;
+		//sumPower[player] += 500;
 		//else
 		sumPower[player] += piece->getChessPowerValue();
 		if (TLBesideRiver(board, *ps))
@@ -137,7 +137,7 @@ vector<Move> Player::genAMove(Board &board, Pieces * fromPiece) {
 			potentialMove.to = PointXY(fromXY.x, fromXY.y - 3);
 			if (board.availableMove(potentialMove))
 				potentialMoves.push_back(potentialMove);
-		} else {//不挨着河
+		} else {
 			potentialMove.to = PointXY(fromXY.x + 1, fromXY.y);
 			if (fromXY.x + 1 <= 8 && board.availableMove(potentialMove))
 				potentialMoves.push_back(potentialMove);
@@ -152,7 +152,7 @@ vector<Move> Player::genAMove(Board &board, Pieces * fromPiece) {
 				potentialMoves.push_back(potentialMove);
 		}
 	} else {//其他动物
-		//优先生成向前的move
+			//优先生成向前的move
 		if (fromPiece->getPlayer()) {
 			potentialMove.to = PointXY(fromXY.x - 1, fromXY.y);
 			if (fromXY.x - 1 >= 0 && board.availableMove(potentialMove))

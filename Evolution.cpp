@@ -14,7 +14,7 @@ Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.3;
 	mutationRate = 0.1;
 	generationNum = 1; //50
-	generatePopulation(4);//200 need to be divede by 4
+	generatePopulation(100);//200 need to be divede by 4
 	currentPairNum = 0;
     evolutionEnd = false;
 }
@@ -41,9 +41,9 @@ void Evolution::mutation(int genePos) {
 	for (int i = 0; i<population[0].getGene().size(); i++) {
         float c = (float)rand() / RAND_MAX;
         if (c<mutationRate){
-            cout<<"I am mutate pos "<<i<<endl;
+            cout<<"I am the mutated pos "<<i<<endl;
             cout<<"original value is "<<population.at(genePos).getGene().at(i)<<endl;
-            int upperBound, lowerBound;
+            float upperBound, lowerBound;
             
             if(i == 0){
                 lowerBound = 1;
@@ -79,7 +79,7 @@ void Evolution::mutation(int genePos) {
             }
             
             
-            float a =(float)(rand()%(upperBound-lowerBound+1)+lowerBound);
+            float a =(float)(rand()/INT_MAX)*(upperBound-lowerBound+1)+lowerBound;
             
             population.at(genePos).updateGene(i, a);
             cout<<"random value is "<<a<<" new value is "<<population.at(genePos).getGene().at(i)<<endl;
@@ -88,7 +88,7 @@ void Evolution::mutation(int genePos) {
 	}
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
-     cout<<"I am crosscover "<<genePos1<<" and "<<genePos2<<endl;
+     cout<<"I am crosscovering "<<genePos1<<" and "<<genePos2<<endl;
 	for (int i = 0; i<population[0].getGene().size(); i++) {
 		float a = (float)rand() / RAND_MAX;
 		if (a<crossCoverRate) {/*
@@ -98,17 +98,22 @@ void Evolution::crossCover(int genePos1, int genePos2) {
                                 */
             cout<<"crossed genepos is "<<i<<endl;
             cout<<"original value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
+			/*
             float a =(population.at(genePos1).getGene().at(i)+population.at(genePos2).getGene().at(i))/2;
             population.at(genePos1).updateGene(i, a);
             population.at(genePos2).updateGene(i, a);
+			*/
+			auto a = population[genePos1].getGene().at(i);
+			auto b = population[genePos2].getGene().at(i);
+			population.at(genePos1).updateGene(i, b);
+			population.at(genePos2).updateGene(i, a);
+
             cout<<"new value is "<<population.at(genePos1).getGene().at(i)<<" and "<< population.at(genePos2).getGene().at(i)<<endl;
-
-
 		}
 	}
 }
 void Evolution::select() {
-    cout<<"I am select"<<endl;
+    cout<<"I am selecting"<<endl;
 	if (generationNum>0) {
 		vector<Gene> temp;
 
@@ -155,7 +160,6 @@ void Evolution::storePopulationGenes() {
 		cout << "write " << size1 << " genes to file" << endl;
 		outfile.close();
 	}
-
 }
 void Evolution::loadPopulationGenes() {
 	int numwrite = 0;

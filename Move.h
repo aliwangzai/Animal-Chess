@@ -13,16 +13,16 @@
 
 
 struct PointXY {
-	char x;
-	char y;
+	int x;
+	int y;
 	bool operator==(const PointXY &p) {
 		return (x == p.x && y == p.y);
 	}
 	bool operator!=(const PointXY &p) {
 		return (x != p.x || y != p.y);
 	}
-	PointXY(int _x,int _y):x(_x),y(_y){}
-	PointXY(){}
+	PointXY(int _x, int _y):x(_x),y(_y){}
+	PointXY() { x = -1; y = -1; }
 };
 
 class Move{
