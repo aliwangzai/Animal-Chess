@@ -23,6 +23,8 @@ private:
 	Evolution();
 	static Evolution* m_pInstance;
 public:
+    int assign1;
+    int assign2;
     int generationNum;
     bool evolutionEnd;
 	int currentPairNum; //current fight gene
