@@ -36,9 +36,7 @@ bool PopUpLayer::init(){
     {
         return true;
     };
-
-    
-
+    //这个layer在主layer前面，graph优先级高，用listner屏蔽下层的触摸
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = callback;
     listener->setSwallowTouches(true);
