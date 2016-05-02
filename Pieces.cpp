@@ -124,39 +124,13 @@ float Pieces::getDistanceValue(int dis){
 	*/
     return distanceValues[dis];
 
+	/*
+	TODO
+	return distanceValues_Types[type][dis];
+	*/
+
 }
 void Pieces::setChessPowerValue(Gene gene){
-    /*
-    switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
-        case RAT:
-            chessPower = 100;
-            break;
-        case CAT:
-            chessPower = 200;
-            break;
-        case WOLF:
-            chessPower = 300;
-            break;
-        case DOG:
-            chessPower = 400;
-            break;
-        case LEOPARD:
-            chessPower = 500;
-            break;
-        case TIGER:
-            chessPower = 600;
-            break;
-        case LION:
-            chessPower = 800;
-            break;
-        case ELEPHANT:
-            chessPower = 1200;
-            break;
-        default:
-            chessPower = 0;
-            break;
-    }
-     */
     switch (type) {//NIL,RAT,CAT,WOLF,DOG,LEOPARD,TIGER,LION,ELEPHANT
         case RAT:
             chessPower = gene.getGene().at(0);
@@ -186,8 +160,6 @@ void Pieces::setChessPowerValue(Gene gene){
             chessPower = 0;
             break;
     }
-
-    
 }
 void Pieces::setDistanceValye(Gene gene){
     distanceValues.push_back(10000);
@@ -195,6 +167,20 @@ void Pieces::setDistanceValye(Gene gene){
     for(int i = 8 ; i< 18 ;i++){
         distanceValues.push_back(gene.getGene().at(i));
     }
+
+	/*
+	TODO: uncomment this will let each type has its own distancevalue
+	int type = 1;
+	for(; type <= 8; type++){
+		distanceValues_Types[type].push_back(10000);
+		distanceValues_Types[type].push_back(1000);
+		int s = 10 + 10 * (type - 1);
+		for(int i = s; i < s + 10 ;i++)
+			distanceValues_Types[type].push_back( gene.getGene().at(i) );
+	}
+	
+	
+	*/
 }
 
 float Pieces::getChessPowerValue(){
@@ -206,8 +192,14 @@ float Pieces::getChessPowerValue(){
 void Pieces::setGene(Gene & gene)
 {
 	setChessPowerValue(gene);  //index 0-7 represent chess value 
-	setDistanceValye(gene); //index 8-17 represent distance value from  dis =0 to dis = 11
+	setDistanceValye(gene); //index 8-17 represent distance value from  dis =2 to dis = 11
 	threatenFraction = gene.getGene().at(18);
     riverBounus = gene.getGene().at(19);
+}
+
+Pieces::Pieces()
+{
+	for (int i = 0; i <= 8; i++)
+		distanceValues_Types.push_back(vector<float>());
 }
 
