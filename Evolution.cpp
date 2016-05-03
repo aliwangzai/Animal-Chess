@@ -7,6 +7,8 @@
 //
 
 #include "Evolution.h"
+#include <random>
+#include <time.h>
 
 Evolution* Evolution::m_pInstance = NULL;
 
@@ -39,62 +41,28 @@ void Evolution::generatePopulation(int popuNum) {
 	storePopulationGenes();
 }
 void Evolution::mutation(int genePos) {
-   
+
 	for (int i = 0; i<population[0].getGene().size(); i++) {
         float c = (float)rand() / RAND_MAX;
         if (c<mutationRate){
             float upperBound, lowerBound;
-            /*
-            if(i == 0){
+            if (i >= 2){
                 lowerBound = 1;
-                upperBound = population.at(genePos).getGene().at(i+1);
-            }
-            else if (i>0 && i<7){
-                lowerBound = population.at(genePos).getGene().at(i-1);
-                upperBound = population.at(genePos).getGene().at(i+1);
-            }
-            else if (i == 7){
-                lowerBound = population.at(genePos).getGene().at(i-1);
                 upperBound = 200;
             }
-            else if (i == 8){
-                lowerBound = population.at(genePos).getGene().at(i+1);
-                upperBound = 200;
-            }
-            else if (i > 8 && i < 17){
-                lowerBound = population.at(genePos).getGene().at(i+1);
-                upperBound = population.at(genePos).getGene().at(i-1);
-            }
-            else if (i == 17){
-                lowerBound = 1;
-                upperBound = population.at(genePos).getGene().at(i-1);
-            }
-            else if (i == 18){
-                lowerBound = 1;
-                upperBound = 11;
-            }
-            else{
+            else if (i == 0){
                 lowerBound = 0;
                 upperBound = 10;
             }
-            */
-            if (i <18){
-                lowerBound = 1;
-                upperBound = 200;
-            }
-            else if (i == 18){
+            else{
                 lowerBound = 1;
                 upperBound = 11;
-            }
-            else{
-                lowerBound = 0;
-                upperBound = 10;
             }
 
-            
-            float a =(float)(rand()/INT_MAX)*(upperBound-lowerBound+1)+lowerBound;
-            
-            population.at(genePos).updateGene(i, a);
+            std::default_random_engine generator(time(0));
+			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5);
+			float newVal = distribution(generator);
+            population.at(genePos).updateGene(i, newVal);
         }
 	}
 }
@@ -144,7 +112,7 @@ int Evolution::getGenerationNum() {
 void Evolution::storePopulationGenes() {
 	size_t size1 = population.size();
 	size_t size2 = population[0].getGene().size();
-	ofstream outfile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+	ofstream outfile("out1.txt");
 	if (!outfile)
 		cout << "cant open out file" << endl;
 	else {
@@ -160,7 +128,7 @@ void Evolution::storePopulationGenes() {
 }
 void Evolution::loadPopulationGenes() {
 	int numwrite = 0;
-	ifstream infile("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+	ifstream infile("out1.txt");
 	if (!infile)
 		cout << "cant open infile " << endl;
 	else {
@@ -174,7 +142,7 @@ void Evolution::loadPopulationGenes() {
 			vector<float> sepBySpaceStr;
 			stringstream ss(s);
 			if (s == "")
-                break;;
+				continue;
 			while (ss >> word)
 				sepBySpaceStr.push_back(atof(word.c_str()));
 			n_gene.setGene(sepBySpaceStr);
