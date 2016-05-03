@@ -75,8 +75,6 @@ void GameScene::startEvolutionPrcess(){
     auto E = Evolution::GetInstance();
     E->loadPopulationGenes();
     auto pop = E->population;
-    
-    
    
     for(size_t a = 2; a< board->allPieces.size();a++){
         if (board->allPieces[a]->getPlayer() == 0)
@@ -139,7 +137,7 @@ void GameScene::finishEvolutionProcess(){
     auto ass1 = E->assign1;
     auto ass2 = E->assign2;
     auto winner = board->getWinner();
-    ofstream fout("/Users/isware/Documents/Cocos2D-x/workspace/Animal/result.txt", ofstream::app);
+    ofstream fout("result.txt", ofstream::app);
     if(winner == 2)
         fout<<ass1<<"\t"<<ass2<<"\tdraw"<<endl;
     else if(winner == 1)
@@ -173,6 +171,7 @@ void GameScene::update(float dt){
         board->isThinking = false;
     }
 }
+
 void GameScene::gameOverProcess(int winner){
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Sprite* sp;
@@ -264,7 +263,7 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(4, 1);
+			auto mv = MinMax->getMove(6, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
