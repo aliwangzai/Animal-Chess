@@ -52,8 +52,13 @@ public:
     float threatenFraction;
     vector<float> distanceValues;
 
+	vector<vector<float>> distanceValues_Types;
+
     float riverBounus;
 	void setGene(Gene &gen);
+
+public:
+	Pieces();
 private:
     
     
