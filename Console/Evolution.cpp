@@ -108,8 +108,10 @@ void Evolution::select() {
 			mutation(k);
 		}
 		
-		for (auto t : temp) 
+		for (auto t : temp) {
+			t.drawGames = 0; t.winGames = 0; t.loseGames = 0;
 			population.push_back(t);
+		}
 		
 	}
 	generationNum--;
