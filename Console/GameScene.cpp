@@ -184,8 +184,8 @@ void GameScene::update() {
 	}
 }
 void GameScene::gameOverProcess(int winner) {
-	cout << "Game Over\nWinner is:" << winner << endl;
 	if (gameMode != 2) {
+		cout << "Game Over\nWinner is:" << winner << endl;
 		cout << "Restart? (y/n)" << endl;
 		while (1) {
 			char ch = getchar();
@@ -247,10 +247,9 @@ void GameScene::onceUpdate() {
 }
 
 void GameScene::firstAIPlay() {
-	auto mv = MinMax->getMove(3, 0);
+	auto mv = MinMax->getMove(4, 0);
 	board->moveChess(mv, true);
 	if (gameOverDetect()) {
-		cout << "GameOver player 0 win" << endl;
 		finishEvolutionProcess();
 		if (!Evolution::GetInstance()->evolutionEnd) {
 			init();
@@ -262,10 +261,9 @@ void GameScene::firstAIPlay() {
 }
 
 void GameScene::secondAIPlay() {
-	auto mv = MinMax->getMove(3, 1);
+	auto mv = MinMax->getMove(4, 1);
 	board->moveChess(mv, true);
 	if (gameOverDetect()) {
-		cout << "GameOver player 1 win" << endl;
 		finishEvolutionProcess();
 		if (!Evolution::GetInstance()->evolutionEnd) {
 			init();
@@ -278,6 +276,7 @@ void GameScene::secondAIPlay() {
 bool GameScene::gameOverDetect() {
 	int winner = board->getWinner();
 	if (winner != -1) {
+		cout <<endl<< "GameOver player "<<winner<<" win" << endl;
 		gameOverProcess(winner);
 		return true;
 	} else

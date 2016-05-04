@@ -75,9 +75,9 @@ AI_Min_Max::BestMove AI_Min_Max::alphaBeta(int depth, float alpha, float beta, i
 		auto sizeCandidates = allBestMoves.size();
 		assert(sizeCandidates != 0);
 		auto _rand = 1.0 * rand() / INT_MAX;
-		if (_rand > 0.70)
+		if (_rand > 0.95)
 			return allBestMoves[0 % sizeCandidates];
-		if (_rand > 0.20)
+		if (_rand > 0.04)
 			return allBestMoves[1 % sizeCandidates];
 		else
 			return allBestMoves[2 % sizeCandidates];

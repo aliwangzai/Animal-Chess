@@ -14,6 +14,16 @@
 #include <fstream>
 #include <sstream>
 
+
+/*
+Selection:
+top 5 highest win rate
+20 copies from top 5 ---- mutate and crossover
+5 random
+
+
+
+*/
 using namespace std;
 class Evolution {
 private:

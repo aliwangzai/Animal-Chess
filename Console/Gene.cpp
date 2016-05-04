@@ -39,6 +39,7 @@ void Gene::generateRandomGene() {
 		gene.push_back(temp[i]);
 	}
 }
+
 void Gene::printGene() {
 	for (int i = 0; i < gene.size(); i++) {
 		cout << gene.at(i) << "#";

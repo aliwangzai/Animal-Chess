@@ -42,8 +42,8 @@ float Player::eval(Board& board) {
 		if (!board.hasPiece(piece->getType(), player))
 			continue;
 		// pieces power
-		//if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
-		//sumPower[player] += 500;
+		if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
+			sumPower[player] += piece->getChessPowerValue(whichPlayersGene) * 0.5;
 		//else
 		sumPower[player] += piece->getChessPowerValue(whichPlayersGene);
 		if (TLBesideRiver(board, *ps))

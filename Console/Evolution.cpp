@@ -15,8 +15,8 @@ Evolution* Evolution::m_pInstance = NULL;
 Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.2;
 	mutationRate = 0.1;
-	generationNum = 20;
-	generatePopulation(30);
+	generationNum = 100;
+	generatePopulation(20);
     evolutionEnd = false;
     p1 = 0;
     p2 = 1;
@@ -59,7 +59,7 @@ void Evolution::mutation(int genePos) {
             }
 
             std::default_random_engine generator(time(0));
-			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 0.3*population[genePos].getGene().at(i));
+			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5.5);
 			float newVal = distribution(generator);
             population.at(genePos).updateGene(i, newVal);
         }
@@ -80,9 +80,33 @@ void Evolution::crossCover(int genePos1, int genePos2) {
 }
 void Evolution::select() {
 	if (generationNum>0) {
+		auto size_pop = population.size();
+
+		ofstream fout("statistic.txt", fstream::app);
+		int mutation_wins = 0;
+		int ori_wins = 0;
+		int random_wins = 0;
+		char buff[128];
+		fout << "GenerationNum:" << generationNum << endl;
+		for (auto i = 0; i < size_pop; i++) {
+			auto p = population[i];
+			sscanf(buff,"[%d]: %d %d %d\n", i, p.winGames, p.loseGames, p.drawGames);
+			fout << string(buff);
+		}
+		for (int i = 0; i < 10; i++) 
+			mutation_wins += population[i].winGames;
+		for (int i = 10; i < 15; i++)
+			ori_wins += population[i].winGames;
+		for (int i = 15; i < 20; i++)
+			random_wins += population[i].winGames;
+		fout << "mutation_wins:\t" << mutation_wins << "\twinrate\t" << mutation_wins*1.0 / 190 << endl;
+		fout << "ori_wins:\t" << ori_wins << "\twinrate\t" << ori_wins*1.0 / 95 << endl;
+		fout << "random_wins:\t" << random_wins << "\twinrate\t" << random_wins*1.0 / 95 << endl;
+		fout << "=============================================================================" << endl;
+		fout.close();
+
 		//select best 10 and store into temp
 		sort(population.begin(), population.end(), [](const Gene& a, const Gene& b) {return 1.0*a.winGames/(a.winGames + a.drawGames+a.loseGames) > 1.0*b.winGames/(b.winGames+b.loseGames+b.drawGames); });
-		auto size_pop = population.size();
 		for (auto i = 0; i < size_pop;i++) {
 			auto p = population[i];
 			printf("[%d]: %d %d %d\n", i, p.winGames, p.loseGames, p.drawGames);
@@ -90,8 +114,8 @@ void Evolution::select() {
 		auto temp = vector<Gene>(population.begin(), population.begin() + 5);
 
 		population.clear();
-		// copy 3 times temp
-		for (int i = 0; i < 5; i++) {
+		// copy n times temp
+		for (int i = 0; i < 2; i++) {
 			for (auto t : temp) {
 				t.drawGames = 0; t.loseGames = 0; t.winGames = 0;
 				population.push_back(t);
@@ -99,7 +123,7 @@ void Evolution::select() {
 		}
 
 		size_pop = population.size();
-		for (int j = 0; j< population.size() / 2; j++) {//do crosscover
+		for (int j = 0; j< size_pop; j++) {//do crosscover
 			auto c1 = rand() % size_pop;
 			auto c2 = rand() % size_pop;
 			crossCover(c1, c2);
@@ -112,7 +136,13 @@ void Evolution::select() {
 			t.drawGames = 0; t.winGames = 0; t.loseGames = 0;
 			population.push_back(t);
 		}
-		
+
+		// last 5 are random genes
+		for (int i = 0; i < 5; i++) {
+			Gene gene_tmp;
+			gene_tmp.generateRandomGene();
+			population.push_back(gene_tmp);
+		}
 	}
 	generationNum--;
 }
