@@ -89,7 +89,7 @@ void Evolution::select() {
 		}
 		auto temp = vector<Gene>(population.begin(), population.begin() + 5);
 
-
+		population.clear();
 		// copy 3 times temp
 		for (int i = 0; i < 3; i++) {
 			for (auto t : temp) {
