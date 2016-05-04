@@ -55,44 +55,46 @@ int Pieces::getDistanceToEnemyBase(){
     }
 }
 
-float Pieces::getDistanceValue(int dis){
-	return distanceValues_Types[type][dis];
+float Pieces::getDistanceValue(int dis, int _player){
+	return distanceValues_Types[_player][type][dis];
 }
 
-void Pieces::setChessPowerValue(Gene gene){
+void Pieces::setChessPowerValue(Gene gene, int _player){
 	if (type == NIL)
-		chessPower = 0;
+		chessPower[_player] = 0;
 	else
-		chessPower = gene.getGene()[(int)type+1];
+		chessPower[_player] = gene.getGene()[(int)type+1];
 }
 
-void Pieces::setDistanceValye(Gene gene){
+void Pieces::setDistanceValye(Gene gene, int _player){
 	for( int type = 1; type <= 8; type++){
-		distanceValues_Types[type].push_back(10000);
-		distanceValues_Types[type].push_back(1000);
+		distanceValues_Types[_player][type].push_back(10000);
+		distanceValues_Types[_player][type].push_back(1000);
 		int s = 10 * type;
 		for(int i = s; i < s + 10 ;i++)
-			distanceValues_Types[type].push_back( gene.getGene().at(i) );
+			distanceValues_Types[_player][type].push_back( gene.getGene().at(i) );
 	}
 }
 
-float Pieces::getChessPowerValue(){
+float Pieces::getChessPowerValue(int _player){
 	if (isEaten())
 		return 0;
-	return chessPower;
+	return chessPower[_player];
 }
 
-void Pieces::setGene(Gene & gene)
+void Pieces::setGene(Gene & gene, int _player)
 {
-    riverBounus = gene.getGene().at(0);
-	threatenFraction = gene.getGene().at(1);
-	setChessPowerValue(gene);  //index 2-9
-	setDistanceValye(gene); //index 10-90
+    riverBounus[_player] = gene.getGene().at(0);
+	threatenFraction[_player] = gene.getGene().at(1);
+	setChessPowerValue(gene, _player);  //index 2-9
+	setDistanceValye(gene, _player); //index 10-90
 }
 
 Pieces::Pieces()
 {
-	for (int i = 0; i <= 8; i++)
-		distanceValues_Types.push_back(vector<float>());
+	for (int i = 0; i <= 8; i++) {
+		distanceValues_Types[0].push_back(vector<float>());
+		distanceValues_Types[1].push_back(vector<float>());
+	}
 }
 

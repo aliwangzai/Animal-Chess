@@ -121,7 +121,7 @@ Pieces * Board::getPiece(Pieces::TypePiece type, int player)
 }
 
 
-void Board::moveChess(Move& move, bool show /* = true */) {
+void Board::moveChess(Move& move, bool realMove /* = true */) {
 	if (move.from == PointXY{ -1,-1 } && move.to == PointXY{ -1,-1 }) {
 		return;
 	}
@@ -131,23 +131,23 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 	auto toPiece = getPiece(to);
 	auto toType = toPiece->getType();
 
-	if (show)
+	if (realMove)
 		moveHistory.push_back(move);
-	fromPiece->setPositionBlock(to, show);
+	fromPiece->setPositionBlock(to, realMove);
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
 	if (toType != Pieces::NIL) {
-		if (show)
+		if (realMove)
 			toPiece->setPositionBlock({ -2,-2 });
 		toPiece->setEatenValue(true);
 		nPiecesExisted[toPiece->getPlayer()]--;
 		move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 	}
 	currentPlayer = !currentPlayer;
-  
-	if (show);
-		//fcoutBoard();
+	
+	if (realMove)
+		whoWillMove = !whoWillMove;
 }
 
 
@@ -263,6 +263,7 @@ Board::Board()
 		{ Board::NIL,Board::NIL,Board::TRAP,Board::DEN1,Board::TRAP,Board::NIL,Board::NIL }
 	};
 	currentPlayer = 0;
+	whoWillMove = currentPlayer;
 	isThinking = false;
 	moveHistory.clear();
 	nul_piece = NULL;

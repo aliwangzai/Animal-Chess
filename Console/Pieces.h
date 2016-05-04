@@ -20,7 +20,7 @@ private:
     PointXY pos; //列，行
     int player;
     TypePiece type;
-    float chessPower;
+    float chessPower[2];
 	bool eaten;
     
 public:
@@ -35,18 +35,17 @@ public:
 	bool isEaten();
     int getDistanceToEnemyBase();
     
-    float getDistanceValue(int dis);
-    void setDistanceValye(Gene gene);
-    void setChessPowerValue(Gene gene);
-    float getChessPowerValue();
+    float getDistanceValue(int dis, int _player);
+    void setDistanceValye(Gene gene, int _player);
+    void setChessPowerValue(Gene gene, int _player);
+    float getChessPowerValue(int _player);
 
-    float threatenFraction;
-    vector<float> distanceValues;
 
-	vector<vector<float> > distanceValues_Types;
-
-    float riverBounus;
-	void setGene(Gene &gen);
+	void setGene(Gene &gen, int _player);
+	// p0's and p1's
+	vector<vector<float> > distanceValues_Types[2];
+    float riverBounus[2];
+    float threatenFraction[2];
 
 public:
 	Pieces();

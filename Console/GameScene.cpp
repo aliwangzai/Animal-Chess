@@ -26,10 +26,8 @@ void GameScene::startEvolutionPrcess() {
 	auto E = Evolution::GetInstance();
 
 	for (int i = 2; i < board->allPieces.size(); i++) {
-		if (board->allPieces[i]->getPlayer() == 0)
-			board->allPieces[i]->setGene(E->population[E->p1]);
-		else
-			board->allPieces[i]->setGene(E->population[E->p2]);
+		board->allPieces[i]->setGene(E->population[E->p1],0);
+		board->allPieces[i]->setGene(E->population[E->p2],1);
 	}
 }
 
@@ -38,9 +36,11 @@ void GameScene::startEvolutionPrcess() {
 void GameScene::finishEvolutionProcess() {
 	auto E = Evolution::GetInstance();
 
+	
 	int populationNum = E->population.size();
 	auto &p1 = E->p1;
 	auto &p2 = E->p2;
+	
 	cout << "current pair are gene " << p1 << " and gene " << p2 << endl;
 	cout << "current left generation " << E->getGenerationNum() << endl;
 
@@ -82,30 +82,30 @@ void GameScene::finishEvolutionProcess() {
 		}
 	}
 
+	
+
 	/*
-	auto E = Evolution::GetInstance();
-	auto ass1 = E->assign1;
-	auto ass2 = E->assign2;
 	auto winner = board->getWinner();
 	ofstream fout("result.txt", ofstream::app);
 	if(winner == 2)
-	fout<<ass1<<"\t"<<ass2<<"\tdraw"<<endl;
+	fout<<p1<<"\t"<< p2 <<"\tdraw"<<endl;
 	else if(winner == 1)
-	fout<<ass1<<"\t"<<ass2<<"\tlose"<<endl;
+	fout<< p1 <<"\t"<< p2 <<"\tlose"<<endl;
 	else if(winner == 0)
-	fout<<ass1<<"\t"<<ass2<<"\twin"<<endl;
+	fout<< p1 <<"\t"<< p2 <<"\twin"<<endl;
 
-	E->assign2++;
-	if(E->assign2 == E->population.size()){
-	E->assign1++;
-	E->assign2 = 17;
+	E->p2++;
+	if(E->p2 == E->population.size()){
+		E->p1++;
+		E->p2 = 20;
 	}
-	if( ass1 == 17 ){
-	E->evolutionEnd = true;
-	gameOverProcess(winner);
+	if( p1 == 17 ){
+		E->evolutionEnd = true;
+		gameOverProcess(winner);
 	}
 	fout.close();
 	*/
+	
 }
 
 void GameScene::releaseMem()
@@ -247,7 +247,7 @@ void GameScene::onceUpdate() {
 }
 
 void GameScene::firstAIPlay() {
-	auto mv = MinMax->getMove(4, 0);
+	auto mv = MinMax->getMove(3, 0);
 	board->moveChess(mv, true);
 	if (gameOverDetect()) {
 		cout << "GameOver player 0 win" << endl;
@@ -262,7 +262,7 @@ void GameScene::firstAIPlay() {
 }
 
 void GameScene::secondAIPlay() {
-	auto mv = MinMax->getMove(4, 1);
+	auto mv = MinMax->getMove(3, 1);
 	board->moveChess(mv, true);
 	if (gameOverDetect()) {
 		cout << "GameOver player 1 win" << endl;

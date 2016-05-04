@@ -16,7 +16,7 @@ Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.2;
 	mutationRate = 0.1;
 	generationNum = 20;
-	generatePopulation(20);
+	generatePopulation(30);
     evolutionEnd = false;
     p1 = 0;
     p2 = 1;
@@ -41,7 +41,7 @@ void Evolution::generatePopulation(int popuNum) {
 }
 void Evolution::mutation(int genePos) {
 
-	for (int i = 0; i<population[0].getGene().size(); i++) {
+	for (int i = 1; i<population[0].getGene().size(); i++) {
         float c = (float)rand() / RAND_MAX;
         if (c<mutationRate){
             float upperBound, lowerBound;
@@ -59,7 +59,7 @@ void Evolution::mutation(int genePos) {
             }
 
             std::default_random_engine generator(time(0));
-			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5);
+			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 0.3*population[genePos].getGene().at(i));
 			float newVal = distribution(generator);
             population.at(genePos).updateGene(i, newVal);
         }
@@ -68,7 +68,7 @@ void Evolution::mutation(int genePos) {
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
      cout<<"I am crosscovering "<<genePos1<<" and "<<genePos2<<endl;
-	for (int i = 0; i<population[0].getGene().size(); i++) {
+	for (int i = 1; i<population[0].getGene().size(); i++) {
 		float a = (float)rand() / RAND_MAX;
 		if (a<crossCoverRate) {
 			auto a = population[genePos1].getGene().at(i);
@@ -91,7 +91,7 @@ void Evolution::select() {
 
 		population.clear();
 		// copy 3 times temp
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 5; i++) {
 			for (auto t : temp) {
 				t.drawGames = 0; t.loseGames = 0; t.winGames = 0;
 				population.push_back(t);

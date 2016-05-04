@@ -34,6 +34,7 @@ float Player::eval(Board& board) {
 	float eval = 0.0f;
 
 
+	auto whichPlayersGene = board.whoWillMove;
 	// for each pieces
 	for (auto ps = board.allPieces.begin() + 2; ps < board.allPieces.end(); ps++) {
 		auto piece = *ps;
@@ -44,17 +45,17 @@ float Player::eval(Board& board) {
 		//if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
 		//sumPower[player] += 500;
 		//else
-		sumPower[player] += piece->getChessPowerValue();
+		sumPower[player] += piece->getChessPowerValue(whichPlayersGene);
 		if (TLBesideRiver(board, *ps))
-			sumPower[player] += piece->riverBounus;
+			sumPower[player] += piece->riverBounus[whichPlayersGene];
 		// Distance
-		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase());
+		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase(), whichPlayersGene);
 		// threaten
 		auto possibleMoves = genAMove(board, piece);
 		for (auto mv : possibleMoves) {
 			auto toPieces = board.getPiece(mv.to);
 			if (toPieces->getType() != Pieces::NIL)
-				sumPower[player] += toPieces->getChessPowerValue() / piece->threatenFraction;
+				sumPower[player] += toPieces->getChessPowerValue(whichPlayersGene) / piece->threatenFraction[whichPlayersGene];
 		}
 	}
 	eval = sumPower[1] - sumPower[0];

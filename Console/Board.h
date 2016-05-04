@@ -27,6 +27,9 @@ public:
 
 	//0,1
 	int currentPlayer;
+	//0,1
+	int whoWillMove;
+
     bool isThinking;
 	Pieces* selected;
 	Pieces* nul_piece;
@@ -50,7 +53,7 @@ public:
 	int getPieceIndex(Pieces::TypePiece type, int player);
 
 	void initPieces();
-	void moveChess(Move &move, bool show = true);
+	void moveChess(Move &move, bool realMove = true);
 
 
 	// -1 if no winner, else return player
