@@ -82,10 +82,15 @@ void Evolution::select() {
 	if (generationNum>0) {
 		//select best 10 and store into temp
 		sort(population.begin(), population.end(), [](const Gene& a, const Gene& b) {return 1.0*a.winGames/(a.winGames + a.drawGames+a.loseGames) > 1.0*b.winGames/(b.winGames+b.loseGames+b.drawGames); });
+		auto size_pop = population.size();
+		for (auto i = 0; i < size_pop;i++) {
+			auto p = population[i];
+			printf("[%d]: %d %d %d\n", i, p.winGames, p.loseGames, p.drawGames);
+		}
 		auto temp = vector<Gene>(population.begin(), population.begin() + 5);
 
 
-		// copy 4 times temp
+		// copy 3 times temp
 		for (int i = 0; i < 3; i++) {
 			for (auto t : temp) {
 				t.drawGames = 0; t.loseGames = 0; t.winGames = 0;
@@ -93,13 +98,7 @@ void Evolution::select() {
 			}
 		}
 
-		int i = 0;
-		for (auto p : population) {
-			printf("[%d]: %d %d %d\n", i, p.winGames, p.loseGames, p.drawGames);
-			i++;
-		}
-
-		auto size_pop = population.size();
+		size_pop = population.size();
 		for (int j = 0; j< population.size() / 2; j++) {//do crosscover
 			auto c1 = rand() % size_pop;
 			auto c2 = rand() % size_pop;
@@ -108,6 +107,10 @@ void Evolution::select() {
 		for (int k = 0; k<size_pop; k++) {  //do mutation
 			mutation(k);
 		}
+		
+		for (auto t : temp) 
+			population.push_back(t);
+		
 	}
 	generationNum--;
 }
