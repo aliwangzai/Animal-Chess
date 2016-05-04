@@ -277,7 +277,7 @@ void GameScene::onceUpdate(float dt){
     }
 }
 void GameScene::firstAIPlay(){
-    auto mv = MinMax->getMove(4, 0);
+    auto mv = MinMax->getMove(3, 0);
     board->moveChess(mv,true);
     if(gameOverDetect()){
         cout<<"GameOver player 0 win"<<endl;
@@ -293,7 +293,7 @@ void GameScene::firstAIPlay(){
 }
 void GameScene::secondAIPlay(){
     
-    auto mv = MinMax->getMove(4, 1);
+    auto mv = MinMax->getMove(3, 1);
     board->moveChess(mv,true);
     if(gameOverDetect()){
         cout<<"GameOver player 1 win"<<endl;

@@ -41,10 +41,12 @@ float Player::eval(Board& board) {
 		if (!board.hasPiece(piece->getType(), player))
 			continue;
 		// pieces power
-		if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
-		sumPower[player] += piece->getChessPowerValue() * 0.5;
-
+		//if (piece->getType() == Pieces::RAT && board.hasPiece(Pieces::ELEPHANT, !player))
+		//sumPower[player] += 500;
+		//else
 		sumPower[player] += piece->getChessPowerValue();
+		if (TLBesideRiver(board, *ps))
+			sumPower[player] += piece->riverBounus;
 		// Distance
 		sumPower[player] += piece->getDistanceValue(piece->getDistanceToEnemyBase());
 		// threaten

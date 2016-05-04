@@ -15,16 +15,15 @@ Evolution* Evolution::m_pInstance = NULL;
 Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.2;
 	mutationRate = 0.1;
-	generationNum = 50; //50
-	generatePopulation(100);//200 need to be divede by 4
-	currentPairNum = 0;
+	generationNum = 20;
+	generatePopulation(20);
     evolutionEnd = false;
-    assign1 = 0;
-    assign2 = 17;
+    p1 = 0;
+    p2 = 1;
 }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
-    fstream f("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+    fstream f("out1.txt");
     if(f.fail()){
         cout<<"file not exist!"<<endl;
         for (int i = 0; i < popuNum; i++) {
@@ -62,10 +61,10 @@ void Evolution::mutation(int genePos) {
             std::default_random_engine generator(time(0));
 			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5);
 			float newVal = distribution(generator);
-			if (i == 1 && newVal < 0) newVal = 0.5f;
             population.at(genePos).updateGene(i, newVal);
         }
 	}
+
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
      cout<<"I am crosscovering "<<genePos1<<" and "<<genePos2<<endl;
@@ -81,26 +80,33 @@ void Evolution::crossCover(int genePos1, int genePos2) {
 }
 void Evolution::select() {
 	if (generationNum>0) {
-		vector<Gene> temp;
-
-		for (int i = 0; i<population.size(); i++) { //get the winner gene
-			if (population.at(i).winState == 1) {
-				temp.push_back(population.at(i));
-			}
-		}
-        population.clear();
+		//select best 10 and store into temp
+		sort(population.begin(), population.end(), [](const Gene& a, const Gene& b) {return 1.0*a.winGames/(a.winGames + a.drawGames+a.loseGames) > 1.0*b.winGames/(b.winGames+b.loseGames+b.drawGames); });
+		auto temp = vector<Gene>(population.begin(), population.begin() + 5);
 		population = temp;
 
+		// copy 4 times temp
+		for (int i = 0; i < 3; i++) {
+			for (auto t : temp) {
+				t.drawGames = 0; t.loseGames = 0; t.winGames = 0;
+				population.push_back(t);
+			}
+		}
+
+		int i = 0;
+		for (auto p : population) {
+			printf("[%d]: %d %d %d\n", i, p.winGames, p.loseGames, p.drawGames);
+			i++;
+		}
+
+		auto size_pop = population.size();
 		for (int j = 0; j< population.size() / 2; j++) {//do crosscover
-			crossCover(j, population.size() - 1 - j);
+			auto c1 = rand() % size_pop;
+			auto c2 = rand() % size_pop;
+			crossCover(c1, c2);
 		}
-
-		for (int k = 0; k<population.size(); k++) {  //do mutation
+		for (int k = 0; k<size_pop; k++) {  //do mutation
 			mutation(k);
-		}
-
-		for (int l = 0; l< temp.size(); l++) { //add unchanged gene to population
-			population.push_back(temp.at(l));
 		}
 	}
 	generationNum--;
