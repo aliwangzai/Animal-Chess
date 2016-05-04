@@ -83,7 +83,7 @@ void Evolution::select() {
 		//select best 10 and store into temp
 		sort(population.begin(), population.end(), [](const Gene& a, const Gene& b) {return 1.0*a.winGames/(a.winGames + a.drawGames+a.loseGames) > 1.0*b.winGames/(b.winGames+b.loseGames+b.drawGames); });
 		auto temp = vector<Gene>(population.begin(), population.begin() + 5);
-		population = temp;
+
 
 		// copy 4 times temp
 		for (int i = 0; i < 3; i++) {
