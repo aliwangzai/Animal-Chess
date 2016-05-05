@@ -20,11 +20,11 @@ Evolution::Evolution() {//generation num and population num;
 	currentPairNum = 0;
     evolutionEnd = false;
     assign1 = 0;
-    assign2 = 17;
+    assign2 = 0;
 }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
-    fstream f("/Users/isware/Documents/Cocos2D-x/workspace/Animal/out1.txt");
+    fstream f("out1.txt");
     if(f.fail()){
         cout<<"file not exist!"<<endl;
         for (int i = 0; i < popuNum; i++) {
