@@ -22,7 +22,7 @@ private:
     PointXY pos; //列，行
     int player;
     TypePiece type;
-    float chessPower;
+    float chessPower[2];
 	bool eaten;
 protected:
     Sprite* m_sprite;
@@ -32,6 +32,7 @@ public:
     virtual bool init();
     void bindSprite(Sprite* sprite);
     void setProperty(PointXY p, int play, TypePiece t);
+    void setPropertyFrom(Pieces *_from);
     TypePiece getType();
     PointXY getPositionBlock();
     void setPositionBlock(PointXY p, bool show = true);
@@ -44,21 +45,17 @@ public:
 	bool isEaten();
     int getDistanceToEnemyBase();
     
-    float getDistanceValue(int dis);
-    void setDistanceValye(Gene gene);
-    void setChessPowerValue(Gene gene);
-    float getChessPowerValue();
+    float getDistanceValue(int dis,int _player);
+    void setDistanceValye(Gene gene,int _player);
+    void setChessPowerValue(Gene gene,int _player);
+    float getChessPowerValue(int _player);
+    void setGene(Gene &gen, int _player);
 
-    float threatenFraction;
-    vector<float> distanceValues;
+    float threatenFraction[2];
+    vector<vector<float> > distanceValues_Types[2];
 
-	vector<vector<float>> distanceValues_Types;
-
-    float riverBounus;
-	void setGene(Gene &gen);
-
-public:
-	Pieces();
+    float riverBounus[2];
+    Pieces();
 private:
     
     

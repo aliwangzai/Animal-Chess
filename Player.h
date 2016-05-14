@@ -9,21 +9,25 @@
 #ifndef Player_h
 #define Player_h
 #include <string>
+#include <vector>
 #include "Move.h"
 #include "Pieces.h"
 #include "Board.h"
 
-#include <vector>
+#define INF 88888888.0
 
 using namespace std;
-
 class Player{
 public:
     string name;
+	int player;
     virtual vector<Move> genAllMoves( Board &board);
     float eval( Board &board);
     vector<Move> genAMove( Board &board, Pieces * fromPiece);
+	virtual void cancelMove(Move &mv, Board *board);
     
+	Player();
+	~Player();
 private:
 	bool TLBesideRiver(Board &board, Pieces *piece);
 };

@@ -20,6 +20,7 @@
 
 #include "Board.h"
 #include "AI_Min_Max.h"
+#include "MCTS.h"
 
 USING_NS_CC;
 
@@ -31,6 +32,7 @@ public:
     Board* board;
 	bool gameOverDetect();
 	AI_Min_Max *MinMax;
+	MCTS *mcts;
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuBackToMainCallback(cocos2d::Ref* pSender);
     
@@ -46,11 +48,8 @@ public:
     void startEvolutionPrcess();
     void finishEvolutionProcess();
     
-  
-	~GameScene() {
-		delete board;
-		board = NULL;
-	}
+
+
 
 private:
     void gameOverProcess(int winner);

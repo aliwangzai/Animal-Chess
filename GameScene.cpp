@@ -22,15 +22,16 @@ bool GameScene::init() {
     if (!Layer::init()) {
         return false;
     }
-    //std::cout<<gameMode<<std::endl;
-
     TMXTiledMap* gameMap = TMXTiledMap::create("gameMap.tmx");
     this->addChild(gameMap);
+    //releaseMem();
     board = new Board();
     board->initPieces(gameMap);
-	MinMax = new AI_Min_Max(board);
     startEvolutionPrcess();
-    
+
+	MinMax = new AI_Min_Max(board);
+	mcts = new MCTS(board);
+    //cout<<"game Mode: "<<gameMode<<endl;
     auto listener = EventListenerTouchOneByOne::create();
     
     listener->onTouchBegan = [](Touch* touch, Event* event) {
@@ -60,106 +61,58 @@ bool GameScene::init() {
 }
 
 void GameScene::startEvolutionPrcess(){
-    int pairnum =Evolution::GetInstance()->currentPairNum;
-    int populationNum =Evolution::GetInstance()->population.size();
-    Gene gene0 = Evolution::GetInstance()->population[pairnum];
-    Gene gene1 = Evolution::GetInstance()->population[populationNum-1-pairnum];
-    for(int i =2; i< board->allPieces.size();i++){
-        if (board->allPieces[i]->getPlayer() == 0)
-            board->allPieces[i]->setGene(gene0);
-        else
-            board->allPieces[i]->setGene(gene1);
-    }
-    
-    /*
     auto E = Evolution::GetInstance();
-    E->loadPopulationGenes();
-    auto pop = E->population;
-    
-    
-   
     for(size_t a = 2; a< board->allPieces.size();a++){
-        if (board->allPieces[a]->getPlayer() == 0)
-            board->allPieces[a]->setGene(pop[E->assign1]);
-        else
-            board->allPieces[a]->setGene(pop[E->assign2]);
+        board->allPieces[a]->setGene(E->population[E->p1],0);
+        board->allPieces[a]->setGene(E->population[E->p2],1);
     }
-     */
 }
-
-
-
 void GameScene::finishEvolutionProcess(){
     
-    int pairnum =Evolution::GetInstance()->currentPairNum;
-    int populationNum =Evolution::GetInstance()->population.size();
-    cout<<"current pair are gene "<<pairnum<<" and gene "<<populationNum-1-pairnum<<endl;
-    cout<<"current left generation "<<Evolution::GetInstance()->getGenerationNum()<<endl;
+    auto E = Evolution::GetInstance();
+    auto &p1 = E->p1;
+    auto &p2 = E->p2;
+    int populationNum = E->population.size();
+    auto winner = board->getWinner();
+    cout << "current pair are gene " << p1 << " and gene " << p2 << endl;
+    cout << "current left generation " << E->getGenerationNum() << endl;
     
-    if(board->getWinner() == 2){
-        Gene m_gene ;
-        m_gene.generateRandomGene();
-        Evolution::GetInstance()->population[pairnum] = m_gene;
-        m_gene.printGene();
-        Evolution::GetInstance()->population[populationNum-1-pairnum] = m_gene;
-        Evolution::GetInstance()->population[pairnum].printGene();
-
-        Evolution::GetInstance()->population[pairnum].winState = 1;
-        Evolution::GetInstance()->population[populationNum-1-pairnum].winState = -1;
-
+    if(winner == 2){
+        E->population[p2].drawGames++;
+        E->population[p1].drawGames++;
     }
-    else if(board->getWinner()==1){
-        Evolution::GetInstance()->population[pairnum].winState = -1;
-        Evolution::GetInstance()->population[populationNum-1-pairnum].winState = 1;
+    else if(winner==1){
+        E->population[p2].winGames++;
+        E->population[p1].loseGames++;
     }
     else{
-        Evolution::GetInstance()->population[pairnum].winState = 1;
-        Evolution::GetInstance()->population[populationNum-1-pairnum].winState = -1;
+        E->population[p1].winGames++;
+        E->population[p2].loseGames++;
     }
-    
-    if(Evolution::GetInstance()->currentPairNum != Evolution::GetInstance()->population.size()/2-1){ //not all pairs finish their game
-        Evolution::GetInstance()->currentPairNum++;
-    }
-    else{//all pair finish game
-        Evolution::GetInstance()->select();
-        if(Evolution::GetInstance()->getGenerationNum()==0){
-            Evolution::GetInstance()->storePopulationGenes();
-            Evolution::GetInstance()->evolutionEnd = true;
-            //Evolution::GetInstance()->generationNum = 1;
-            gameOverProcess(board->getWinner());//evolution end
-        }
-        else{
-            Evolution::GetInstance()->currentPairNum = 0;
-            Evolution::GetInstance()->storePopulationGenes();
-        }
-    }
-     
-    /*
-    auto E = Evolution::GetInstance();
-    auto ass1 = E->assign1;
-    auto ass2 = E->assign2;
-    auto winner = board->getWinner();
-    ofstream fout("/Users/isware/Documents/Cocos2D-x/workspace/Animal/result.txt", ofstream::app);
-    if(winner == 2)
-        fout<<ass1<<"\t"<<ass2<<"\tdraw"<<endl;
-    else if(winner == 1)
-        fout<<ass1<<"\t"<<ass2<<"\tlose"<<endl;
-    else if(winner == 0)
-        fout<<ass1<<"\t"<<ass2<<"\twin"<<endl;
-    
-    E->assign2++;
-    if(E->assign2 == E->population.size()){
-        E->assign1++;
-        E->assign2 = 17;
-    }
-    if( ass1 == 17 ){
-        E->evolutionEnd = true;
-        gameOverProcess(winner);
-    }
-    fout.close();
-     */
-}
+     auto g1 = E->population[p1];
+     printf("[%d]'s status: %dW\t%dL\t%dD\t%f\n", p1, g1.winGames, g1.loseGames, g1.drawGames, 100.0*g1.winGames / (g1.winGames + g1.loseGames + g1.drawGames));
 
+     if (p2 != populationNum - 1) { //not all pairs finish their game
+        p2++;
+     }
+     else {
+        p1++;
+        p2 = p1 + 1;
+     }
+     if (p1 == populationNum - 1) {//all pair finish
+        E->select();
+        if (E->getGenerationNum() == 0) {
+            E->storePopulationGenes();
+            E->evolutionEnd = true;
+            gameOverProcess(board->getWinner());//evolution end
+     } else {
+            p1 = 0;
+            p2 = 1;
+            E->storePopulationGenes();
+     }
+   }
+    
+}
 void GameScene::startUpdate(float dt){
      this->scheduleUpdate();
 }
@@ -235,12 +188,9 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
     auto clickedPiece = board->getPiece(chosenBlock);
     if(board->currentPlayer==0){
         if (board->selected->getType() == Pieces::NIL) {
-            // cannot choose opponent's piece
             if (board->currentPlayer != clickedPiece->getPlayer())
                 return;
-            //  choose this piece and highlight it
             board->selected = clickedPiece;
-            // if the piece exists, highlight
             if (clickedPiece->getType() != Pieces::NIL)
                 clickedPiece->highlight();
         } else {
@@ -248,12 +198,12 @@ void GameScene::operatePieceVsAI(PointXY chosenBlock){
             if (board->availableMove(Move{ from,chosenBlock })) {
                 Move move = { board->selected->getPositionBlock(),chosenBlock };
                 board->moveChess(move);
-				if (int winner = board->getWinner() == -1)
+                int winner = board->getWinner();
+				if (winner == -1)
 					this->scheduleOnce(schedule_selector(GameScene::onceUpdate), 0.01f);
 				else
 					gameOverProcess(winner);
             } else {
-                //reset
                 board->selected->recover();
                 board->selected = board->nul_piece;
             }
@@ -264,15 +214,18 @@ void GameScene::onceUpdate(float dt){
     if(gameMode==1){
         if(board->currentPlayer==1){
             std::cout<<"Minimax take step."<<std::endl;
-			auto mv = MinMax->getMove(6, 1);
+			auto mv = MinMax->getMove(5, 1);
 			board->moveChess(mv);
 			gameOverDetect();
         }
     }
     if (gameMode==2){
         if(board->currentPlayer==1){
-            std::cout<<"MCTS take step."<<std::endl;
-            board->currentPlayer=0;
+			Move mv = mcts->MCTS_Search(MyTimer(2000),1);
+			if (mv == Move{ {-1,-1},{-1,-1} })
+				gameOverProcess(0);
+			board->moveChess(mv);
+			gameOverDetect();
         }
     }
 }
@@ -280,36 +233,35 @@ void GameScene::firstAIPlay(){
     auto mv = MinMax->getMove(3, 0);
     board->moveChess(mv,true);
     if(gameOverDetect()){
-        cout<<"GameOver player 0 win"<<endl;
-        
-        finishEvolutionProcess();
-        if(!Evolution::GetInstance()->evolutionEnd){
+        //finishEvolutionProcess();
+        //if(!Evolution::GetInstance()->evolutionEnd){
             Scene* newGame = GameScene::createScene();
             auto transition = TransitionCrossFade::create(0.5f, newGame);
             Director::getInstance()->replaceScene(transition);
-        }
+        //}
         
     }
 }
 void GameScene::secondAIPlay(){
-    
-    auto mv = MinMax->getMove(3, 1);
+    //auto mv = MinMax->getMove(3, 1);
+	auto mv = mcts->MCTS_Search(MyTimer(4000), 1);
+	if (board->availableMove(mv) != true) {
+		return;
+	}
     board->moveChess(mv,true);
     if(gameOverDetect()){
-        cout<<"GameOver player 1 win"<<endl;
-        
-        finishEvolutionProcess();
-        if(!Evolution::GetInstance()->evolutionEnd){
-        Scene* newGame = GameScene::createScene();
-        auto transition = TransitionCrossFade::create(0.5f, newGame);
-        Director::getInstance()->replaceScene(transition);
-        }
-        
+        //finishEvolutionProcess();
+        //if(!Evolution::GetInstance()->evolutionEnd){
+            Scene* newGame = GameScene::createScene();
+            auto transition = TransitionCrossFade::create(0.5f, newGame);
+            Director::getInstance()->replaceScene(transition);
+        //}
     }
 }
 bool GameScene::gameOverDetect(){
 	int winner = board->getWinner();
-	if ( winner != -1) {
+  	if ( winner != -1) {
+        cout <<endl<< "GameOver player "<<winner<<" win" << endl;
 		gameOverProcess(winner);
         return true;
 	}
@@ -326,3 +278,4 @@ void GameScene::menuBackToMainCallback(cocos2d::Ref* pSender){
     auto transition = TransitionCrossFade::create(0.5f, main);
     Director::getInstance()->replaceScene(transition);
 }
+

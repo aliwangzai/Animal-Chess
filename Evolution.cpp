@@ -7,21 +7,20 @@
 //
 
 #include "Evolution.h"
-#include <random>
 #include <time.h>
+#include <random>
 
 Evolution* Evolution::m_pInstance = NULL;
 
 Evolution::Evolution() {//generation num and population num;
 	crossCoverRate = 0.2;
 	mutationRate = 0.1;
-	generationNum = 50; //50
-	generatePopulation(100);//200 need to be divede by 4
-	currentPairNum = 0;
+	generationNum = 100; //50
+	generatePopulation(20);//200 need to be divede by 4
     evolutionEnd = false;
-    assign1 = 0;
-    assign2 = 0;
-}
+    p1 = 0;
+    p2 = 1;
+    }
 Evolution::~Evolution() {}
 void Evolution::generatePopulation(int popuNum) {
     fstream f("out1.txt");
@@ -31,44 +30,27 @@ void Evolution::generatePopulation(int popuNum) {
             Gene newgene = Gene::Gene();
             newgene.generateRandomGene();
             population.push_back(newgene);
-        //newgene.printGene();
         }
+        storePopulationGenes();
     }
     else{
         cout<<"load genes from exist file"<<endl;
         loadPopulationGenes();
     }
-	storePopulationGenes();
 }
 void Evolution::mutation(int genePos) {
-
 	for (int i = 0; i<population[0].getGene().size(); i++) {
         float c = (float)rand() / RAND_MAX;
         if (c<mutationRate){
-            float upperBound, lowerBound;
-            if (i >= 2){
-                lowerBound = 1;
-                upperBound = 200;
-            }
-            else if (i == 0){
-                lowerBound = 0;
-                upperBound = 10;
-            }
-            else{
-                lowerBound = 1;
-                upperBound = 11;
-            }
-
             std::default_random_engine generator(time(0));
-			std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5);
-			float newVal = distribution(generator);
-			if (i == 1 && newVal < 0) newVal = 0.5f;
+            std::normal_distribution<float> distribution(population[genePos].getGene().at(i), 5.5);
+            float newVal = distribution(generator);
             population.at(genePos).updateGene(i, newVal);
         }
 	}
 }
 void Evolution::crossCover(int genePos1, int genePos2) {
-     cout<<"I am crosscovering "<<genePos1<<" and "<<genePos2<<endl;
+     //cout<<"I am crosscovering "<<genePos1<<" and "<<genePos2<<endl;
 	for (int i = 0; i<population[0].getGene().size(); i++) {
 		float a = (float)rand() / RAND_MAX;
 		if (a<crossCoverRate) {
@@ -80,30 +62,72 @@ void Evolution::crossCover(int genePos1, int genePos2) {
 	}
 }
 void Evolution::select() {
-	if (generationNum>0) {
-		vector<Gene> temp;
+    if (generationNum>0) {
+        auto size_pop = population.size();
+        
+        ofstream fout("statistic.txt", fstream::app);
+        int mutation_wins = 0;
+        int ori_wins = 0;
+        int random_wins = 0;
+        char buff[128];
+        fout << "GenerationNum:" << generationNum << endl;
+        for (auto i = 0; i < size_pop; i++) {
+            auto p = population[i];
+            fout <<"chromesome"<<i<<": win "<<p.winGames<<" lose "<<p.loseGames<<" draw "<<p.drawGames<<endl;
+        }
+        for (int i = 0; i < 10; i++)
+            mutation_wins += population[i].winGames;
+        for (int i = 10; i < 15; i++)
+            ori_wins += population[i].winGames;
+        for (int i = 15; i < 20; i++)
+            random_wins += population[i].winGames;
+        fout << "mutation_wins:" << mutation_wins << " winrate: " <<endl; //<< mutation_wins*1.0 / 190 << endl;
+        fout << "ori_wins:" << ori_wins << "winrate"<<endl;// << ori_wins*1.0 / 95 << endl;
+        fout << "random_wins:" << random_wins << "winrate"<<endl;// << random_wins*1.0 / 95 << endl;
+        fout << "=============================================================================" << endl;
+        fout.close();
+        
+        //select best 10 and store into temp
+        sort(population.begin(), population.end(), [](const Gene& a, const Gene& b) {return 1.0*a.winGames/(a.winGames + a.drawGames+a.loseGames) > 1.0*b.winGames/(b.winGames+b.loseGames+b.drawGames); });
+        for (auto i = 0; i < size_pop;i++) {
+            auto p = population[i];
+            cout <<"chromesome"<<i<<": win "<<p.winGames<<" lose "<<p.loseGames<<" draw "<<p.drawGames<<endl;
 
-		for (int i = 0; i<population.size(); i++) { //get the winner gene
-			if (population.at(i).winState == 1) {
-				temp.push_back(population.at(i));
-			}
-		}
+        }
+        auto temp = vector<Gene>(population.begin(), population.begin() + 5);
+        
         population.clear();
-		population = temp;
-
-		for (int j = 0; j< population.size() / 2; j++) {//do crosscover
-			crossCover(j, population.size() - 1 - j);
-		}
-
-		for (int k = 0; k<population.size(); k++) {  //do mutation
-			mutation(k);
-		}
-
-		for (int l = 0; l< temp.size(); l++) { //add unchanged gene to population
-			population.push_back(temp.at(l));
-		}
-	}
-	generationNum--;
+        // copy n times temp
+        for (int i = 0; i < 2; i++) {
+            for (auto t : temp) {
+                t.drawGames = 0; t.loseGames = 0; t.winGames = 0;
+                population.push_back(t);
+            }
+        }
+        
+        size_pop = population.size();
+        for (int j = 0; j< size_pop; j++) {//do crosscover
+            auto c1 = rand() % size_pop;
+            auto c2 = rand() % size_pop;
+            crossCover(c1, c2);
+        }
+        for (int k = 0; k<size_pop; k++) {  //do mutation
+            mutation(k);
+        }
+        
+        for (auto t : temp) {
+            t.drawGames = 0; t.winGames = 0; t.loseGames = 0;
+            population.push_back(t);
+        }
+        
+        // last 5 are random genes
+        for (int i = 0; i < 5; i++) {
+            Gene gene_tmp;
+            gene_tmp.generateRandomGene();
+            population.push_back(gene_tmp);
+        }
+    }
+    generationNum--;
 }
 
 int Evolution::getGenerationNum() {
@@ -143,7 +167,7 @@ void Evolution::loadPopulationGenes() {
 			vector<float> sepBySpaceStr;
 			stringstream ss(s);
 			if (s == "")
-				continue;
+                break;;
 			while (ss >> word)
 				sepBySpaceStr.push_back(atof(word.c_str()));
 			n_gene.setGene(sepBySpaceStr);

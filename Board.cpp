@@ -123,8 +123,9 @@ Pieces * Board::getPiece(Pieces::TypePiece type, int player)
 }
 
 
-void Board::moveChess(Move& move, bool show /* = true */) {
+void Board::moveChess(Move& move, bool realMove /* = true */) {
 	if (move.from == PointXY{ -1,-1 } && move.to == PointXY{ -1,-1 }) {
+		assert("MoveChess()");
 		return;
 	}
 	auto fromPiece = getPiece(move.from);
@@ -133,28 +134,26 @@ void Board::moveChess(Move& move, bool show /* = true */) {
 	auto toPiece = getPiece(to);
 	auto toType = toPiece->getType();
 
-	if (show)
+	if (realMove)
 		moveHistory.push_back(move);
-	fromPiece->setPositionBlock(to, show);
+	fromPiece->setPositionBlock(to, realMove);
 	boardPieces[from.x][from.y] = nul_piece;
 	boardPieces[to.x][to.y] = fromPiece;
 	//eat
 	if (toType != Pieces::NIL) {
-		if (show)
+		if (realMove)
 			toPiece->setPositionBlock({ -2,-2 });
 		toPiece->setEatenValue(true);
 		nPiecesExisted[toPiece->getPlayer()]--;
 		move.eatenIndex = getPieceIndex(toPiece->getType(), toPiece->getPlayer());
 	}
 	currentPlayer = !currentPlayer;
-    if (show && selected->getType() != Pieces::NIL) {
+    if (realMove && selected->getType() != Pieces::NIL) {
 		selected->recover();
 		selected = nul_piece;
 	}
-
-    
-    if (show){}
-		//fcoutBoard();
+    if (realMove){
+        whoWillMove = !whoWillMove;}
 }
 
 
@@ -177,8 +176,7 @@ bool Board::hasPiece(Pieces::TypePiece type, int player)
 	return (!piece->isEaten() && piece->getPositionBlock() != PointXY{ -1, -1 });
 }
 
-void Board::fcoutBoard()
-{
+void Board::foutBoard(){
 	FILE *pf = fopen("board.txt", "w+");
 	for (auto i = 0; i < boardPieces[0].size(); i++) {
 		for (auto j = 0; j < boardPieces.size(); j++) {
@@ -209,6 +207,40 @@ void Board::fcoutBoard()
 	fclose(pf);
 }
 
+void Board::copy_from_JustData(Board *from)
+{
+	currentPlayer = from->currentPlayer;
+	isThinking = from->isThinking;
+	whoWillMove = from->whoWillMove;
+	selected = nullptr;
+	nul_piece = new Pieces();
+	nul_piece->setPropertyFrom(from->allPieces[0]);
+	moveHistory = from->moveHistory;
+	nPiecesExisted[0] = from->nPiecesExisted[0];
+	nPiecesExisted[1] = from->nPiecesExisted[1];
+	// make new copies to allPieces
+	allPieces.clear();
+	allPieces.push_back(nul_piece);
+	allPieces.push_back(nul_piece);
+	for(int i = 2; i < 18;i++){
+		auto piece_copy_from = from->allPieces[i];
+		Pieces *piece_to_be_added = new Pieces();
+		piece_to_be_added->setPropertyFrom(piece_copy_from);
+		allPieces.push_back(piece_to_be_added);
+	}
+
+
+	// boadPieces
+	boardPieces.clear();
+	for(auto rows: from->boardPieces){
+		boardPieces.push_back(vector<Pieces*>());
+		auto &theNewRow = boardPieces.back();
+		for( auto ps : rows){
+			theNewRow.push_back( allPieces[getPieceIndex(ps->getType(),ps->getPlayer())] );
+		}
+	}
+}
+
 Board::Board()
 {
 	terrain = {
@@ -224,22 +256,40 @@ Board::Board()
 	};
 	currentPlayer = 0;
 	isThinking = false;
-	moveHistory.clear();}
-
-Board::~Board()
-{
-	if (nul_piece) {
-		delete nul_piece;
-		nul_piece = NULL;
-	}
+    whoWillMove = currentPlayer;
+	moveHistory.clear();
+    nul_piece = NULL;
 }
 
+
+void Board::releaseMem()
+{
+    size_t size = allPieces.size();
+    for (int i = 1; i < size; i++) {
+        if (allPieces[i]) {
+            delete allPieces[i];
+            allPieces[i] = NULL;
+        }
+    }
+    allPieces.clear();
+    vector<vector<Pieces*> >temp;
+    boardPieces.swap(temp);
+    moveHistory.clear();
+}
+Board::~Board()
+{
+    releaseMem();
+}
 inline int Board::getPieceIndex(Pieces::TypePiece type, int player)
 {
-	return type * 2 + player;
+	if (type == Pieces::NIL)
+		return 0;
+	else
+		return type * 2 + player;
 }
 
 void Board::initPieces(TMXTiledMap* map) {
+    releaseMem();
 	TMXObjectGroup* objgroup = map->getObjectGroup("Animals");
 
 	float x, y;

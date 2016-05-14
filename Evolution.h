@@ -17,18 +17,18 @@
 using namespace std;
 class Evolution {
 private:
-
+	
 	float crossCoverRate;
 	float mutationRate;
 	Evolution();
 	static Evolution* m_pInstance;
 public:
-	int assign1;
-	int assign2;
-	int generationNum;
-	bool evolutionEnd;
-	int currentPairNum; //current fight gene
-	vector<Gene> population;
+    int p1;
+    int p2;
+    //int loseGames;
+    int generationNum;
+    bool evolutionEnd;
+    vector<Gene> population;
 	static Evolution* GetInstance() {
 		if (m_pInstance == NULL)  //判断是否第一次调用
 			m_pInstance = new Evolution();
