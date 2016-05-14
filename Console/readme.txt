@@ -6,4 +6,4 @@ Board里加入了whowillMove, 是指真正要走子的人。curplayer会随AI的
 Added whowillMove to Board, which indicates the real player who will move next round. Curplayer is used in the thinking process, so that it will changes when the AI is searching. When we evaluate the board, we
 will always use whowillMove's values, which are chesspower[whowillMove], distance[whowillMove][type][dis]
 
-In addition, there are relevant changes on Pieces class as well. 
+PS. there are relevant changes on Pieces class as well. 
