@@ -1,9 +1,9 @@
 5/3/2016
 
-BoardÀï¼ÓÈëÁËwhowillMove, ÊÇÖ¸ÕæÕıÒª×ß×ÓµÄÈË¡£curplayer»áËæAIµÄË¼¿¼¶ø±ä»¯¡£ÆÀ¹ÀÊ±£¬¾ÍÓÃwhowillmoveÕâ¸öplayerµÄ·ÖÊıÏµÍ³¡£
-ÁíÍâ£¬PieceÀïÃ¿¸ö·ÖÊıÖµ¶¼ÓĞÁ½¸öÁË¡£Ò»¸öÊÇPlayer0µÄ·ÖÊıÏµÍ³£¬ÁíÒ»¸öÊÇplayer1µÄ·ÖÊıÏµÍ³¡£
+Boardé‡ŒåŠ å…¥äº†whowillMove, æ˜¯æŒ‡çœŸæ­£è¦èµ°å­çš„äººã€‚curplayerä¼šéšAIçš„æ€è€ƒè€Œå˜åŒ–ã€‚è¯„ä¼°æ—¶ï¼Œå°±ç”¨whowillmoveè¿™ä¸ªplayerçš„åˆ†æ•°ç³»ç»Ÿã€‚
+å¦å¤–ï¼ŒPieceé‡Œæ¯ä¸ªåˆ†æ•°å€¼éƒ½æœ‰ä¸¤ä¸ªäº†ã€‚ä¸€ä¸ªæ˜¯Player0çš„åˆ†æ•°ç³»ç»Ÿï¼Œå¦ä¸€ä¸ªæ˜¯player1çš„åˆ†æ•°ç³»ç»Ÿã€‚
 
-Add whowillMove to Board, which indicate the real player that will move next round. Curplayer is used in the thinking process, so that it will changes when the AI is searching. When we evaluate the board, we
+Added whowillMove to Board, which indicates the real player who will move next round. Curplayer is used in the thinking process, so that it will changes when the AI is searching. When we evaluate the board, we
 will always use whowillMove's values, which are chesspower[whowillMove], distance[whowillMove][type][dis]
 
 In addition, there are relevant changes on Pieces class as well. 
